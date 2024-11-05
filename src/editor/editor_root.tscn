@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://df814axcs2ji1"]
+
+[ext_resource type="PackedScene" uid="uid://d2m22hrl2t0gd" path="res://src/editor/editor_network_container.tscn" id="2_hy0qe"]
+[ext_resource type="PackedScene" uid="uid://rtx3pb63rwgf" path="res://src/editor/editor_ui/editor_ui.tscn" id="3_prck3"]
+
+[node name="EditorRoot" type="Node"]
+
+[node name="NetworkContainer" parent="." instance=ExtResource("2_hy0qe")]
+
+[node name="EditorUI" parent="." instance=ExtResource("3_prck3")]

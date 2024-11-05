@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://bmtl50s4f3xx6"]
+
+[ext_resource type="Script" path="res://src/editor/editor_stoplight/editor_property_panel_content_stoplight.gd" id="1_xnxg7"]
+[ext_resource type="Script" path="res://src/editor/editor_ui/numeric_box.gd" id="2_gxjhw"]
+
+[node name="EditorPropertyPanelContentStoplight" type="GridContainer"]
+script = ExtResource("1_xnxg7")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Stoplight(s)"
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 2
+text = "Offset"
+
+[node name="OffsetBox" type="LineEdit" parent="."]
+layout_mode = 2
+select_all_on_focus = true
+script = ExtResource("2_gxjhw")
+suffix = " s"
+
+[connection signal="value_changed" from="OffsetBox" to="." method="_on_offset_box_value_changed"]

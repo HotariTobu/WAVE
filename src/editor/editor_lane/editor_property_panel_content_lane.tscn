@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://bcug3d44uspg8"]
+
+[ext_resource type="Script" path="res://src/editor/editor_lane/editor_property_panel_content_lane.gd" id="1_bo4xe"]
+[ext_resource type="Script" path="res://src/editor/editor_ui/numeric_box.gd" id="2_wp16w"]
+
+[node name="EditorPropertyPanelContentLane" type="GridContainer"]
+script = ExtResource("1_bo4xe")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Lane(s)"
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 2
+text = "Speed Limit"
+
+[node name="SpeedLimitBox" type="LineEdit" parent="."]
+layout_mode = 2
+select_all_on_focus = true
+script = ExtResource("2_wp16w")
+suffix = " km/s"
+min_value = 1.0
+max_value = 120.0
+
+[connection signal="value_changed" from="SpeedLimitBox" to="." method="_on_speed_limit_box_value_changed"]
