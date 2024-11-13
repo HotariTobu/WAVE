@@ -2,7 +2,7 @@ class_name EditorGlobal
 extends Node
 
 var data = BindingSource.new(Data.new(), 'notified')
-var source_db = BindingSourceDB.new()
+var source_db = EditorBindingSourceDB.new()
 var undo_redo := UndoRedo.new()
 
 var camera: PanZoomCamera
