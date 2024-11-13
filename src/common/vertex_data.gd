@@ -1,25 +1,24 @@
 class_name VertexData
 extends ContentData
 
-var x: float = NAN
-var y: float = NAN
+const NAN_POS = Vector2(NAN, NAN)
 
-
-func to_vector() -> Vector2:
-	return Vector2(x, y)
+var pos: Vector2
 
 
 static func to_dict(data: ContentData) -> Dictionary:
 	assert(data is VertexData)
 	var dict = super(data)
-	dict[&"x"] = data.x
-	dict[&"y"] = data.y
+	dict[&"pos"] = data.pos
 	return dict
 
 
 static func from_dict(dict: Dictionary, script: GDScript = VertexData) -> ContentData:
 	var data = super(dict, script)
 	assert(data is VertexData)
-	data.x = dict.get(&"x", NAN)
-	data.y = dict.get(&"y", NAN)
+	data.pos = dict.get(&"pos", NAN_POS)
 	return data
+
+
+static func to_vector(data: VertexData) -> Vector2:
+	return data.pos
