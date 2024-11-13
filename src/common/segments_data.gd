@@ -1,7 +1,7 @@
 class_name SegmentsData
 extends ContentData
 
-var vertex_ids: Array[StringName] = []
+var vertex_ids: Array[StringName]
 
 
 static func to_dict(data: ContentData) -> Dictionary:

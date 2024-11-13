@@ -1,8 +1,8 @@
 class_name LaneData
 extends SegmentsData
 
-var speed_limit: int = NAN
-var next_option_dict: Dictionary = {}
+var speed_limit: int
+var next_option_dict: Dictionary
 
 var _next_option_dict: Dictionary:
 	get:

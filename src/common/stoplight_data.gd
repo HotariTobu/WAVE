@@ -1,8 +1,8 @@
 class_name StoplightData
 extends ContentData
 
-var offset: float = NAN
-var split_ids: Array[StringName] = []
+var offset: float
+var split_ids: Array[StringName]
 
 
 static func to_dict(data: ContentData) -> Dictionary:

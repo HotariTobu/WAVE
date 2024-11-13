@@ -1,7 +1,7 @@
 class_name SplitData
 extends ContentData
 
-var duration: float = NAN
+var duration: float
 var block_target_ids: Array[StringName]
 
 
