@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://d2m22hrl2t0gd"]
+[gd_scene load_steps=9 format=3 uid="uid://d2m22hrl2t0gd"]
 
 [ext_resource type="Script" path="res://src/editor/editor_network_container.gd" id="1_6l2nm"]
 [ext_resource type="Script" path="res://src/common/camera.gd" id="2_3of67"]
@@ -9,8 +9,6 @@
 [ext_resource type="Shortcut" uid="uid://blwmukco2nndw" path="res://src/editor/editor_tool/add_tool_shortcut.tres" id="6_satsf"]
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_add_block_target.gd" id="8_3e1ww"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_fqmpp"]
-
 [node name="EditorNetworkContainer" type="Node2D"]
 script = ExtResource("1_6l2nm")
 
@@ -18,14 +16,6 @@ script = ExtResource("1_6l2nm")
 script = ExtResource("2_3of67")
 
 [node name="ContentContainer" type="Node" parent="."]
-
-[node name="PointerArea" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 2
-monitorable = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PointerArea"]
-shape = SubResource("CircleShape2D_fqmpp")
 
 [node name="ToolContainer" type="Node" parent="."]
 
