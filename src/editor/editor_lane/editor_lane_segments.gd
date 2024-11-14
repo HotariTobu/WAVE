@@ -13,7 +13,6 @@ var _collision_shape_dict: Dictionary
 
 var _center: Vector2
 
-
 var _vertices: Array[VertexData]:
 	get:
 		return _vertices
@@ -25,9 +24,10 @@ var _vertices: Array[VertexData]:
 		queue_redraw()
 		_update_center()
 
+
 func _init(data: EditorLaneData):
 	super(EditorPhysicsLayer.LANE_SEGMENTS)
-	
+
 	_lane = data
 
 	var source = _editor_global.source_db.get_or_add(data)
@@ -58,6 +58,7 @@ func _draw():
 
 func get_center() -> Vector2:
 	return _center
+
 
 func _get_vertices(vertex_ids: Array[StringName]) -> Array[VertexData]:
 	var vertices: Array[VertexData]
@@ -114,6 +115,6 @@ func _update_center():
 	var curve = Curve2D.new()
 	for vertex in _vertices:
 		curve.add_point(vertex.pos)
-	
+
 	var length = curve.get_baked_length()
 	_center = curve.sample_baked(length / 2)
