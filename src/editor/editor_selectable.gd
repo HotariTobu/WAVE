@@ -30,6 +30,7 @@ func _init(layer: int):
 
 
 func _ready():
+	owner = get_tree().root
 	set_process(false)
 
 

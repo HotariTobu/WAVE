@@ -17,7 +17,6 @@ var _vertex: VertexData
 
 func _init(data: VertexData):
 	super(EditorPhysicsLayer.LANE_VERTEX)
-	owner = get_tree().root
 	name = data.id
 
 	_vertex = data
