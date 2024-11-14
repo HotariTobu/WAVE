@@ -5,13 +5,29 @@ const TOOL_STATUS_HINT = 'Left click: select, Shift + Left click: add/remove sel
 
 var _editor_global = editor_global
 
-var _hovered_items: Array[EditorSelectable] = []
+var _hovered_items: Array[EditorSelectable]
+var _last_hovered_item: EditorSelectable:
+	get:
+		return _last_hovered_item
+	set(next):
+		var prev = _last_hovered_item
+
+		if prev != null:
+			prev.selecting = false
+
+		if next != null:
+			next.selecting = true
+
+		_last_hovered_item = next
 
 func _ready():
 	set_process_unhandled_input(false)
 
 func _unhandled_input(event: InputEvent):
-	if event is InputEventMouseButton:
+	if event is InputEventMouseMotion:
+		_pointer_area.position = get_local_mouse_position()
+		
+	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			if event.shift_pressed:
 				_toggle_selection()
@@ -44,31 +60,22 @@ func deactivate() -> void:
 	_pointer_area.area_exited.disconnect(_on_pointer_area_area_exited)
 
 	_cancel()
-
-	if not _hovered_items.is_empty():
-		var last_item = _hovered_items.back()
-		last_item.selecting = false
-
-		_hovered_items.clear()
+	_hovered_items.clear()
+	_last_hovered_item = null
 
 
 func _on_pointer_area_area_entered(area):
-	if not _hovered_items.is_empty():
-		var last_item = _hovered_items.back()
-		last_item.selecting = false
-
 	var item = area as EditorSelectable
-	item.selecting = true
 	_hovered_items.append(item)
+	_last_hovered_item = item
 
 func _on_pointer_area_area_exited(area):
 	var item = area as EditorSelectable
-	item.selecting = false
 	_hovered_items.erase(item)
-
-	if not _hovered_items.is_empty():
-		var last_item = _hovered_items.back()
-		last_item.selecting = true
+	if _hovered_items.is_empty():
+		_last_hovered_item = null
+	else:
+		_last_hovered_item = _hovered_items.back()
 
 
 func _replace_selection():
