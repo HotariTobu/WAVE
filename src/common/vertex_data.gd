@@ -6,6 +6,10 @@ const NAN_POS = Vector2(NAN, NAN)
 var pos: Vector2
 
 
+static func pos_of(data: VertexData) -> Vector2:
+	return data.pos
+
+
 static func to_dict(data: ContentData) -> Dictionary:
 	assert(data is VertexData)
 	var dict = super(data)
@@ -18,7 +22,3 @@ static func from_dict(dict: Dictionary, script: GDScript = VertexData) -> Conten
 	assert(data is VertexData)
 	data.pos = dict.get(&"pos", NAN_POS)
 	return data
-
-
-static func to_vector(data: VertexData) -> Vector2:
-	return data.pos
