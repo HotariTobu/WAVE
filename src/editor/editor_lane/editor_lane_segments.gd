@@ -27,6 +27,8 @@ var _vertices: Array[VertexData]:
 
 func _init(data: EditorLaneData):
 	super(EditorPhysicsLayer.LANE_SEGMENTS)
+	owner = get_tree().root
+	name = data.id
 
 	_lane = data
 
