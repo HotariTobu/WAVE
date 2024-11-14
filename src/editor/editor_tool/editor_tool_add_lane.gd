@@ -1,53 +1,98 @@
 extends EditorTool
 
-const TOOL_DISPLAY_NAME = 'Add Lane tool'
-const TOOL_STATUS_HINT = 'Left click: add a point, Right click: commit the lane'
+const TOOL_DISPLAY_NAME = "Add Lane tool"
+const TOOL_STATUS_HINT = "Left click: add a point, Right click: commit the lane"
 
-enum Phase {EMPTY, LACK, ENOUGH}
+enum Phase { EMPTY, LACK, ENOUGH }
 
 var _editor_global = editor_global
 
-var _preview_lane: EditorLane = null
-var _prev_lane: EditorLane = null
-var _next_lane: EditorLane = null
+var _vertices: Array[VertexData]
+
+var _hovered_lane_vertex_nodes: Array[EditorLaneVertex]
+var _hovered_lane_segments_nodes: Array[EditorLaneSegments]
+
+var _prev_lanes: Array[EditorLaneData]
+var _next_lanes: Array[EditorLaneData]
 
 var _phase: Phase:
 	get:
-		if _preview_lane.curve.point_count < 2:
+		var vertex_count = len(_vertices)
+		if vertex_count < 2:
 			return Phase.EMPTY
-		elif _preview_lane.curve.point_count < 3:
+		elif vertex_count < 3:
 			return Phase.LACK
 		else:
 			return Phase.ENOUGH
 
-var _selecting_point: EditorLanePoint = null:
+var _selecting_prev_segments_nodes: Array[EditorLaneSegments]:
 	get:
-		return _selecting_point
-	set(value):
-		if _selecting_point != null:
-			_selecting_point.selecting = false
+		return _selecting_prev_segments_nodes
+	set(next):
+		var prev = _selecting_prev_segments_nodes
 
-		if value != null:
-			value.selecting = true
+		for segments_node in prev:
+			segments_node.selecting = false
 
-		_selecting_point = value
+		for segments_node in next:
+			segments_node.selecting = true
 
-var _point_pos:
+		_selecting_prev_segments_nodes = next
+
+var _selecting_next_segments_nodes: Array[EditorLaneSegments]:
 	get:
-		if _selecting_point == null:
-			return get_local_mouse_position()
+		return _selecting_next_segments_nodes
+	set(next):
+		var prev = _selecting_next_segments_nodes
+
+		for segments_node in prev:
+			segments_node.selecting = false
+
+		for segments_node in next:
+			segments_node.selecting = true
+
+		_selecting_next_segments_nodes = next
+
+var _selecting_vertex_node: EditorLaneVertex:
+	get:
+		return _selecting_vertex_node
+	set(next):
+		var prev = _selecting_vertex_node
+
+		if prev != null:
+			prev.selecting = false
+			prev.type = EditorLaneVertex.Type.WAY
+
+		if next != null:
+			next.selecting = true
+
+		_selecting_vertex_node = next
+
+var _current_vertex: VertexData:
+	get:
+		if _selecting_vertex_node == null:
+			var vertex = VertexData.new()
+			vertex.pos = get_local_mouse_position()
+			return vertex
 		else:
-			return _selecting_point.position
+			return _selecting_vertex_node.vertex
+
 
 func _ready():
 	set_process_unhandled_input(false)
 
-	_preview_lane = EditorLane.new(false)
-	_preview_lane.curve = Curve2D.new()
-	add_child(_preview_lane)
+
+func _draw():
+	if len(_vertices) < 2:
+		return
+
+	var points = _vertices.map(VertexData.pos_of)
+	draw_polyline(points, setting.preview_lane_color)
+
 
 func _unhandled_input(event: InputEvent):
 	if event is InputEventMouseMotion:
+		_pointer_area.position = get_local_mouse_position()
 		_update_end_point()
 
 	elif event is InputEventMouseButton:
@@ -60,109 +105,242 @@ func _unhandled_input(event: InputEvent):
 	elif event.is_action_pressed("ui_cancel"):
 		_cancel()
 
+
 func get_display_name() -> String:
 	return TOOL_DISPLAY_NAME
+
 
 func get_status_hint() -> String:
 	return TOOL_STATUS_HINT
 
+
 func activate() -> void:
 	set_process_unhandled_input(true)
 
-	_editor_global.pointer_area.collision_mask = EditorPhysicsLayer.LANE_POINT
+	_pointer_area.collision_mask = EditorPhysicsLayer.LANE
 
-	_editor_global.pointer_area.area_entered.connect(_on_pointer_area_area_entered)
-	_editor_global.pointer_area.area_exited.connect(_on_pointer_area_area_exited)
+	_pointer_area.area_entered.connect(_on_pointer_area_area_entered)
+	_pointer_area.area_exited.connect(_on_pointer_area_area_exited)
+
 
 func deactivate() -> void:
 	set_process_unhandled_input(false)
 
-	_editor_global.pointer_area.collision_mask = 0
+	_pointer_area.collision_mask = 0
 
-	_editor_global.pointer_area.area_entered.disconnect(_on_pointer_area_area_entered)
-	_editor_global.pointer_area.area_exited.disconnect(_on_pointer_area_area_exited)
+	_pointer_area.area_entered.disconnect(_on_pointer_area_area_entered)
+	_pointer_area.area_exited.disconnect(_on_pointer_area_area_exited)
 
 	_cancel()
-	_selecting_point = null
+	_hovered_lane_vertex_nodes.clear()
+	_hovered_lane_segments_nodes.clear()
+	_unselect()
 
 
 func _on_pointer_area_area_entered(area):
-	var point = area as EditorLanePoint
-	match point.type:
-		EditorLanePoint.Type.START:
-			if _phase != Phase.EMPTY:
-				_selecting_point = point
-				_update_end_point()
+	if area is EditorLaneVertex:
+		_hovered_lane_vertex_nodes.append(area)
+	elif area is EditorLaneSegments:
+		_hovered_lane_segments_nodes.append(area)
+	else:
+		return
 
-		EditorLanePoint.Type.END:
-			if _phase == Phase.EMPTY:
-				_selecting_point = point
+	_update_selecting_nodes()
+
 
 func _on_pointer_area_area_exited(area):
-	if _selecting_point == area:
-		_selecting_point = null
+	if area is EditorLaneVertex:
+		_hovered_lane_vertex_nodes.erase(area)
+	elif area is EditorLaneSegments:
+		_hovered_lane_segments_nodes.erase(area)
+	else:
+		return
+
+	_update_selecting_nodes()
 
 
 func _update_end_point():
 	if _phase == Phase.EMPTY:
 		return
 
-	_preview_lane.curve.set_point_position(_preview_lane.curve.point_count - 1, _point_pos)
-	_preview_lane.queue_redraw()
+	_vertices[-1] = _current_vertex
+	queue_redraw()
+
 
 func _add_new_point():
 	var empty = _phase == Phase.EMPTY
 	if empty:
-		_preview_lane.curve.add_point(_point_pos)
+		_vertices.append(_current_vertex)
 
-	_preview_lane.curve.add_point(_point_pos)
+	_vertices.append(_current_vertex)
 
-	if _selecting_point == null:
+	if _selecting_vertex_node == null:
 		return
 
 	if empty:
-		_prev_lane = _selecting_point.lane
-		_selecting_point = null
+		_prev_lanes = _get_lanes(_selecting_prev_segments_nodes)
+		_unselect()
 	else:
-		_next_lane = _selecting_point.lane
+		_next_lanes = _get_lanes(_selecting_next_segments_nodes)
 		_commit_lane()
+
 
 func _commit_lane():
 	if _phase != Phase.ENOUGH:
 		_cancel()
 		return
 
-	_preview_lane.curve.remove_point(_preview_lane.curve.point_count - 1)
+	_vertices.pop_back()
 
-	var lane = EditorLane.new()
-	lane.curve = _preview_lane.curve
+	var vertex_ids: Array[StringName]
+	var new_vertices: Array[VertexData]
 
-	if _next_lane != null:
-		lane.add_next_lane(_next_lane)
+	for vertex in _vertices:
+		var vertex_id = vertex.id
+		vertex_ids.append(vertex_id)
+
+		if _editor_global.vertex_db.has_of(vertex_id):
+			continue
+
+		new_vertices.append(vertex)
+
+	var next_option_dict: Dictionary
+
+	for lane in _next_lanes:
+		var option = EditorLaneData.OptionData.new()
+		option.weight = setting.default_option_weight
+		next_option_dict[lane.id] = option
+
+	var new_lane = EditorLaneData.new()
+	new_lane.vertex_ids = vertex_ids
+	new_lane.speed_limit = _calc_initial_speed_limit()
+	new_lane.next_option_dict = next_option_dict
 
 	_editor_global.undo_redo.create_action("Add lane")
-	_editor_global.undo_redo.add_do_method(_editor_global.content_container.add_child.bind(lane))
-	_editor_global.undo_redo.add_do_reference(lane)
-	_editor_global.undo_redo.add_undo_method(_editor_global.content_container.remove_child.bind(lane))
-	if _prev_lane != null:
-		_editor_global.undo_redo.add_do_method(_prev_lane.add_next_lane.bind(lane))
-		_editor_global.undo_redo.add_undo_method(_prev_lane.remove_next_lane.bind(lane))
+
+	for vertex in new_vertices:
+		_editor_global.undo_redo.add_do_method(_editor_global.vertex_db.add.bind(vertex))
+		_editor_global.undo_redo.add_do_reference(vertex)
+		_editor_global.undo_redo.add_undo_method(_editor_global.vertex_db.remove.bind(vertex))
+
+	_editor_global.undo_redo.add_do_method(_editor_global.lane_db.add.bind(new_lane))
+	_editor_global.undo_redo.add_do_reference(new_lane)
+	_editor_global.undo_redo.add_undo_method(_editor_global.lane_db.remove.bind(new_lane))
+
+	for lane in _prev_lanes:
+		var option = EditorLaneData.OptionData.new()
+		option.weight = setting.default_option_weight
+		_editor_global.undo_redo.add_do_method(lane.add_next.bind(new_lane, option))
+		_editor_global.undo_redo.add_do_reference(option)
+		_editor_global.undo_redo.add_undo_method(lane.remove_next.bind(new_lane))
+
 	_editor_global.undo_redo.commit_action()
 
 	_cancel()
-	_selecting_point = null
+	_unselect()
+
 
 func _cancel():
-	_preview_lane.curve = Curve2D.new()
-	_preview_lane.queue_redraw()
+	_vertices.clear()
+	queue_redraw()
 
-	_prev_lane = null
-	_next_lane = null
+	_prev_lanes.clear()
+	_next_lanes.clear()
 
-	if _selecting_point == null:
+	if _selecting_vertex_node == null:
 		return
 
-	if _selecting_point.type == EditorLanePoint.Type.END:
+	if _selecting_vertex_node.type == EditorLaneVertex.Type.END:
 		return
 
-	_selecting_point = null
+	_unselect()
+
+
+func _update_selecting_nodes():
+	var vertex_id_vertex_node_dict: Dictionary
+	for lane_vertex_node in _hovered_lane_vertex_nodes:
+		var vertex_id = lane_vertex_node.vertex.id
+		vertex_id_vertex_node_dict[vertex_id] = lane_vertex_node
+
+	var vertex_ids_segments_node_dict: Dictionary
+	for lane_segments_node in _hovered_lane_segments_nodes:
+		var vertex_ids = lane_segments_node.lane.vertex_ids
+		vertex_ids_segments_node_dict[vertex_ids] = lane_segments_node
+
+	if _phase == Phase.EMPTY:
+		for vertex_id in vertex_id_vertex_node_dict:
+			var prev_segments_nodes: Array[EditorLaneSegments]
+
+			for vertex_ids in vertex_ids_segments_node_dict:
+				if vertex_id == vertex_ids.back():
+					var segments_node = vertex_ids_segments_node_dict[vertex_ids]
+					prev_segments_nodes.append(segments_node)
+
+			if prev_segments_nodes.is_empty():
+				continue
+
+			_selecting_prev_segments_nodes = prev_segments_nodes
+			_selecting_next_segments_nodes = []
+
+			var vertex_node = vertex_id_vertex_node_dict[vertex_id]
+			vertex_node.type = EditorLaneVertex.Type.START
+			_selecting_vertex_node = vertex_node
+
+			return
+
+	else:
+		for vertex_id in vertex_id_vertex_node_dict:
+			var next_segments_nodes: Array[EditorLaneSegments]
+
+			for vertex_ids in vertex_ids_segments_node_dict:
+				if vertex_id == vertex_ids.front():
+					var segments_node = vertex_ids_segments_node_dict[vertex_ids]
+					next_segments_nodes.append(segments_node)
+
+			if next_segments_nodes.is_empty():
+				continue
+
+			_selecting_prev_segments_nodes = []
+			_selecting_next_segments_nodes = next_segments_nodes
+
+			var vertex_node = vertex_id_vertex_node_dict[vertex_id]
+			vertex_node.type = EditorLaneVertex.Type.END
+			_selecting_vertex_node = vertex_node
+
+			return
+
+	_unselect()
+
+
+func _unselect():
+	_selecting_prev_segments_nodes = []
+	_selecting_next_segments_nodes = []
+	_selecting_vertex_node = null
+
+
+func _calc_initial_speed_limit() -> int:
+	var sum_speed_limit = 0.0
+
+	for lane in _prev_lanes:
+		sum_speed_limit += lane.speed_limit
+
+	for lane in _next_lanes:
+		sum_speed_limit += lane.speed_limit
+
+	var lane_count = len(_prev_lanes) + len(_next_lanes)
+	var average_speed_limit = sum_speed_limit / lane_count
+
+	var initial_speed_limit = roundi(average_speed_limit / 10) * 10
+	if initial_speed_limit == 0:
+		initial_speed_limit = setting.default_lane_speed_limit
+
+	return initial_speed_limit
+
+
+static func _get_lanes(segments_nodes: Array[EditorLaneSegments]) -> Array[EditorLaneData]:
+	var lanes: Array[EditorLaneData]
+
+	for segment_node in segments_nodes:
+		lanes.append(segment_node.lane)
+
+	return lanes
