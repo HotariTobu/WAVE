@@ -30,7 +30,7 @@ func _init(data: EditorLaneData):
 
 	_lane = data
 
-	var source = _editor_global.source_db.get_or_add(data)
+	var source = _editor_global.source_db.get_or_add(data, 'notified')
 	source.bind("vertex_ids").using(_get_vertices).to(self, "_vertices")
 
 
