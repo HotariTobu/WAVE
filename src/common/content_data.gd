@@ -4,12 +4,16 @@ const NULL_ID = &"null"
 
 var _id: StringName = NULL_ID
 
+var id: StringName:
+	get:
+		if _id == NULL_ID:
+			_id = UUID.v7()
+
+		return _id
+
 
 static func id_of(data: ContentData) -> StringName:
-	if data._id == NULL_ID:
-		data._id = UUID.v7()
-
-	return data._id
+	return data.id
 
 
 static func to_dict(data: ContentData) -> Dictionary:
