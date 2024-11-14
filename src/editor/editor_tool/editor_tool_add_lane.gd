@@ -61,7 +61,7 @@ var _selecting_vertex_node: EditorLaneVertex:
 
 		if prev != null:
 			prev.selecting = false
-			prev.type = EditorLaneVertex.Type.WAY
+			prev.type = EditorLaneVertex.DEFAULT_TYPE
 
 		if next != null:
 			next.selecting = true

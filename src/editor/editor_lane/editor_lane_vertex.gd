@@ -2,8 +2,9 @@ class_name EditorLaneVertex
 extends EditorSelectable
 
 enum Type { START, WAY, END }
+const DEFAULT_TYPE = Type.WAY
 
-var type = Type.WAY
+var type = DEFAULT_TYPE
 
 var vertex: VertexData:
 	get:
