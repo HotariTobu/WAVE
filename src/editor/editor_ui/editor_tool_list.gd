@@ -10,20 +10,20 @@ var tools: Array[EditorTool]:
 	set(value):
 		tools = value
 		_update_tool_buttons()
-		
+
 var selected_tool: EditorTool:
 	get:
 		return selected_tool
 	set(value):
 		selected_tool = value
 		_toggle_tool_buttons()
-		
+
 
 var _editor_global = editor_global
 
 func _ready():
-	_editor_global.data.bind('tools').to(self, 'tools')
-	_editor_global.data.bind('tool').to(self, 'selected_tool', selected_tool_changed)
+	_editor_global.data.bind(&'tools').to(self, &'tools')
+	_editor_global.data.bind(&'tool').to(self, &'selected_tool', selected_tool_changed)
 
 	shortcut_manager.handled.connect(_on_tool_shortcut_manager_handled)
 

@@ -27,7 +27,7 @@ func _ready():
 		var type = content.get_target_type()
 		_property_content_map[type] = content
 
-	_editor_global.data.bind('selected_items').using(_determine_property_content).to(self, '_property_content')
+	_editor_global.data.bind(&'selected_items').using(_determine_property_content).to(self, &'_property_content')
 
 func _determine_property_content(items: Array[EditorSelectable]):
 	var len_items = len(items)

@@ -32,8 +32,8 @@ func _init(data: EditorLaneData):
 
 	_lane = data
 
-	var source = _editor_global.source_db.get_or_add(data, 'notified')
-	source.bind("vertex_ids").using(_get_vertices).to(self, "_vertices")
+	var source = _editor_global.source_db.get_or_add(data, &'notified')
+	source.bind(&"vertex_ids").using(_get_vertices).to(self, &"_vertices")
 
 
 func _draw():
@@ -78,8 +78,8 @@ func _add_segment_collision_shapes(vertices: Array[VertexData]):
 		var source1 = sources[index + 1]
 
 		var segment_shape = SegmentShape2D.new()
-		source0.bind("pos").to(segment_shape, "a")
-		source1.bind("pos").to(segment_shape, "b")
+		source0.bind(&"pos").to(segment_shape, &"a")
+		source1.bind(&"pos").to(segment_shape, &"b")
 
 		var collision_shape = CollisionShape2D.new()
 		collision_shape.shape = segment_shape
@@ -88,8 +88,8 @@ func _add_segment_collision_shapes(vertices: Array[VertexData]):
 		_collision_shape_dict[source0] = collision_shape
 
 	for source in sources:
-		source.add_callback("x", queue_redraw)
-		source.add_callback("y", queue_redraw)
+		source.add_callback(&"x", queue_redraw)
+		source.add_callback(&"y", queue_redraw)
 
 
 func _remove_segment_collision_shapes(vertices: Array[VertexData]):
@@ -102,15 +102,15 @@ func _remove_segment_collision_shapes(vertices: Array[VertexData]):
 		var collision_shape = _collision_shape_dict[source0]
 		var segment_shape = collision_shape.shape
 
-		source0.unbind("pos").from(segment_shape, "a")
-		source1.unbind("pos").from(segment_shape, "b")
+		source0.unbind(&"pos").from(segment_shape, &"a")
+		source1.unbind(&"pos").from(segment_shape, &"b")
 
 		remove_child(collision_shape)
 		_collision_shape_dict.erase(source0)
 
 	for source in sources:
-		source.remove_callback("x", queue_redraw)
-		source.remove_callback("y", queue_redraw)
+		source.remove_callback(&"x", queue_redraw)
+		source.remove_callback(&"y", queue_redraw)
 
 
 func _update_center():

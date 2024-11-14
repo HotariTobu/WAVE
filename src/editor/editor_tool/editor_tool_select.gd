@@ -26,7 +26,7 @@ func _ready():
 func _unhandled_input(event: InputEvent):
 	if event is InputEventMouseMotion:
 		_pointer_area.position = get_local_mouse_position()
-		
+
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			if event.shift_pressed:
@@ -34,7 +34,7 @@ func _unhandled_input(event: InputEvent):
 			else:
 				_replace_selection()
 
-	elif event.is_action_pressed("ui_cancel"):
+	elif event.is_action_pressed(&"ui_cancel"):
 		_cancel()
 
 func get_display_name() -> String:

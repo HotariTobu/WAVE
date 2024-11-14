@@ -111,7 +111,7 @@ func _unhandled_input(event: InputEvent):
 		elif event.keycode == KEY_CTRL or event.keycode == KEY_META:
 			_is_targets_visible = event.pressed
 
-		elif event.is_action_pressed("ui_cancel"):
+		elif event.is_action_pressed(&"ui_cancel"):
 			_cancel()
 
 func _draw():

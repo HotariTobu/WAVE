@@ -102,7 +102,7 @@ func _unhandled_input(event: InputEvent):
 		elif event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed:
 			_commit_lane()
 
-	elif event.is_action_pressed("ui_cancel"):
+	elif event.is_action_pressed(&"ui_cancel"):
 		_cancel()
 
 
