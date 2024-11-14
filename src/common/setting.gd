@@ -1,14 +1,19 @@
 class_name Setting
 extends Node
 
-var lane_color = Color('b2b2b2')
+var lane_color = Color("b2b2b2")
 var lane_width = 2.0
 
-var stoplight_color = Color('fffdd4')
+var stoplight_color = Color("fffdd4")
 var stoplight_radius = 4.0
 var stoplight_shape = Spot.Shape.CIRCLE
 
 var selection_radius = 10.0
+
+var preview_lane_color = Color("b2b2b2")
+
+var default_lane_speed_limit = 60
+var default_option_weight = 1.0
 
 var lane_selecting_color = Color("0f08")
 var lane_selected_color = Color("0f0")
