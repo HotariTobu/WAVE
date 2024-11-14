@@ -37,7 +37,7 @@ static func from_dict(dict: Dictionary, script: GDScript = LaneData) -> ContentD
 
 
 class OptionData:
-	var weight: float = NAN
+	var weight: float
 
 	static func to_dict(data: OptionData) -> Dictionary:
 		return {&"weight": data.weight}
