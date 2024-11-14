@@ -8,16 +8,16 @@ var next_option_dict: Dictionary
 var _next_option_dict: Dictionary:
 	get:
 		var value = {}
-		for vertex_id in next_option_dict:
-			var option_data = next_option_dict[vertex_id]
-			value[vertex_id] = OptionData.to_dict(option_data)
+		for lane_id in next_option_dict:
+			var option_data = next_option_dict[lane_id]
+			value[lane_id] = OptionData.to_dict(option_data)
 		return value
 
 	set(value):
 		next_option_dict.clear()
-		for vertex_id in value:
-			var option_dict = value[vertex_id]
-			next_option_dict[vertex_id] = OptionData.from_dict(option_dict)
+		for lane_id in value:
+			var option_dict = value[lane_id]
+			next_option_dict[lane_id] = OptionData.from_dict(option_dict)
 
 
 static func to_dict(data: ContentData) -> Dictionary:
