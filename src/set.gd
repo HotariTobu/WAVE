@@ -58,13 +58,13 @@ func merged(another: Set, overwrite: bool = false) -> Set:
 func recursive_equal(another: Set, recursion_count: int) -> bool:
 	var values = _data.keys()
 	var another_values = another._data.keys()
-	if values() != another_values:
+	if values != another_values:
 		return false
 
 	if recursion_count == 0:
 		return true
 
-	for index in range(len(values())):
+	for index in range(len(values)):
 		var value = values[index]
 		if value is Dictionary or value is Set:
 			if not value.recursive_equal(another_values[index], recursion_count - 1):
@@ -77,5 +77,5 @@ func size() -> int:
 	return _data.size()
 
 
-func values() -> Array:
+func to_array() -> Array:
 	return _data.keys()
