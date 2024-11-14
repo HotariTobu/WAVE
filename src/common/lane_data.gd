@@ -4,6 +4,7 @@ extends SegmentsData
 var speed_limit: int
 var next_option_dict: Dictionary
 
+@warning_ignore("unused_private_class_variable")
 var _next_option_dict: Dictionary:
 	get:
 		var value = {}
