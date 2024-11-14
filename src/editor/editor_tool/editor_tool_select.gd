@@ -30,18 +30,18 @@ func get_status_hint() -> String:
 func activate() -> void:
 	set_process_unhandled_input(true)
 
-	_editor_global.pointer_area.collision_mask = EditorPhysicsLayer.SELECTABLE
+	_pointer_area.collision_mask = EditorPhysicsLayer.SELECTABLE
 
-	_editor_global.pointer_area.area_entered.connect(_on_pointer_area_area_entered)
-	_editor_global.pointer_area.area_exited.connect(_on_pointer_area_area_exited)
+	_pointer_area.area_entered.connect(_on_pointer_area_area_entered)
+	_pointer_area.area_exited.connect(_on_pointer_area_area_exited)
 
 func deactivate() -> void:
 	set_process_unhandled_input(false)
 
-	_editor_global.pointer_area.collision_mask = 0
+	_pointer_area.collision_mask = 0
 
-	_editor_global.pointer_area.area_entered.disconnect(_on_pointer_area_area_entered)
-	_editor_global.pointer_area.area_exited.disconnect(_on_pointer_area_area_exited)
+	_pointer_area.area_entered.disconnect(_on_pointer_area_area_entered)
+	_pointer_area.area_exited.disconnect(_on_pointer_area_area_exited)
 
 	_cancel()
 
