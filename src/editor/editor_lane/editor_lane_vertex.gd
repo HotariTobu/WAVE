@@ -10,6 +10,8 @@ var vertex: VertexData:
 	get:
 		return _vertex
 
+var _editor_global = editor_global
+
 var _vertex: VertexData
 
 
@@ -20,7 +22,8 @@ func _init(data: VertexData):
 
 	_vertex = data
 
-	position = data.pos
+	var source = _editor_global.source_db.get_or_add(data)
+	source.bind(&"pos").to(self, &"position")
 	
 	var circle_shape = CircleShape2D.new()
 	circle_shape.radius = 0
