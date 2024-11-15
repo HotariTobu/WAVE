@@ -1,7 +1,7 @@
 class_name EditorStoplightCore
 extends EditorContent
 
-var is_opened: bool
+var opened: bool
 
 var _sectors: Array[EditorStoplightSector]:
 	get:
@@ -57,7 +57,7 @@ func _bind_sectors(sectors: Array[EditorStoplightSector]):
 	for sector in sectors:
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)
-		core_source.bind(&"is_opened").to(sector, &"visible")
+		core_source.bind(&"opened").to(sector, &"visible")
 		_source.bind(&"pos").to(sector, &"position")
 		split_source.add_callback(&"duration", _update_sectors)
 
@@ -66,7 +66,7 @@ func _unbind_sectors(sectors: Array[EditorStoplightSector]):
 	for sector in sectors:
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)
-		core_source.unbind(&"is_opened").from(sector, &"visible")
+		core_source.unbind(&"opened").from(sector, &"visible")
 		_source.unbind(&"pos").from(sector, &"position")
 		split_source.remove_callback(&"duration", _update_sectors)
 
