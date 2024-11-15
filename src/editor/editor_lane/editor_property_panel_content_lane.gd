@@ -32,7 +32,6 @@ var _option_cells: Array[Control]:
 
 		_option_cells = next
 
-@onready var _root = get_tree().root
 @onready var _speed_limit_box = $SpeedLimitBox
 
 
@@ -42,7 +41,7 @@ func get_target_type():
 
 func activate():
 	super()
-	_editor_global.data.bind(&"selected_items").using(_get_lanes).to(self, &"lane_sources")
+	_editor_global.data.bind(&"selected_items").using(_get_lane_sources).to(self, &"lane_sources")
 
 
 func deactivate():
@@ -51,7 +50,7 @@ func deactivate():
 	lane_sources = []
 
 
-func _get_lanes(items: Array[EditorSelectable]) -> Array[EditorBindingSource]:
+func _get_lane_sources(items: Array[EditorSelectable]) -> Array[EditorBindingSource]:
 	var sources: Array[EditorBindingSource] = []
 
 	for item in items:
@@ -75,7 +74,8 @@ func _bind_cells(sources: Array[EditorBindingSource]):
 		sourcce.bind(&"speed_limit").using(unity_converter).to(_speed_limit_box, &"value")
 
 	if len(sources) == 1:
-		first_source.bind(&"next_option_dict").using(_create_option_cells).to(self, &"_option_cells")
+		var option_cell_creator = OptionCellCreator.new(get_tree().root)
+		first_source.bind(&"next_option_dict").using(option_cell_creator).to(self, &"_option_cells")
 
 
 func _unbind_cells(sources: Array[EditorBindingSource]):
@@ -89,31 +89,6 @@ func _unbind_cells(sources: Array[EditorBindingSource]):
 		_option_cells = []
 
 
-func _create_option_cells(option_dict: Dictionary):
-	var option_cells: Array[Control] = []
-
-	for lane_id in option_dict:
-		var option = option_dict[lane_id]
-		var option_source = _editor_global.source_db.get_or_add(option)
-		option_cells += _create_option_cell(lane_id, option_source)
-
-	return option_cells
-
-
-func _create_option_cell(lane_id: StringName, option_source: EditorBindingSource) -> Array[Control]:
-	var weight_label = Label.new()
-	weight_label.text = WEIGHT_LABEL % lane_id.right(2)
-	weight_label.mouse_filter = Control.MOUSE_FILTER_PASS
-	_connect_hover_signals_for_selecting(weight_label, lane_id)
-
-	var weight_box = WeightBox.new()
-	option_source.bind(&"weight").to(weight_box, &"value")
-	_connect_hover_signals_for_selecting(weight_box, lane_id)
-	weight_box.value_changed.connect(_on_weight_box_value_changed.bind(option_source))
-
-	return [weight_label, weight_box] as Array[Control]
-
-
 func _on_speed_limit_box_value_changed(new_value: float):
 	_editor_global.undo_redo.create_action("Change lane speed limit")
 
@@ -124,17 +99,53 @@ func _on_speed_limit_box_value_changed(new_value: float):
 	_editor_global.undo_redo.commit_action()
 
 
-func _on_weight_box_value_changed(new_value: float, option_source: EditorBindingSource):
-	_editor_global.undo_redo.create_action("Change lane option weight")
-	_editor_global.undo_redo.add_do_property(option_source, &"weight", new_value)
-	_editor_global.undo_redo.add_undo_property(option_source, &"weight", option_source.weight)
-	_editor_global.undo_redo.commit_action()
+class OptionCellCreator:
+	extends BindingConverter
 
+	var _editor_global = editor_global
 
-func _connect_hover_signals_for_selecting(control: Control, selectable_id: StringName):
-	var selectable = _root.get_node("%" + selectable_id) as EditorSelectable
-	control.mouse_entered.connect(func(): selectable.selecting = true)
-	control.mouse_exited.connect(func(): selectable.selecting = false)
+	var _selectable_owner: Node
+
+	func _init(selectable_owner: Node):
+		_selectable_owner = selectable_owner
+
+	func source_to_target(source_value: Variant) -> Variant:
+		return _create_option_cells(source_value)
+
+	func _create_option_cells(option_dict: Dictionary) -> Array[Control]:
+		var option_cells: Array[Control] = []
+
+		for lane_id in option_dict:
+			var option = option_dict[lane_id]
+			option_cells += _create_option_cell(option, lane_id)
+
+		return option_cells
+
+	func _create_option_cell(option: EditorLaneData.OptionData, lane_id: StringName) -> Array[Control]:
+		var option_source = _editor_global.source_db.get_or_add(option)
+		var lane_segments_node = _selectable_owner.get_node("%" + lane_id) as EditorLaneSegments
+		
+		var weight_label = Label.new()
+		weight_label.text = WEIGHT_LABEL % lane_id.right(2)
+		weight_label.mouse_filter = Control.MOUSE_FILTER_PASS
+		_connect_hover_signals_for_selecting(weight_label, lane_segments_node)
+
+		var weight_box = WeightBox.new()
+		option_source.bind(&"weight").to(weight_box, &"value")
+		_connect_hover_signals_for_selecting(weight_box, lane_segments_node)
+		weight_box.value_changed.connect(_on_weight_box_value_changed.bind(option_source))
+
+		return [weight_label, weight_box] as Array[Control]
+
+	func _on_weight_box_value_changed(new_value: float, option_source: EditorBindingSource):
+		_editor_global.undo_redo.create_action("Change lane option weight")
+		_editor_global.undo_redo.add_do_property(option_source, &"weight", new_value)
+		_editor_global.undo_redo.add_undo_property(option_source, &"weight", option_source.weight)
+		_editor_global.undo_redo.commit_action()
+
+	func _connect_hover_signals_for_selecting(control: Control, selectable: EditorSelectable):
+		control.mouse_entered.connect(func(): selectable.selecting = true)
+		control.mouse_exited.connect(func(): selectable.selecting = false)
 
 
 class WeightBox:
