@@ -26,6 +26,8 @@ func to_dict() -> Dictionary:
 	return {
 		&"lane_vertices": lane_vertex_db.contents.map(VertexData.to_dict),
 		&"lanes": lane_db.contents.map(LaneData.to_dict),
+		&"splits": split_db.contents.map(SplitData.to_dict),
+		&"stoplights": stoplight_db.contents.map(StoplightData.to_dict),
 	}
 
 
@@ -34,6 +36,8 @@ func from_dict(dict: Dictionary):
 
 	lane_vertex_db.contents = dict.get(&"lane_vertices", []).map(VertexData.from_dict)
 	lane_db.contents = dict.get(&"lanes", []).map(LaneData.from_dict)
+	split_db.contents = dict.get(&"splits", []).map(SplitData.from_dict)
+	stoplight_db.contents = dict.get(&"stoplights", []).map(StoplightData.from_dict)
 
 
 class Data:
