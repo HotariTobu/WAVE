@@ -162,7 +162,7 @@ class SplitCellCreator:
 		var split = SplitData.new()
 		split.duration = setting.default_split_duration
 
-		var prev = _stoplight_source.split_ids
+		var prev = _stoplight_source.split_ids as Array
 		var next = prev.duplicate()
 		next.append(split.id)
 		next.make_read_only()
@@ -179,7 +179,7 @@ class SplitCellCreator:
 		_editor_global.undo_redo.commit_action()
 
 	func _on_remove_split_button_pressed(split: SplitData):
-		var prev = _stoplight_source.split_ids
+		var prev = _stoplight_source.split_ids as Array
 		var next = prev.duplicate()
 		next.erase(split.id)
 		next.make_read_only()
