@@ -24,12 +24,7 @@ func _init(data: VertexData):
 	var source = _editor_global.source_db.get_or_add(data)
 	source.bind(&"pos").to(self, &"position")
 	
-	var circle_shape = CircleShape2D.new()
-	circle_shape.radius = 0
-
-	var collision_shape = CollisionShape2D.new()
-	collision_shape.shape = circle_shape
-	add_child(collision_shape)
+	add_child(create_point())
 
 
 func _draw():

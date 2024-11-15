@@ -73,12 +73,11 @@ func _add_segment_collision_shapes(vertices: Array[VertexData]):
 		var source0 = sources[index]
 		var source1 = sources[index + 1]
 
-		var segment_shape = SegmentShape2D.new()
+		var collision_shape = create_segment()
+		var segment_shape = collision_shape.shape
+		
 		source0.bind(&"pos").to(segment_shape, &"a")
 		source1.bind(&"pos").to(segment_shape, &"b")
-
-		var collision_shape = CollisionShape2D.new()
-		collision_shape.shape = segment_shape
 
 		add_child(collision_shape)
 		_collision_shape_dict[source0] = collision_shape
