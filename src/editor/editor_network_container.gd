@@ -12,6 +12,7 @@ func _ready():
 
 	_connect_content_db(_editor_global.lane_vertex_db, EditorLaneVertex)
 	_connect_content_db(_editor_global.lane_db, EditorLaneSegments)
+	_connect_content_db(_editor_global.stoplight_db, EditorStoplightCore)
 
 	var tools: Array[EditorTool] = []
 	for child in _tool_container.get_children():
