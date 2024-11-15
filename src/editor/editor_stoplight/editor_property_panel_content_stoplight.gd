@@ -95,19 +95,23 @@ func _on_offset_box_value_changed(new_value: float):
 
 class SplitCellCreator:
 	extends BindingConverter
-	
+
 	var _editor_global = editor_global
-	
+
 	var _stoplight_source: EditorBindingSource
-	
+
+	var _label_count: int
+
 	func _init(stoplight_source: EditorBindingSource):
 		_stoplight_source = stoplight_source
-		
+
 	func source_to_target(source_value: Variant) -> Variant:
 		return _create_split_cells(source_value)
 
 	func _create_split_cells(split_ids: Array[StringName]) -> Array[Control]:
 		var split_cells: Array[Control] = []
+
+		_label_count = 0
 
 		for split_id in split_ids:
 			var split = _editor_global.split_db.get_of(split_id)
@@ -123,11 +127,13 @@ class SplitCellCreator:
 
 	func _create_split_cell(split: SplitData) -> Array[Control]:
 		var split_source = _editor_global.source_db.get_or_add(split)
-		
+
+		_label_count += 1
+
 		var duration_label = Label.new()
-		duration_label.text = DURATION_LABEL % split_source.id.right(2)
+		duration_label.text = DURATION_LABEL % _label_count
 		duration_label.mouse_filter = Control.MOUSE_FILTER_PASS
-		
+
 		var duration_box = DurationBox.new()
 		split_source.bind(&'duration').to(duration_box, &'value')
 		duration_box.value_changed.connect(_on_duration_box_value_changed.bind(split_source))
@@ -151,21 +157,21 @@ class SplitCellCreator:
 	func _on_add_split_button_pressed():
 		var split = SplitData.new()
 		split.duration = setting.default_split_duration
-		
+
 		var prev = _stoplight_source.split_ids
 		var next = prev.duplicate()
 		next.append(split.id)
 		next.make_read_only()
-		
+
 		_editor_global.undo_redo.create_action("Add stoplight split")
-		
+
 		_editor_global.undo_redo.add_do_method(_editor_global.split_db.add.bind(split))
 		_editor_global.undo_redo.add_do_reference(split)
 		_editor_global.undo_redo.add_undo_method(_editor_global.split_db.remove.bind(split))
-		
+
 		_editor_global.undo_redo.add_do_property(_stoplight_source, &"split_ids", next)
 		_editor_global.undo_redo.add_undo_property(_stoplight_source, &"split_ids", prev)
-		
+
 		_editor_global.undo_redo.commit_action()
 
 	func _on_remove_split_button_pressed(split: SplitData):
@@ -173,18 +179,18 @@ class SplitCellCreator:
 		var next = prev.duplicate()
 		next.erase(split.id)
 		next.make_read_only()
-		
+
 		_editor_global.undo_redo.create_action("Remove stoplight split")
-		
+
 		_editor_global.undo_redo.add_do_method(_editor_global.split_db.remove.bind(split))
 		_editor_global.undo_redo.add_undo_method(_editor_global.split_db.add.bind(split))
 		_editor_global.undo_redo.add_undo_reference(split)
-		
+
 		_editor_global.undo_redo.add_do_property(_stoplight_source, &"split_ids", next)
 		_editor_global.undo_redo.add_undo_property(_stoplight_source, &"split_ids", prev)
-		
+
 		_editor_global.undo_redo.commit_action()
-	
+
 class DurationBox:
 	extends NumericBox
 

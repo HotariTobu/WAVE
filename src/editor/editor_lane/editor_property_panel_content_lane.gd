@@ -106,6 +106,8 @@ class OptionCellCreator:
 
 	var _selectable_owner: Node
 
+	var _label_count: int
+
 	func _init(selectable_owner: Node):
 		_selectable_owner = selectable_owner
 
@@ -114,6 +116,8 @@ class OptionCellCreator:
 
 	func _create_option_cells(option_dict: Dictionary) -> Array[Control]:
 		var option_cells: Array[Control] = []
+
+		_label_count = 0
 
 		for lane_id in option_dict:
 			var option = option_dict[lane_id]
@@ -124,9 +128,11 @@ class OptionCellCreator:
 	func _create_option_cell(option: LaneData.OptionData, lane_id: StringName) -> Array[Control]:
 		var option_source = _editor_global.source_db.get_or_add(option)
 		var lane_segments_node = _selectable_owner.get_node("%" + lane_id) as EditorLaneSegments
-		
+
+		_label_count += 1
+
 		var weight_label = Label.new()
-		weight_label.text = WEIGHT_LABEL % lane_id.right(2)
+		weight_label.text = WEIGHT_LABEL % _label_count
 		weight_label.mouse_filter = Control.MOUSE_FILTER_PASS
 		_connect_hover_signals_for_selecting(weight_label, lane_segments_node)
 
