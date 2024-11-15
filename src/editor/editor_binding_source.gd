@@ -1,37 +1,31 @@
 class_name EditorBindingSource
 extends BindingSource
 
-var _callback_dict = {}
-
 
 func add_callback(property: StringName, callback: Callable):
-	if not _callback_dict.has(property):
-		_callback_dict[property] = Set.new()
-	var callback_set = _callback_dict[property] as Set
+	assert(property in _source_object)
+	assert(callback.is_valid())
 
-	assert(not callback_set.has(callback))
+	if not has_user_signal(property):
+		add_user_signal(property)
 
-	callback_set.add(callback)
+	connect(property, callback)
 
 
 func remove_callback(property: StringName, callback: Callable):
-	var callback_set = _callback_dict.get(property) as Set
+	assert(property in _source_object)
+	assert(callback.is_valid())
 
-	assert(callback_set != null)
-	assert(callback_set.has(callback))
+	disconnect(property, callback)
 
-	callback_set.erase(callback)
-	if callback_set.size() == 0:
-		_callback_dict.erase(property)
+	if get_signal_connection_list(property).is_empty():
+		remove_user_signal(property)
 
 
 func _set(property, value):
 	super(property, value)
 
-	if not _callback_dict.has(property):
+	if not has_user_signal(property):
 		return
 
-	var callback_set = _callback_dict[property] as Set
-	for callback_value in callback_set.values():
-		var callback = callback_value as Callable
-		callback.call()
+	emit_signal(property)
