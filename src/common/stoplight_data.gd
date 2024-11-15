@@ -1,5 +1,5 @@
 class_name StoplightData
-extends ContentData
+extends VertexData
 
 var offset: float
 var split_ids: Array[StringName]
