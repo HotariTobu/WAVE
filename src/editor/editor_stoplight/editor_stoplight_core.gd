@@ -56,13 +56,14 @@ func _get_sector_of(split_id: StringName) -> EditorStoplightSector:
 
 
 func _bind_sectors(sectors: Array[EditorStoplightSector]):
+	var unify_converter = UnifyConverter.new(self, &"selected", true)
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
 	
 	for sector in sectors:
 		_source.bind(&"pos").to(sector, &"position")
 		
 		var sector_source = _editor_global.source_db.get_or_add(sector, &"notified")
-		sector_source.bind(&"selected").to(core_source, &"opened")
+		sector_source.bind(&"selected").using(unify_converter).to(core_source, &"opened")
 		core_source.bind(&"opened").to(sector, &"visible")
 		
 		var split = sector.data as SplitData
