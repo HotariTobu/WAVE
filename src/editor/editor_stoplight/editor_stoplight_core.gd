@@ -27,6 +27,9 @@ func _ready():
 	
 	_source.bind(&"pos").to(self, &"position")
 	_source.bind(&"split_ids").using(_get_sectors_of).to(self, &"_sectors")
+	
+	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
+	core_source.bind(&"selected").to(core_source, &"opened")
 
 func _draw():
 	Spot.draw_to(self, setting.stoplight_color, setting.stoplight_radius, setting.stoplight_shape)
@@ -53,7 +56,7 @@ func _get_sector_of(split_id: StringName) -> EditorStoplightSector:
 
 
 func _bind_sectors(sectors: Array[EditorStoplightSector]):
-	var core_source = _editor_global.source_db.get_or_add(self)
+	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
 	for sector in sectors:
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)
@@ -62,7 +65,7 @@ func _bind_sectors(sectors: Array[EditorStoplightSector]):
 		split_source.add_callback(&"duration", _update_sectors)
 
 func _unbind_sectors(sectors: Array[EditorStoplightSector]):
-	var core_source = _editor_global.source_db.get_or_add(self)
+	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
 	for sector in sectors:
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)
