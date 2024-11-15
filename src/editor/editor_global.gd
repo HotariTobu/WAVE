@@ -9,12 +9,12 @@ var camera: PanZoomCamera
 
 var network_file_path: String
 
-var lane_vertex_db = EditorContentDB.new()
-var lane_db = EditorContentDB.new()
-var split_db = EditorContentDB.new()
-var stoplight_db = EditorContentDB.new()
+var lane_vertex_db = EditorContentDataDB.new()
+var lane_db = EditorContentDataDB.new()
+var split_db = EditorContentDataDB.new()
+var stoplight_db = EditorContentDataDB.new()
 
-var content_db = EditorContentDB.view([
+var content_db = EditorContentDataDB.view([
 	lane_vertex_db,
 	lane_db,
 	split_db,

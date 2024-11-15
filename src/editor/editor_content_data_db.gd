@@ -1,4 +1,4 @@
-class_name EditorContentDB
+class_name EditorContentDataDB
 
 signal contents_renewed(contents: Array[ContentData])
 signal content_added(content: ContentData)
@@ -37,7 +37,7 @@ func get_of(content_id: StringName) -> ContentData:
 	return _content_dict[content_id]
 
 
-static func view(content_dbs: Array[EditorContentDB]) -> View:
+static func view(content_dbs: Array[EditorContentDataDB]) -> View:
 	var content_dicts: Array[Dictionary]
 	for content_db in content_dbs:
 		content_dicts.append(content_db._content_dict)
