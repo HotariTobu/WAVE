@@ -2,7 +2,7 @@ class_name SplitData
 extends ContentData
 
 var duration: float
-var block_target_ids: Array[StringName]
+var block_target_ids: Array
 
 
 static func to_dict(data: ContentData) -> Dictionary:
