@@ -17,5 +17,5 @@ static func from_dict(dict: Dictionary, script: GDScript = SplitData) -> Content
 	var data = super(dict, script)
 	assert(data is SplitData)
 	data.duration = dict.get(&"duration", NAN)
-	data.block_target_ids = dict.get(&"block_target_ids", NAN)
+	data.block_target_ids = dict.get(&"block_target_ids", [])
 	return data
