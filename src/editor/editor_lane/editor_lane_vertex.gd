@@ -1,31 +1,21 @@
 class_name EditorLaneVertex
-extends EditorSelectable
+extends EditorContent
 
 enum Type { START, WAY, END }
 const DEFAULT_TYPE = Type.WAY
 
 var type = DEFAULT_TYPE
 
-var vertex: VertexData:
-	get:
-		return _vertex
 
-var _editor_global = editor_global
-
-var _vertex: VertexData
-
-
-func _init(data: VertexData):
-	super(EditorPhysicsLayer.LANE_VERTEX)
-	name = data.id
-
-	_vertex = data
-
-	var source = _editor_global.source_db.get_or_add(data)
-	source.bind(&"pos").to(self, &"position")
+func _init(vertex: VertexData):
+	super(vertex, EditorPhysicsLayer.LANE_VERTEX)
 	
 	add_child(create_point())
 
+func _ready():
+	super()
+	
+	_source.bind(&"pos").to(self, &"position")
 
 func _draw():
 	var color: Color

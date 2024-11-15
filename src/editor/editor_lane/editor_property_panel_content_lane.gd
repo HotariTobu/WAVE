@@ -58,7 +58,7 @@ func _get_lane_sources(items: Array[EditorSelectable]) -> Array[EditorBindingSou
 		if segments == null:
 			continue
 
-		var lane = segments.lane
+		var lane = segments.data
 		var source = _editor_global.source_db.get_or_add(lane)
 		sources.append(source)
 

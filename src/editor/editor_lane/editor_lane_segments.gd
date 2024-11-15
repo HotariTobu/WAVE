@@ -1,13 +1,5 @@
 class_name EditorLaneSegments
-extends EditorSelectable
-
-var lane: LaneData:
-	get:
-		return _lane
-
-var _editor_global = editor_global
-
-var _lane: LaneData
+extends EditorContent
 
 var _collision_shape_dict: Dictionary
 
@@ -25,14 +17,14 @@ var _vertices: Array[VertexData]:
 		_update_center()
 
 
-func _init(data: LaneData):
-	super(EditorPhysicsLayer.LANE_SEGMENTS)
-	name = data.id
+func _init(lane: LaneData):
+	super(lane, EditorPhysicsLayer.LANE_SEGMENTS)
 
-	_lane = data
 
-	var source = _editor_global.source_db.get_or_add(data)
-	source.bind(&"vertex_ids").using(_get_vertices_of).to(self, &"_vertices")
+func _ready():
+	super()
+
+	_source.bind(&"vertex_ids").using(_get_vertices_of).to(self, &"_vertices")
 
 
 func _draw():
@@ -75,7 +67,7 @@ func _add_segment_collision_shapes(vertices: Array[VertexData]):
 
 		var collision_shape = create_segment()
 		var segment_shape = collision_shape.shape
-		
+
 		source0.bind(&"pos").to(segment_shape, &"a")
 		source1.bind(&"pos").to(segment_shape, &"b")
 

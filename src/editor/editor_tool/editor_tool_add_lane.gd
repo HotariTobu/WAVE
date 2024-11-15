@@ -75,7 +75,7 @@ var _current_vertex: VertexData:
 			vertex.pos = get_local_mouse_position()
 			return vertex
 		else:
-			return _selecting_vertex_node.vertex
+			return _selecting_vertex_node.data
 
 
 func _ready():
@@ -269,12 +269,12 @@ func _cancel():
 func _update_selecting_nodes():
 	var vertex_id_vertex_node_dict: Dictionary
 	for lane_vertex_node in _hovered_lane_vertex_nodes:
-		var vertex_id = lane_vertex_node.vertex.id
+		var vertex_id = lane_vertex_node.data.id
 		vertex_id_vertex_node_dict[vertex_id] = lane_vertex_node
 
 	var vertex_ids_segments_node_dict: Dictionary
 	for lane_segments_node in _hovered_lane_segments_nodes:
-		var vertex_ids = lane_segments_node.lane.vertex_ids
+		var vertex_ids = lane_segments_node.data.vertex_ids
 		vertex_ids_segments_node_dict[vertex_ids] = lane_segments_node
 
 	if _phase == Phase.EMPTY:
@@ -348,9 +348,5 @@ func _calc_initial_speed_limit() -> int:
 
 
 static func _get_lanes(segments_nodes: Array[EditorLaneSegments]) -> Array[LaneData]:
-	var lanes: Array[LaneData]
-
-	for segment_node in segments_nodes:
-		lanes.append(segment_node.lane)
-
-	return lanes
+	var lanes = segments_nodes.map(EditorContent.data_of)
+	return Array(lanes, TYPE_OBJECT, &"RefCounted", LaneData)
