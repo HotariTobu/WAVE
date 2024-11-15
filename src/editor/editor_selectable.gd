@@ -1,11 +1,14 @@
 class_name EditorSelectable
 extends Area2D
 
+signal notified(property: StringName)
+
 var selecting: bool = false:
 	get:
 		return selecting
 	set(value):
 		selecting = value
+		notified.emit(&"selecting")
 		_update_process()
 
 var selected: bool = false:
@@ -13,6 +16,7 @@ var selected: bool = false:
 		return selected
 	set(value):
 		selected = value
+		notified.emit(&"selected")
 		_update_process()
 
 var zoom_factor: float:
@@ -22,15 +26,15 @@ var zoom_factor: float:
 
 
 func _init(layer: int):
-	unique_name_in_owner = true
 	monitoring = false
 	collision_layer = layer
 	collision_mask = 0
+	input_pickable = false
 	z_as_relative = false
+	visibility_changed.connect(_on_visibility_changed)
 
 
 func _ready():
-	owner = get_tree().root
 	set_process(false)
 
 
@@ -55,6 +59,10 @@ func _update_z_index():
 		z_index = 1
 	else:
 		z_index = 0
+
+
+func _on_visibility_changed():
+	monitorable = is_visible_in_tree()
 
 
 static func create_point() -> CollisionShape2D:
