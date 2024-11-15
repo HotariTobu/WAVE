@@ -62,11 +62,8 @@ func get_center() -> Vector2:
 
 
 func _get_vertices(vertex_ids: Array[StringName]) -> Array[VertexData]:
-	var vertices: Array[VertexData]
-	for vertex_id in vertex_ids:
-		var vertex = _editor_global.vertex_db.get_of(vertex_id)
-		vertices.append(vertex)
-	return vertices
+	var vertices = vertex_ids.map(_editor_global.lane_vertex_db.get_of)
+	return Array(vertices, TYPE_OBJECT, &"RefCounted", VertexData)
 
 
 func _add_segment_collision_shapes(vertices: Array[VertexData]):
