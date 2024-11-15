@@ -32,7 +32,7 @@ func _init(data: LaneData):
 	_lane = data
 
 	var source = _editor_global.source_db.get_or_add(data)
-	source.bind(&"vertex_ids").using(_get_vertices).to(self, &"_vertices")
+	source.bind(&"vertex_ids").using(_get_vertices_of).to(self, &"_vertices")
 
 
 func _draw():
@@ -61,7 +61,7 @@ func get_center() -> Vector2:
 	return _center
 
 
-func _get_vertices(vertex_ids: Array[StringName]) -> Array[VertexData]:
+func _get_vertices_of(vertex_ids: Array[StringName]) -> Array[VertexData]:
 	var vertices = vertex_ids.map(_editor_global.lane_vertex_db.get_of)
 	return Array(vertices, TYPE_OBJECT, &"RefCounted", VertexData)
 
