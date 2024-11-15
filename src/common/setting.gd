@@ -39,5 +39,3 @@ var stoplight_selecting_color = Color("ff08")
 var stoplight_selected_color = Color("ff0")
 
 var stoplight_sector_color = Color("828282a0")
-
-var block_line_color = Color("6ed1f0")
