@@ -1,38 +1,17 @@
 class_name Spot
-extends Node2D
 
 enum Shape {CIRCLE, TRIANGLE, SQUARE}
 
-var color: Color
-var radius: float
-var shape: Shape
-
-func _draw():
+static func draw_to(canvas: CanvasItem, color: Color, radius: float, shape: Shape):
 	match shape:
 		Shape.CIRCLE:
-			draw_circle(Vector2.ZERO, radius, color)
+			canvas.draw_circle(Vector2.ZERO, radius, color)
 		Shape.TRIANGLE:
-			draw_colored_polygon(_get_polygon_points(3), color)
+			canvas.draw_colored_polygon(_get_polygon_points(3, radius), color)
 		Shape.SQUARE:
-			draw_colored_polygon(_get_polygon_points(4), color)
+			canvas.draw_colored_polygon(_get_polygon_points(4, radius), color)
 
-func _to_string():
-	return "Spot(Pos: %s, Shape: %s)" % [
-		position,
-		Shape.find_key(shape),
-	]
-
-
-func to_dict() -> Dictionary:
-	return {
-		'pos': position,
-	}
-
-func from_dict(dict: Dictionary):
-	position = dict.get('pos', Vector2.INF)
-
-
-func _get_polygon_points(point_count: int):
+static func _get_polygon_points(point_count: int, radius: float) -> PackedVector2Array:
 	var points = PackedVector2Array()
 	points.resize(point_count)
 
