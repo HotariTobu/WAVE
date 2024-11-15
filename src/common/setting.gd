@@ -27,6 +27,10 @@ var lane_way_point_selected_color = Color("0f0")
 var lane_end_point_selecting_color = Color("00f8")
 var lane_end_point_selected_color = Color("00f")
 
+var default_stoplight_offset = 0.0
+var default_split_count = 2
+var default_split_duration = 60.0
+
 var stoplight_sector_min_arc = 100.0
 var stoplight_sector_max_radius = 100.0
 var stoplight_sector_delta_angle_inv = 40 / TAU
