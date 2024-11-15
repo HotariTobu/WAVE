@@ -33,6 +33,18 @@ func hash() -> int:
 	return _data.hash()
 
 
+func intersection(another: Set) -> Set:
+	var new_set = Set.new()
+
+	for value in _data:
+		if value not in another._data:
+			continue
+
+		new_set._data[value] = null
+
+	return new_set
+
+
 func is_empty() -> bool:
 	return _data.is_empty()
 
