@@ -1,5 +1,5 @@
 class_name LaneData
-extends SegmentsData
+extends SpaceData
 
 var speed_limit: int
 var next_option_dict: Dictionary
