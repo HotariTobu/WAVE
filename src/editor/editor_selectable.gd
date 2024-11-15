@@ -55,3 +55,22 @@ func _update_z_index():
 		z_index = 1
 	else:
 		z_index = 0
+
+
+static func create_point() -> CollisionShape2D:
+	var circle_shape = CircleShape2D.new()
+	circle_shape.radius = 0
+
+	var collision_shape = CollisionShape2D.new()
+	collision_shape.shape = circle_shape
+
+	return collision_shape
+
+
+static func create_segment() -> CollisionShape2D:
+	var segment_shape = SegmentShape2D.new()
+
+	var collision_shape = CollisionShape2D.new()
+	collision_shape.shape = segment_shape
+
+	return collision_shape
