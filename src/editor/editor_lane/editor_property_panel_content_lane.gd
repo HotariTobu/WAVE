@@ -74,7 +74,7 @@ func _bind_cells(sources: Array[EditorBindingSource]):
 		sourcce.bind(&"speed_limit").using(unity_converter).to(_speed_limit_box, &"value")
 
 	if len(sources) == 1:
-		var option_cell_creator = OptionCellCreator.new(get_tree().root)
+		var option_cell_creator = OptionCellCreator.new()
 		first_source.bind(&"next_option_dict").using(option_cell_creator).to(self, &"_option_cells")
 
 
@@ -104,12 +104,7 @@ class OptionCellCreator:
 
 	var _editor_global = editor_global
 
-	var _selectable_owner: Node
-
 	var _label_count: int
-
-	func _init(selectable_owner: Node):
-		_selectable_owner = selectable_owner
 
 	func source_to_target(source_value: Variant) -> Variant:
 		return _create_option_cells(source_value)
@@ -127,7 +122,7 @@ class OptionCellCreator:
 
 	func _create_option_cell(option: LaneData.OptionData, lane_id: StringName) -> Array[Control]:
 		var option_source = _editor_global.source_db.get_or_add(option)
-		var lane_segments_node = _selectable_owner.get_node("%" + lane_id) as EditorLaneSegments
+		var lane_segments_node = _editor_global.get_content_node(lane_id) as EditorLaneSegments
 
 		_label_count += 1
 

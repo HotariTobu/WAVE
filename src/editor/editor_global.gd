@@ -21,6 +21,8 @@ var content_db = EditorContentDataDB.view([
 	stoplight_db,
 ])
 
+@onready var _content_owner = get_tree().root
+
 
 func to_dict() -> Dictionary:
 	return {
@@ -39,6 +41,9 @@ func from_dict(dict: Dictionary):
 	split_db.contents = dict.get(&"splits", []).map(SplitData.from_dict)
 	stoplight_db.contents = dict.get(&"stoplights", []).map(StoplightData.from_dict)
 
+
+func get_content_node(content_id: StringName) -> EditorContent:
+	return _content_owner.get_node("%" + content_id)
 
 class Data:
 	signal notified(property: StringName)

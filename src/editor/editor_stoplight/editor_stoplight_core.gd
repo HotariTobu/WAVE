@@ -13,8 +13,6 @@ var _sectors: Array[EditorStoplightSector]:
 		_sectors = next
 		_update_sectors()
 
-@onready var _selectable_owner = get_tree().root
-
 
 func _init(stoplight: StoplightData):
 	super(stoplight, EditorPhysicsLayer.STOPLIGHT_CORE)
@@ -24,12 +22,13 @@ func _init(stoplight: StoplightData):
 
 func _ready():
 	super()
-	
+
 	_source.bind(&"pos").to(self, &"position")
 	_source.bind(&"split_ids").using(_get_sectors_of).to(self, &"_sectors")
-	
+
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
 	core_source.bind(&"selected").to(core_source, &"opened")
+
 
 func _draw():
 	Spot.draw_to(self, setting.stoplight_color, setting.stoplight_radius, setting.stoplight_shape)
@@ -47,39 +46,36 @@ func _draw():
 
 
 func _get_sectors_of(split_ids: Array) -> Array[EditorStoplightSector]:
-	var sectors = split_ids.map(_get_sector_of)
+	var sectors = split_ids.map(_editor_global.get_content_node)
 	return Array(sectors, TYPE_OBJECT, &"Area2D", EditorStoplightSector)
-
-
-func _get_sector_of(split_id: StringName) -> EditorStoplightSector:
-	return _selectable_owner.get_node("%" + split_id)
 
 
 func _bind_sectors(sectors: Array[EditorStoplightSector]):
 	var unify_converter = UnifyConverter.new(self, &"selected", true)
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
-	
+
 	for sector in sectors:
 		_source.bind(&"pos").to(sector, &"position")
-		
+
 		var sector_source = _editor_global.source_db.get_or_add(sector, &"notified")
 		sector_source.bind(&"selected").using(unify_converter).to(core_source, &"opened")
 		core_source.bind(&"opened").to(sector, &"visible")
-		
+
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)
 		split_source.add_callback(&"duration", _update_sectors)
 
+
 func _unbind_sectors(sectors: Array[EditorStoplightSector]):
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
-	
+
 	for sector in sectors:
 		_source.unbind(&"pos").from(sector, &"position")
-		
+
 		var sector_source = _editor_global.source_db.get_or_add(sector, &"notified")
 		sector_source.unbind(&"selected").from(core_source, &"opened")
 		core_source.unbind(&"opened").from(sector, &"visible")
-		
+
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)
 		split_source.remove_callback(&"duration", _update_sectors)
