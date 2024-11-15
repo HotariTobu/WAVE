@@ -59,7 +59,6 @@ func deactivate() -> void:
 	_pointer_area.area_entered.disconnect(_on_pointer_area_area_entered)
 	_pointer_area.area_exited.disconnect(_on_pointer_area_area_exited)
 
-	_cancel()
 	_hovered_items.clear()
 	_last_hovered_item = null
 
