@@ -52,11 +52,11 @@ func _get_stoplight_sources(items: Array[EditorSelectable]) -> Array[EditorBindi
 	var sources: Array[EditorBindingSource] = []
 
 	for item in items:
-		var segments = item as EditorStoplightCore
-		if segments == null:
+		var core = item as EditorStoplightCore
+		if core == null:
 			continue
 
-		var stoplight = segments.stoplight
+		var stoplight = core.data
 		var source = _editor_global.source_db.get_or_add(stoplight)
 		sources.append(source)
 
