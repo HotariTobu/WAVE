@@ -199,7 +199,7 @@ func _commit_lane():
 		var vertex_id = vertex.id
 		vertex_ids.append(vertex_id)
 
-		if _editor_global.vertex_db.has_of(vertex_id):
+		if _editor_global.lane_vertex_db.has_of(vertex_id):
 			continue
 
 		new_vertices.append(vertex)
@@ -219,9 +219,9 @@ func _commit_lane():
 	_editor_global.undo_redo.create_action("Add lane")
 
 	for vertex in new_vertices:
-		_editor_global.undo_redo.add_do_method(_editor_global.vertex_db.add.bind(vertex))
+		_editor_global.undo_redo.add_do_method(_editor_global.lane_vertex_db.add.bind(vertex))
 		_editor_global.undo_redo.add_do_reference(vertex)
-		_editor_global.undo_redo.add_undo_method(_editor_global.vertex_db.remove.bind(vertex))
+		_editor_global.undo_redo.add_undo_method(_editor_global.lane_vertex_db.remove.bind(vertex))
 
 	_editor_global.undo_redo.add_do_method(_editor_global.lane_db.add.bind(new_lane))
 	_editor_global.undo_redo.add_do_reference(new_lane)

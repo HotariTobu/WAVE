@@ -1,65 +1,30 @@
 class_name EditorGlobal
 extends Node
 
-var data = BindingSource.new(Data.new(), 'notified')
+var data = BindingSource.new(Data.new(), &"notified")
 var source_db = EditorBindingSourceDB.new()
-var undo_redo := UndoRedo.new()
+var undo_redo = UndoRedo.new()
 
 var camera: PanZoomCamera
-var content_container: Node
-var pointer_area: Area2D
 
-var network_file_path = ''
+var network_file_path: String
+
+var lane_vertex_db = EditorContentDB.new()
+var lane_db = EditorContentDB.new()
 
 
 func to_dict() -> Dictionary:
-	var len_contents = content_container.get_child_count()
-
-	var contents: Array[Dictionary] = []
-	contents.resize(len_contents)
-
-	for index in range(len_contents):
-		var content = content_container.get_child(index)
-
-		var script = content.get_script()
-		var type = script.get_global_name()
-
-		contents[index] = {
-			'type': type,
-			'dict': content.to_dict()
-		}
-
 	return {
-		'contents': contents
+		&"lane_vertices": lane_vertex_db.contents.map(VertexData.to_dict),
+		&"lanes": lane_db.contents.map(EditorLaneData.to_dict),
 	}
+
 
 func from_dict(dict: Dictionary):
 	undo_redo.clear_history()
 
-	for content in content_container.get_children():
-		content.free()
-
-	var contents = dict.get('contents', [])
-	var len_contents = len(contents)
-
-	for index in range(len_contents):
-		var content: Node
-
-		match contents[index]['type']:
-			&'EditorLane':
-				content = EditorLane.new()
-			&'EditorStoplight':
-				content = EditorStoplight.new()
-			_:
-				push_error('Unexpected type')
-				breakpoint
-
-		content_container.add_child(content)
-
-
-	for index in range(len_contents):
-		var content = content_container.get_child(index)
-		content.from_dict(contents[index]['dict'])
+	lane_vertex_db.contents = dict.get(&"lane_vertices", []).map(VertexData.from_dict)
+	lane_db.contents = dict.get(&"lanes", []).map(EditorLaneData.from_dict)
 
 
 class Data:
@@ -79,7 +44,7 @@ class Data:
 			next.activate()
 
 			tool = next
-			notified.emit(&'tool')
+			notified.emit(&"tool")
 
 	var selected_items: Array[EditorSelectable]:
 		get:
@@ -99,7 +64,7 @@ class Data:
 	func add_selected(item: EditorSelectable):
 		_selected_item_set[item] = false
 		item.selected = true
-		notified.emit(&'selected_items')
+		notified.emit(&"selected_items")
 
 		if item.tree_entered.is_connected(add_selected):
 			item.tree_entered.disconnect(add_selected)
@@ -118,12 +83,12 @@ class Data:
 			if not item.tree_exited.is_connected(remove_selected):
 				item.tree_exited.connect(remove_selected.bind(item))
 
-		notified.emit(&'selected_items')
+		notified.emit(&"selected_items")
 
 	func remove_selected(item: EditorSelectable):
 		_selected_item_set.erase(item)
 		item.selected = false
-		notified.emit(&'selected_items')
+		notified.emit(&"selected_items")
 
 		if not item.tree_entered.is_connected(add_selected):
 			item.tree_entered.connect(add_selected.bind(item))
@@ -139,7 +104,7 @@ class Data:
 				item.tree_exited.disconnect(remove_selected)
 
 		_selected_item_set.clear()
-		notified.emit(&'selected_items')
+		notified.emit(&"selected_items")
 
 	func has_selected(item: EditorSelectable):
 		return item in _selected_item_set
