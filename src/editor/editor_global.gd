@@ -25,7 +25,7 @@ var content_db = EditorContentDB.view([
 func to_dict() -> Dictionary:
 	return {
 		&"lane_vertices": lane_vertex_db.contents.map(VertexData.to_dict),
-		&"lanes": lane_db.contents.map(EditorLaneData.to_dict),
+		&"lanes": lane_db.contents.map(LaneData.to_dict),
 	}
 
 
@@ -33,7 +33,7 @@ func from_dict(dict: Dictionary):
 	undo_redo.clear_history()
 
 	lane_vertex_db.contents = dict.get(&"lane_vertices", []).map(VertexData.from_dict)
-	lane_db.contents = dict.get(&"lanes", []).map(EditorLaneData.from_dict)
+	lane_db.contents = dict.get(&"lanes", []).map(LaneData.from_dict)
 
 
 class Data:

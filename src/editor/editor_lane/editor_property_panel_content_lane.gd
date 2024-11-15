@@ -59,7 +59,7 @@ func _get_lane_sources(items: Array[EditorSelectable]) -> Array[EditorBindingSou
 			continue
 
 		var lane = segments.lane
-		var source = _editor_global.source_db.get_or_add(lane, &"notified")
+		var source = _editor_global.source_db.get_or_add(lane)
 		sources.append(source)
 
 	return sources
@@ -121,7 +121,7 @@ class OptionCellCreator:
 
 		return option_cells
 
-	func _create_option_cell(option: EditorLaneData.OptionData, lane_id: StringName) -> Array[Control]:
+	func _create_option_cell(option: LaneData.OptionData, lane_id: StringName) -> Array[Control]:
 		var option_source = _editor_global.source_db.get_or_add(option)
 		var lane_segments_node = _selectable_owner.get_node("%" + lane_id) as EditorLaneSegments
 		

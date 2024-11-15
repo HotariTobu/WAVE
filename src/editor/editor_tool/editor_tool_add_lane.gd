@@ -12,8 +12,8 @@ var _vertices: Array[VertexData]
 var _hovered_lane_vertex_nodes: Array[EditorLaneVertex]
 var _hovered_lane_segments_nodes: Array[EditorLaneSegments]
 
-var _prev_lanes: Array[EditorLaneData]
-var _next_lanes: Array[EditorLaneData]
+var _prev_lanes: Array[LaneData]
+var _next_lanes: Array[LaneData]
 
 var _phase: Phase:
 	get:
@@ -207,11 +207,13 @@ func _commit_lane():
 	var next_option_dict: Dictionary
 
 	for lane in _next_lanes:
-		var option = EditorLaneData.OptionData.new()
+		var option = LaneData.OptionData.new()
 		option.weight = setting.default_option_weight
 		next_option_dict[lane.id] = option
 
-	var new_lane = EditorLaneData.new()
+	next_option_dict.make_read_only()
+	
+	var new_lane = LaneData.new()
 	new_lane.vertex_ids = vertex_ids
 	new_lane.speed_limit = _calc_initial_speed_limit()
 	new_lane.next_option_dict = next_option_dict
@@ -228,11 +230,17 @@ func _commit_lane():
 	_editor_global.undo_redo.add_undo_method(_editor_global.lane_db.remove.bind(new_lane))
 
 	for lane in _prev_lanes:
-		var option = EditorLaneData.OptionData.new()
+		var option = LaneData.OptionData.new()
 		option.weight = setting.default_option_weight
-		_editor_global.undo_redo.add_do_method(lane.add_next.bind(new_lane, option))
-		_editor_global.undo_redo.add_do_reference(option)
-		_editor_global.undo_redo.add_undo_method(lane.remove_next.bind(new_lane))
+		
+		var prev = lane.next_option_dict
+		var next = prev.duplicate()
+		next[new_lane.id] = option
+		next.make_read_only()
+		
+		var source = _editor_global.source_db.get_or_add(lane)
+		_editor_global.undo_redo.add_do_property(source, &"next_option_dict", next)
+		_editor_global.undo_redo.add_undo_property(source, &"next_option_dict", prev)
 
 	_editor_global.undo_redo.commit_action()
 
@@ -337,8 +345,8 @@ func _calc_initial_speed_limit() -> int:
 	return initial_speed_limit
 
 
-static func _get_lanes(segments_nodes: Array[EditorLaneSegments]) -> Array[EditorLaneData]:
-	var lanes: Array[EditorLaneData]
+static func _get_lanes(segments_nodes: Array[EditorLaneSegments]) -> Array[LaneData]:
+	var lanes: Array[LaneData]
 
 	for segment_node in segments_nodes:
 		lanes.append(segment_node.lane)
