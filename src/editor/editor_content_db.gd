@@ -35,3 +35,35 @@ func has_of(content_id: StringName) -> bool:
 
 func get_of(content_id: StringName) -> ContentData:
 	return _content_dict[content_id]
+
+
+static func view(content_dbs: Array[EditorContentDB]) -> View:
+	var content_dicts: Array[Dictionary]
+	for content_db in content_dbs:
+		content_dicts.append(content_db._content_dict)
+
+	return View.new(content_dicts)
+
+
+class View:
+	var _content_dicts: Array[Dictionary]
+
+
+	func _init(content_dicts: Array[Dictionary]):
+		_content_dicts = content_dicts
+
+
+	func has_of(content_id: StringName) -> bool:
+		return not _get_content_dict_of(content_id).is_empty()
+
+
+	func get_of(content_id: StringName) -> ContentData:
+		return _get_content_dict_of(content_id)[content_id]
+
+
+	func _get_content_dict_of(content_id: StringName) -> Dictionary:
+		for content_dict in _content_dicts:
+			if content_dict.has(content_id):
+				return content_dict
+
+		return {}

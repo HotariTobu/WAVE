@@ -12,6 +12,11 @@ var network_file_path: String
 var lane_vertex_db = EditorContentDB.new()
 var lane_db = EditorContentDB.new()
 
+var content_db = EditorContentDB.view([
+	lane_vertex_db,
+	lane_db,
+])
+
 
 func to_dict() -> Dictionary:
 	return {
