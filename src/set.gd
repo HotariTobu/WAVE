@@ -1,6 +1,6 @@
 class_name Set
 
-var _data = {}
+var _data: Dictionary
 
 
 func add(value: Variant) -> void:
@@ -79,3 +79,10 @@ func size() -> int:
 
 func to_array() -> Array:
 	return _data.keys()
+
+
+static func from_array(values: Array) -> Set:
+	var new_set = Set.new()
+	for value in values:
+		new_set._data[value] = null
+	return new_set
