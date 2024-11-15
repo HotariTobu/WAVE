@@ -1,16 +1,22 @@
 class_name EditorContentDB
 
+signal contents_renewed(contents: Array[ContentData])
 signal content_added(content: ContentData)
 signal content_removed(content: ContentData)
 
-var _content_dict: Dictionary
-
-var contents: Array[ContentData]:
+var contents: Array:
 	get:
-		var result: Array[ContentData]
-		for content in _content_dict.values():
-			result.append(content)
-		return result
+		return _content_dict.values()
+
+	set(new_contents):
+		_content_dict.clear()
+		for content in new_contents:
+			_content_dict[content.id] = content
+
+		var typed_array = Array(new_contents, TYPE_OBJECT, &"RefCounted", ContentData)
+		contents_renewed.emit(typed_array)
+
+var _content_dict: Dictionary
 
 
 func add(content: ContentData) -> void:
