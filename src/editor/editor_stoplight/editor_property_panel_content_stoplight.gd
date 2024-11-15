@@ -127,19 +127,23 @@ class SplitCellCreator:
 
 	func _create_split_cell(split: SplitData) -> Array[Control]:
 		var split_source = _editor_global.source_db.get_or_add(split)
+		var stoplight_sector_node = _editor_global.get_content_node(split.id) as EditorStoplightSector
 
 		_label_count += 1
 
 		var duration_label = Label.new()
 		duration_label.text = DURATION_LABEL % _label_count
 		duration_label.mouse_filter = Control.MOUSE_FILTER_PASS
+		_connect_hover_signals_for_selecting(duration_label, stoplight_sector_node)
 
 		var duration_box = DurationBox.new()
 		split_source.bind(&'duration').to(duration_box, &'value')
+		_connect_hover_signals_for_selecting(duration_box, stoplight_sector_node)
 		duration_box.value_changed.connect(_on_duration_box_value_changed.bind(split_source))
 
 		var remove_split_button = IconButton.new(CrossIcon)
 		remove_split_button.set_deferred(&'size_flags_horizontal', Control.SIZE_FILL)
+		_connect_hover_signals_for_selecting(remove_split_button, stoplight_sector_node)
 		remove_split_button.pressed.connect(_on_remove_split_button_pressed.bind(split))
 
 		var h_box = HBoxContainer.new()
@@ -190,6 +194,10 @@ class SplitCellCreator:
 		_editor_global.undo_redo.add_undo_property(_stoplight_source, &"split_ids", prev)
 
 		_editor_global.undo_redo.commit_action()
+
+	func _connect_hover_signals_for_selecting(control: Control, selectable: EditorSelectable):
+		control.mouse_entered.connect(func(): selectable.selecting = true)
+		control.mouse_exited.connect(func(): selectable.selecting = false)
 
 class DurationBox:
 	extends NumericBox
