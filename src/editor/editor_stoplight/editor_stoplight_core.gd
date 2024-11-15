@@ -1,6 +1,8 @@
 class_name EditorStoplightCore
 extends EditorContent
 
+var is_opened: bool
+
 var _sectors: Array[EditorStoplightSector]:
 	get:
 		return _sectors
@@ -8,8 +10,8 @@ var _sectors: Array[EditorStoplightSector]:
 		var prev = _sectors
 		_unbind_sectors(prev)
 		_bind_sectors(next)
-		_update_sectors(next)
 		_sectors = next
+		_update_sectors()
 
 @onready var _selectable_owner = get_tree().root
 
@@ -51,26 +53,29 @@ func _get_sector_of(split_id: StringName) -> EditorStoplightSector:
 
 
 func _bind_sectors(sectors: Array[EditorStoplightSector]):
+	var core_source = _editor_global.source_db.get_or_add(self)
 	for sector in sectors:
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)
+		core_source.bind(&"is_opened").to(sector, &"visible")
 		_source.bind(&"pos").to(sector, &"position")
-		split_source.add_callback(&"duration", _update_sectors.bind(sectors))
-
+		split_source.add_callback(&"duration", _update_sectors)
 
 func _unbind_sectors(sectors: Array[EditorStoplightSector]):
+	var core_source = _editor_global.source_db.get_or_add(self)
 	for sector in sectors:
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)
+		core_source.unbind(&"is_opened").from(sector, &"visible")
 		_source.unbind(&"pos").from(sector, &"position")
 		split_source.remove_callback(&"duration", _update_sectors)
 
 
-static func _update_sectors(sectors: Array[EditorStoplightSector]):
+func _update_sectors():
 	var cycle = 0.0
 	var min_duration = INF
 
-	for sector in sectors:
+	for sector in _sectors:
 		var split = sector.data as SplitData
 
 		var duration = split.duration
@@ -87,7 +92,7 @@ static func _update_sectors(sectors: Array[EditorStoplightSector]):
 
 	var sum = 0.0
 
-	for sector in sectors:
+	for sector in _sectors:
 		var split = sector.data as SplitData
 
 		var start_angle = sum * angle_factor
