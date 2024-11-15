@@ -2,8 +2,6 @@ extends Node2D
 
 var _editor_global = editor_global
 
-var _content_node_dict: Dictionary
-
 @onready var _camera = $Camera
 @onready var _content_container = $ContentContainer
 @onready var _tool_container = $ToolContainer
@@ -12,7 +10,7 @@ var _content_node_dict: Dictionary
 func _ready():
 	_editor_global.camera = _camera
 
-	_connect_content_db(_editor_global.vertex_db, EditorLaneVertex)
+	_connect_content_db(_editor_global.lane_vertex_db, EditorLaneVertex)
 	_connect_content_db(_editor_global.lane_db, EditorLaneSegments)
 
 	var tools: Array[EditorTool] = []
@@ -25,17 +23,29 @@ func _ready():
 
 
 func _connect_content_db(content_db: EditorContentDB, script: GDScript):
-	content_db.content_added.connect(_add_content_node.bind(script))
-	content_db.content_removed.connect(_remove_content_node)
+	var node_dict: Dictionary
+	content_db.contents_renewed.connect(_renew_content_node.bind(node_dict, script))
+	content_db.content_added.connect(_add_content_node.bind(node_dict, script))
+	content_db.content_removed.connect(_remove_content_node.bind(node_dict))
 
 
-func _add_content_node(data: ContentData, script: GDScript):
-	var node = script.new(data)
-	_content_node_dict[data.id] = node
+func _renew_content_node(contents: Array[ContentData], node_dict: Dictionary, script: GDScript):
+	for node in node_dict.values():
+		_content_container.remove_child(node)
+
+	node_dict.clear()
+
+	for content in contents:
+		_add_content_node(content, node_dict, script)
+
+
+func _add_content_node(content: ContentData, node_dict: Dictionary, script: GDScript):
+	var node = script.new(content)
+	node_dict[content.id] = node
 	_content_container.add_child(node)
 
 
-func _remove_content_node(data: ContentData):
-	var node = _content_node_dict.get(data.id)
-	_content_node_dict.erase(data.id)
+func _remove_content_node(content: ContentData, node_dict: Dictionary):
+	var node = node_dict.get(content.id)
+	node_dict.erase(content.id)
 	_content_container.remove_child(node)
