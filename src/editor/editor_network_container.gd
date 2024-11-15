@@ -23,7 +23,7 @@ func _ready():
 	_editor_global.data.tool = tools[0]
 
 
-func _connect_content_db(content_db: EditorContentDB, script: GDScript):
+func _connect_content_db(content_db: EditorContentDataDB, script: GDScript):
 	var node_dict: Dictionary
 	content_db.contents_renewed.connect(_renew_content_node.bind(node_dict, script))
 	content_db.content_added.connect(_add_content_node.bind(node_dict, script))
