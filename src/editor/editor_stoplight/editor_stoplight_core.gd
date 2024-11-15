@@ -57,20 +57,30 @@ func _get_sector_of(split_id: StringName) -> EditorStoplightSector:
 
 func _bind_sectors(sectors: Array[EditorStoplightSector]):
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
+	
 	for sector in sectors:
+		_source.bind(&"pos").to(sector, &"position")
+		
+		var sector_source = _editor_global.source_db.get_or_add(sector, &"notified")
+		sector_source.bind(&"selected").to(core_source, &"opened")
+		core_source.bind(&"opened").to(sector, &"visible")
+		
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)
-		core_source.bind(&"opened").to(sector, &"visible")
-		_source.bind(&"pos").to(sector, &"position")
 		split_source.add_callback(&"duration", _update_sectors)
 
 func _unbind_sectors(sectors: Array[EditorStoplightSector]):
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
+	
 	for sector in sectors:
+		_source.unbind(&"pos").from(sector, &"position")
+		
+		var sector_source = _editor_global.source_db.get_or_add(sector, &"notified")
+		sector_source.unbind(&"selected").from(core_source, &"opened")
+		core_source.unbind(&"opened").from(sector, &"visible")
+		
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)
-		core_source.unbind(&"opened").from(sector, &"visible")
-		_source.unbind(&"pos").from(sector, &"position")
 		split_source.remove_callback(&"duration", _update_sectors)
 
 
