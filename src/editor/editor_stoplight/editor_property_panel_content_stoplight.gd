@@ -57,7 +57,7 @@ func _get_stoplight_sources(items: Array[EditorSelectable]) -> Array[EditorBindi
 			continue
 
 		var stoplight = segments.stoplight
-		var source = _editor_global.source_db.get_or_add(stoplight, &"notified")
+		var source = _editor_global.source_db.get_or_add(stoplight)
 		sources.append(source)
 
 	return sources
@@ -152,26 +152,36 @@ class SplitCellCreator:
 		var split = SplitData.new()
 		split.duration = setting.default_split_duration
 		
+		var prev = _stoplight_source.split_ids
+		var next = prev.duplicate()
+		next.append(split.id)
+		next.make_read_only()
+		
 		_editor_global.undo_redo.create_action("Add stoplight split")
 		
 		_editor_global.undo_redo.add_do_method(_editor_global.split_db.add.bind(split))
 		_editor_global.undo_redo.add_do_reference(split)
 		_editor_global.undo_redo.add_undo_method(_editor_global.split_db.remove.bind(split))
 		
-		_editor_global.undo_redo.add_do_method(_stoplight_source.add_split.bind(split))
-		_editor_global.undo_redo.add_undo_method(_stoplight_source.remove_split.bind(split))
+		_editor_global.undo_redo.add_do_property(_stoplight_source, &"split_ids", next)
+		_editor_global.undo_redo.add_undo_property(_stoplight_source, &"split_ids", prev)
 		
 		_editor_global.undo_redo.commit_action()
 
 	func _on_remove_split_button_pressed(split: SplitData):
+		var prev = _stoplight_source.split_ids
+		var next = prev.duplicate()
+		next.erase(split.id)
+		next.make_read_only()
+		
 		_editor_global.undo_redo.create_action("Remove stoplight split")
 		
 		_editor_global.undo_redo.add_do_method(_editor_global.split_db.remove.bind(split))
 		_editor_global.undo_redo.add_undo_method(_editor_global.split_db.add.bind(split))
 		_editor_global.undo_redo.add_undo_reference(split)
 		
-		_editor_global.undo_redo.add_do_method(_stoplight_source.remove_split.bind(split))
-		_editor_global.undo_redo.add_undo_method(_stoplight_source.add_split.bind(split))
+		_editor_global.undo_redo.add_do_property(_stoplight_source, &"split_ids", next)
+		_editor_global.undo_redo.add_undo_property(_stoplight_source, &"split_ids", prev)
 		
 		_editor_global.undo_redo.commit_action()
 	

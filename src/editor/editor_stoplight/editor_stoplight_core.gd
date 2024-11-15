@@ -1,21 +1,21 @@
 class_name EditorStoplightCore
 extends EditorSelectable
 
-var stoplight: EditorStoplightData:
+var stoplight: StoplightData:
 	get:
 		return _stoplight
 
 var _editor_global = editor_global
 
-var _stoplight: EditorStoplightData
+var _stoplight: StoplightData
 
-func _init(data: EditorStoplightData):
+func _init(data: StoplightData):
 	super(EditorPhysicsLayer.STOPLIGHT_CORE)
 	name = data.id
 
 	_stoplight = data
 
-	var source = _editor_global.source_db.get_or_add(data, &'notified')
+	var source = _editor_global.source_db.get_or_add(data)
 	source.bind(&"pos").to(self, &"position")
 
 	var circle_shape = CircleShape2D.new()
