@@ -41,7 +41,8 @@ func get_target_type():
 
 func activate():
 	super()
-	_editor_global.data.bind(&"selected_items").using(_get_lane_sources).to(self, &"lane_sources")
+	var converter = ItemsToSourcesConverter.new(EditorLaneSegments)
+	_editor_global.data.bind(&"selected_items").using(converter).to(self, &"lane_sources")
 
 
 func deactivate():
@@ -50,28 +51,13 @@ func deactivate():
 	lane_sources = []
 
 
-func _get_lane_sources(items: Array[EditorSelectable]) -> Array[EditorBindingSource]:
-	var sources: Array[EditorBindingSource] = []
-
-	for item in items:
-		var segments = item as EditorLaneSegments
-		if segments == null:
-			continue
-
-		var lane = segments.data
-		var source = _editor_global.source_db.get_or_add(lane)
-		sources.append(source)
-
-	return sources
-
-
 func _bind_cells(sources: Array[EditorBindingSource]):
 	var first_source = sources.front() as EditorBindingSource
 
 	var unity_converter = UnifyConverter.new(first_source, &"speed_limit")
 
-	for sourcce in sources:
-		sourcce.bind(&"speed_limit").using(unity_converter).to(_speed_limit_box, &"value")
+	for source in sources:
+		source.bind(&"speed_limit").using(unity_converter).to(_speed_limit_box, &"value")
 
 	if len(sources) == 1:
 		var option_cell_creator = OptionCellCreator.new()
@@ -81,8 +67,8 @@ func _bind_cells(sources: Array[EditorBindingSource]):
 func _unbind_cells(sources: Array[EditorBindingSource]):
 	var first_source = sources.front() as EditorBindingSource
 
-	for sourcce in sources:
-		sourcce.unbind(&"speed_limit").from(_speed_limit_box, &"value")
+	for source in sources:
+		source.unbind(&"speed_limit").from(_speed_limit_box, &"value")
 
 	if len(sources) == 1:
 		first_source.unbind(&"next_option_dict").from(self, &"_option_cells")

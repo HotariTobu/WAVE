@@ -18,13 +18,13 @@ var _target_id_set = Set.new():
 		return _target_id_set
 	set(next):
 		var prev = _target_id_set
-		
+
 		for target_node in _get_block_targetables(prev.to_array()):
 			target_node.block_targeted = false
-		
+
 		for target_node in _get_block_targetables(next.to_array()):
 			target_node.block_targeted = true
-			
+
 		_target_id_set = next
 
 var _are_targets_visible: bool = false:
@@ -36,7 +36,7 @@ var _are_targets_visible: bool = false:
 
 func _unhandled_input(event: InputEvent):
 	super(event)
-	
+
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed:
 			_toggle_target()
@@ -57,35 +57,20 @@ func activate() -> void:
 	var mask = EditorPhysicsLayer.BRIDGE_SEGMENTS | EditorPhysicsLayer.LANE_SEGMENTS | EditorPhysicsLayer.STOPLIGHT
 	_pointer_area.collision_mask = mask
 
-	_editor_global.data.bind(&"selected_items").using(_get_source_sources).to(self, &"_source_sources")
-	
+	var converter = ItemsToSourcesConverter.new(EditorContent)
+	var filter = BlockSourceFilter.new()
+	_editor_global.data.bind(&"selected_items").using(converter).using(filter).to(self, &"_source_sources")
+
 func deactivate() -> void:
 	super()
-	
+
 	_editor_global.data.unbind(&"selected_items").from(self, &"_source_sources")
-	
+
 func _on_selecting(item: EditorSelectable):
 	_update_targets_visibility(item, _are_targets_visible)
 
 func _on_decselecting(item: EditorSelectable):
 	_update_targets_visibility(item, false)
-
-func _get_source_sources(items: Array[EditorSelectable]) -> Array[EditorBindingSource]:
-	var source_sources: Array[EditorBindingSource]
-	
-	for item in items:
-		var content_node = item as EditorContent
-		if content_node == null:
-			continue
-			
-		var content = content_node.data
-		if &"block_target_ids" not in content:
-			continue
-		
-		var content_source = _editor_global.source_db.get_or_add(content)
-		source_sources.append(content_source)
-		
-	return source_sources
 
 func _bind_source_sources(source_sources: Array[EditorBindingSource]):
 	for source_source in source_sources:
@@ -94,33 +79,33 @@ func _bind_source_sources(source_sources: Array[EditorBindingSource]):
 func _unbind_source_sources(source_sources: Array[EditorBindingSource]):
 	for source_source in source_sources:
 		source_source.remove_callback(&"block_target_ids", _update_target_id_set)
-		
+
 func _update_target_id_set():
 	var block_target_id_sets: Array[Set]
-	
+
 	for source_source in _source_sources:
 		var block_target_id_set = Set.from_array(source_source.block_target_ids)
 		block_target_id_sets.append(block_target_id_set)
-	
+
 	if block_target_id_sets.is_empty():
 		_target_id_set = Set.new()
 		return
-	
+
 	var target_id_set = block_target_id_sets.pop_back() as Set
-	
+
 	for block_target_id_set in block_target_id_sets:
 		target_id_set = target_id_set.intersection(block_target_id_set)
-		
+
 	_target_id_set = target_id_set
 
 func _update_targets_visibility(source_node: EditorSelectable, are_targets_visible: bool):
 	if source_node is not EditorContent:
 		return
-		
+
 	var source = source_node.data
-	if &"block_target_ids" not in source:
+	if not BlockSourceFilter.is_block_source(source):
 		return
-	
+
 	for target_node in _get_block_targetables(source.block_target_ids):
 		target_node.block_targeting = are_targets_visible
 
@@ -135,7 +120,7 @@ func _toggle_target():
 
 	if item is not EditorLaneSegments:
 		return
-		
+
 	var content = item.data
 	if _target_id_set.has(content.id):
 		_remove_block_target(content)
@@ -144,28 +129,38 @@ func _toggle_target():
 
 func _add_block_target(target: ContentData):
 	_editor_global.undo_redo.create_action("Add block target")
-	
+
 	for source_source in _source_sources:
 		var prev = source_source.block_target_ids as Array
 		var next = prev.duplicate()
 		next.append(target.id)
 		next.make_read_only()
-		
+
 		_editor_global.undo_redo.add_do_property(source_source, &"block_target_ids", next)
 		_editor_global.undo_redo.add_undo_property(source_source, &"block_target_ids", prev)
-	
+
 	_editor_global.undo_redo.commit_action()
 
 func _remove_block_target(target: ContentData):
 	_editor_global.undo_redo.create_action("Remove block target")
-	
+
 	for source_source in _source_sources:
 		var prev = source_source.block_target_ids as Array
 		var next = prev.duplicate()
 		next.erase(target.id)
 		next.make_read_only()
-		
+
 		_editor_global.undo_redo.add_do_property(source_source, &"block_target_ids", next)
 		_editor_global.undo_redo.add_undo_property(source_source, &"block_target_ids", prev)
-	
+
 	_editor_global.undo_redo.commit_action()
+
+class BlockSourceFilter:
+	extends BindingConverter
+
+	func source_to_target(source_value: Variant) -> Variant:
+		var source_sources = source_value.filter(is_block_source)
+		return Array(source_sources, TYPE_OBJECT, &"RefCounted", EditorBindingSource)
+
+	static func is_block_source(content: ContentData) -> bool:
+		return &"block_target_ids" in content

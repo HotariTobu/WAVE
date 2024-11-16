@@ -41,26 +41,13 @@ func get_target_type():
 
 func activate():
 	super()
-	_editor_global.data.bind(&'selected_items').using(_get_stoplight_sources).to(self, &'stoplight_sources')
+	var converter = ItemsToSourcesConverter.new(EditorStoplightCore)
+	_editor_global.data.bind(&'selected_items').using(converter).to(self, &'stoplight_sources')
 
 func deactivate():
 	super()
 	_editor_global.data.unbind(&'selected_items').from(self, &'stoplight_sources')
 	stoplight_sources = []
-
-func _get_stoplight_sources(items: Array[EditorSelectable]) -> Array[EditorBindingSource]:
-	var sources: Array[EditorBindingSource] = []
-
-	for item in items:
-		var core = item as EditorStoplightCore
-		if core == null:
-			continue
-
-		var stoplight = core.data
-		var source = _editor_global.source_db.get_or_add(stoplight)
-		sources.append(source)
-
-	return sources
 
 func _bind_cells(sources: Array[EditorBindingSource]):
 	var first_source = sources.front() as EditorBindingSource
