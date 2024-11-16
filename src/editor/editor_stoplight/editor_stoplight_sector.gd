@@ -54,8 +54,8 @@ func update(radius: float, start_angle: float, end_angle: float):
 
 	var center_angle = (start_angle + end_angle) / 2
 	var hue =  center_angle / TAU
-	_selecting_color = Color.from_hsv(hue, 1.0, 1.0, 0.5)
-	_selected_color = Color.from_hsv(hue, 1.0, 1.0, 1.0)
+	_selecting_color = Color.from_hsv(hue, setting.stoplight_sector_saturation, 1.0, 0.5)
+	_selected_color = Color.from_hsv(hue, setting.stoplight_sector_saturation, 1.0, 1.0)
 
 	_center = _get_point(radius, center_angle)
 	
