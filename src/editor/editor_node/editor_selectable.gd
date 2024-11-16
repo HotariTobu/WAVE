@@ -9,7 +9,7 @@ var selecting: bool = false:
 	set(value):
 		selecting = value
 		notified.emit(&"selecting")
-		_update_process()
+		_on_property_updated()
 
 var selected: bool = false:
 	get:
@@ -17,7 +17,7 @@ var selected: bool = false:
 	set(value):
 		selected = value
 		notified.emit(&"selected")
-		_update_process()
+		_on_property_updated()
 
 var zoom_factor: float:
 	get:
@@ -46,10 +46,14 @@ func get_center() -> Vector2:
 	return Vector2.ZERO
 
 
+func _on_property_updated():
+	_update_process()
+	_update_z_index()
+
+
 func _update_process():
 	set_process(selecting or selected)
 	queue_redraw()
-	_update_z_index()
 
 
 func _update_z_index():
