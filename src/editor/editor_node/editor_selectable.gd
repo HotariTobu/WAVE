@@ -18,6 +18,11 @@ var selected: bool = false:
 		selected = value
 		notified.emit(&"selected")
 		_on_property_updated()
+		
+		if value:
+			add_to_group(Group.SELECTION)
+		else:
+			remove_from_group(Group.SELECTION)
 
 var zoom_factor: float:
 	get:

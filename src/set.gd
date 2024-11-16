@@ -7,6 +7,11 @@ func add(value: Variant) -> void:
 	_data[value] = null
 
 
+func add_all(values: Array) -> void:
+	for value in values:
+		_data[value] = null
+
+
 func clear() -> void:
 	_data.clear()
 
