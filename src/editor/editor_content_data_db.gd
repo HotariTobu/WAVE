@@ -1,69 +1,97 @@
 class_name EditorContentDataDB
 
-signal contents_renewed(contents: Array[ContentData])
-signal content_added(content: ContentData)
-signal content_removed(content: ContentData)
-
-var contents: Array:
+var groups: Array[Group]:
 	get:
-		return _content_dict.values()
+		return Array(_group_dict.values(), TYPE_OBJECT, &"RefCounted", Group)
 
-	set(new_contents):
-		_content_dict.clear()
-		for content in new_contents:
-			_content_dict[content.id] = content
+var group_names: Array[StringName]:
+	get:
+		return Array(_group_dict.keys(), TYPE_STRING_NAME, &"", null)
 
-		var typed_array = Array(new_contents, TYPE_OBJECT, &"RefCounted", ContentData)
-		contents_renewed.emit(typed_array)
-
-var _content_dict: Dictionary
+var _group_dict: Dictionary
+var _group_name_dict: Dictionary
 
 
-func add(content: ContentData) -> void:
-	_content_dict[content.id] = content
-	content_added.emit(content)
+func _init(group_name_list: Array):
+	for group_name in group_name_list:
+		_group_dict[group_name] = Group.new(group_name, _group_name_dict)
+
+	_group_dict.make_read_only()
+
+func get_group(group_name: StringName) -> Group:
+	return _group_dict[group_name]
 
 
-func remove(content: ContentData) -> void:
-	_content_dict.erase(content.id)
-	content_removed.emit(content)
+func group_name_of(content_id: StringName) -> StringName:
+	return _group_name_dict[content_id]
+
+
+func add(group_name: StringName, content: ContentData) -> void:
+	var group = _group_dict[group_name] as Group
+	group._content_dict[content.id] = content
+	group.content_added.emit(content)
+	_group_name_dict[content.id] = group_name
+
+
+func remove(group_name: StringName, content: ContentData) -> void:
+	var group = _group_dict[group_name] as Group
+	group._content_dict.erase(content.id)
+	group.content_removed.emit(content)
+	_group_name_dict.erase(content.id)
 
 
 func has_of(content_id: StringName) -> bool:
-	return _content_dict.has(content_id)
+	return _group_name_dict.has(content_id)
 
 
-func get_of(content_id: StringName) -> ContentData:
-	return _content_dict[content_id]
+func data_of(content_id: StringName) -> ContentData:
+	var group_name = _group_name_dict[content_id]
+	var group = _group_dict[group_name] as Group
+	return group._content_dict[content_id]
 
 
-static func view(content_dbs: Array[EditorContentDataDB]) -> View:
-	var content_dicts: Array[Dictionary]
-	for content_db in content_dbs:
-		content_dicts.append(content_db._content_dict)
+class Group:
+	signal contents_renewed(contents: Array[ContentData])
+	signal content_added(content: ContentData)
+	signal content_removed(content: ContentData)
 
-	return View.new(content_dicts)
+	var name: StringName:
+		get:
+			return _name
 
+	var contents: Array:
+		get:
+			return _content_dict.values()
 
-class View:
-	var _content_dicts: Array[Dictionary]
+		set(new_contents):
+			_content_dict.clear()
+			for content in new_contents:
+				_content_dict[content.id] = content
 
+			var typed_array = Array(new_contents, TYPE_OBJECT, &"RefCounted", ContentData)
+			contents_renewed.emit(typed_array)
 
-	func _init(content_dicts: Array[Dictionary]):
-		_content_dicts = content_dicts
+	var _name: StringName
+	var _group_name_dict: Dictionary
 
+	var _content_dict: Dictionary
+
+	func _init(group_name: StringName, group_name_dict: Dictionary):
+		_name = group_name
+		_group_name_dict = group_name_dict
+
+	func add(content: ContentData) -> void:
+		_content_dict[content.id] = content
+		content_added.emit(content)
+		_group_name_dict[content.id] = _name
+
+	func remove(content: ContentData) -> void:
+		_content_dict.erase(content.id)
+		content_removed.emit(content)
+		_group_name_dict.erase(content.id)
 
 	func has_of(content_id: StringName) -> bool:
-		return not _get_content_dict_of(content_id).is_empty()
+		return _content_dict.has(content_id)
 
-
-	func get_of(content_id: StringName) -> ContentData:
-		return _get_content_dict_of(content_id)[content_id]
-
-
-	func _get_content_dict_of(content_id: StringName) -> Dictionary:
-		for content_dict in _content_dicts:
-			if content_dict.has(content_id):
-				return content_dict
-
-		return {}
+	func data_of(content_id: StringName) -> ContentData:
+		return _content_dict[content_id]

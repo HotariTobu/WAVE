@@ -2,18 +2,27 @@ extends Node2D
 
 var _editor_global = editor_global
 
+var content_node_script_dict = {
+	&"lane_vertices": EditorLaneVertex,
+	&"lanes": EditorLaneSegments,
+	&"splits": EditorStoplightSector,
+	&"stoplights": EditorStoplightCore,
+}
+
 @onready var _camera = $Camera
 @onready var _content_container = $ContentContainer
 @onready var _tool_container = $ToolContainer
+
+func _init():
+	content_node_script_dict.make_read_only()
 
 
 func _ready():
 	_editor_global.camera = _camera
 
-	_connect_content_db(_editor_global.lane_vertex_db, EditorLaneVertex)
-	_connect_content_db(_editor_global.lane_db, EditorLaneSegments)
-	_connect_content_db(_editor_global.split_db, EditorStoplightSector)
-	_connect_content_db(_editor_global.stoplight_db, EditorStoplightCore)
+	for group in _editor_global.content_db.groups:
+		var script = content_node_script_dict[group.name]
+		_connect_content_db(group, script)
 
 	var tools: Array[EditorTool] = []
 	for child in _tool_container.get_children():
@@ -24,11 +33,11 @@ func _ready():
 	_editor_global.data.tool = tools[0]
 
 
-func _connect_content_db(content_db: EditorContentDataDB, script: GDScript):
+func _connect_content_db(group: EditorContentDataDB.Group, script: GDScript):
 	var node_dict: Dictionary
-	content_db.contents_renewed.connect(_renew_content_node.bind(node_dict, script))
-	content_db.content_added.connect(_add_content_node.bind(node_dict, script))
-	content_db.content_removed.connect(_remove_content_node.bind(node_dict))
+	group.contents_renewed.connect(_renew_content_node.bind(node_dict, script))
+	group.content_added.connect(_add_content_node.bind(node_dict, script))
+	group.content_removed.connect(_remove_content_node.bind(node_dict))
 
 
 func _renew_content_node(contents: Array[ContentData], node_dict: Dictionary, script: GDScript):

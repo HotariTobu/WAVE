@@ -9,6 +9,8 @@ var _editor_global = editor_global
 
 @onready var _dialog = Dialog.instantiate()
 
+@onready var _split_db = _editor_global.content_db.get_group(&"splits")
+@onready var _stoplight_db = _editor_global.content_db.get_group(&"stoplights")
 
 func _ready():
 	set_process_unhandled_input(false)
@@ -59,13 +61,13 @@ func _add_new_stoplight():
 	_editor_global.undo_redo.create_action("Add stoplight")
 
 	for split in new_splits:
-		_editor_global.undo_redo.add_do_method(_editor_global.split_db.add.bind(split))
+		_editor_global.undo_redo.add_do_method(_split_db.add.bind(split))
 		_editor_global.undo_redo.add_do_reference(split)
-		_editor_global.undo_redo.add_undo_method(_editor_global.split_db.remove.bind(split))
+		_editor_global.undo_redo.add_undo_method(_split_db.remove.bind(split))
 
-	_editor_global.undo_redo.add_do_method(_editor_global.stoplight_db.add.bind(stoplight))
+	_editor_global.undo_redo.add_do_method(_stoplight_db.add.bind(stoplight))
 	_editor_global.undo_redo.add_do_reference(stoplight)
-	_editor_global.undo_redo.add_undo_method(_editor_global.stoplight_db.remove.bind(stoplight))
+	_editor_global.undo_redo.add_undo_method(_stoplight_db.remove.bind(stoplight))
 
 	_editor_global.undo_redo.commit_action()
 
@@ -75,17 +77,17 @@ func _add_new_stoplight():
 
 func _on_canceled():
 	var stoplight = _dialog.stoplight as StoplightData
-	var splits = stoplight.split_ids.map(_editor_global.split_db.get_of)
+	var splits = stoplight.split_ids.map(_split_db.data_of)
 
 	_editor_global.undo_redo.create_action("Remove stoplight")
 
 	for split in splits:
-		_editor_global.undo_redo.add_do_method(_editor_global.split_db.remove.bind(split))
-		_editor_global.undo_redo.add_undo_method(_editor_global.split_db.add.bind(split))
+		_editor_global.undo_redo.add_do_method(_split_db.remove.bind(split))
+		_editor_global.undo_redo.add_undo_method(_split_db.add.bind(split))
 		_editor_global.undo_redo.add_undo_reference(split)
 
-	_editor_global.undo_redo.add_do_method(_editor_global.stoplight_db.remove.bind(stoplight))
-	_editor_global.undo_redo.add_undo_method(_editor_global.stoplight_db.add.bind(stoplight))
+	_editor_global.undo_redo.add_do_method(_stoplight_db.remove.bind(stoplight))
+	_editor_global.undo_redo.add_undo_method(_stoplight_db.add.bind(stoplight))
 	_editor_global.undo_redo.add_undo_reference(stoplight)
 
 	_editor_global.undo_redo.commit_action()

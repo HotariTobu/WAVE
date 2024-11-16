@@ -137,10 +137,12 @@ class SplitCellCreator:
 	extends BindingConverter
 
 	var _editor_global = editor_global
+	var _split_db = _editor_global.content_db.get_group(&"splits")
 
 	var _stoplight_source: EditorBindingSource
 
 	var _label_count: int
+
 
 	func _init(stoplight_source: EditorBindingSource):
 		_stoplight_source = stoplight_source
@@ -154,7 +156,7 @@ class SplitCellCreator:
 		_label_count = 0
 
 		for split_id in split_ids:
-			var split = _editor_global.split_db.get_of(split_id)
+			var split = _split_db.data_of(split_id)
 			split_cells += _create_split_cell(split)
 
 		var add_split_button = IconButton.new(PlusIcon)
@@ -208,9 +210,9 @@ class SplitCellCreator:
 
 		_editor_global.undo_redo.create_action("Add stoplight split")
 
-		_editor_global.undo_redo.add_do_method(_editor_global.split_db.add.bind(split))
+		_editor_global.undo_redo.add_do_method(_split_db.add.bind(split))
 		_editor_global.undo_redo.add_do_reference(split)
-		_editor_global.undo_redo.add_undo_method(_editor_global.split_db.remove.bind(split))
+		_editor_global.undo_redo.add_undo_method(_split_db.remove.bind(split))
 
 		_editor_global.undo_redo.add_do_property(_stoplight_source, &"split_ids", next)
 		_editor_global.undo_redo.add_undo_property(_stoplight_source, &"split_ids", prev)
@@ -225,8 +227,8 @@ class SplitCellCreator:
 
 		_editor_global.undo_redo.create_action("Remove stoplight split")
 
-		_editor_global.undo_redo.add_do_method(_editor_global.split_db.remove.bind(split))
-		_editor_global.undo_redo.add_undo_method(_editor_global.split_db.add.bind(split))
+		_editor_global.undo_redo.add_do_method(_split_db.remove.bind(split))
+		_editor_global.undo_redo.add_undo_method(_split_db.add.bind(split))
 		_editor_global.undo_redo.add_undo_reference(split)
 
 		_editor_global.undo_redo.add_do_property(_stoplight_source, &"split_ids", next)

@@ -16,6 +16,7 @@ var _vertices: Array[VertexData]:
 		queue_redraw()
 		_update_center()
 
+@onready var _lane_vertex_db = _editor_global.content_db.get_group(&"lane_vertices")
 
 func _init(lane: LaneData):
 	super(lane, EditorPhysicsLayer.LANE_SEGMENTS)
@@ -62,7 +63,7 @@ func get_movable_nodes():
 
 
 func _get_vertices_of(vertex_ids: Array[StringName]) -> Array[VertexData]:
-	var vertices = vertex_ids.map(_editor_global.lane_vertex_db.get_of)
+	var vertices = vertex_ids.map(_lane_vertex_db.data_of)
 	return Array(vertices, TYPE_OBJECT, &"RefCounted", VertexData)
 
 

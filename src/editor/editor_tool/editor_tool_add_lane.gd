@@ -77,6 +77,8 @@ var _current_vertex: VertexData:
 		else:
 			return _selecting_vertex_node.data
 
+@onready var _lane_vertex_db = _editor_global.content_db.get_group(&"lane_vertices")
+@onready var _lane_db = _editor_global.content_db.get_group(&"lanes")
 
 func _ready():
 	set_process_unhandled_input(false)
@@ -199,7 +201,7 @@ func _commit_lane():
 		var vertex_id = vertex.id
 		vertex_ids.append(vertex_id)
 
-		if _editor_global.lane_vertex_db.has_of(vertex_id):
+		if _lane_vertex_db.has_of(vertex_id):
 			continue
 
 		new_vertices.append(vertex)
@@ -223,13 +225,13 @@ func _commit_lane():
 	_editor_global.undo_redo.create_action("Add lane")
 
 	for vertex in new_vertices:
-		_editor_global.undo_redo.add_do_method(_editor_global.lane_vertex_db.add.bind(vertex))
+		_editor_global.undo_redo.add_do_method(_lane_vertex_db.add.bind(vertex))
 		_editor_global.undo_redo.add_do_reference(vertex)
-		_editor_global.undo_redo.add_undo_method(_editor_global.lane_vertex_db.remove.bind(vertex))
+		_editor_global.undo_redo.add_undo_method(_lane_vertex_db.remove.bind(vertex))
 
-	_editor_global.undo_redo.add_do_method(_editor_global.lane_db.add.bind(new_lane))
+	_editor_global.undo_redo.add_do_method(_lane_db.add.bind(new_lane))
 	_editor_global.undo_redo.add_do_reference(new_lane)
-	_editor_global.undo_redo.add_undo_method(_editor_global.lane_db.remove.bind(new_lane))
+	_editor_global.undo_redo.add_undo_method(_lane_db.remove.bind(new_lane))
 
 	for lane in _prev_lanes:
 		var option = LaneData.OptionData.new()

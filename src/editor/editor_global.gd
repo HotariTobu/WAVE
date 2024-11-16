@@ -9,30 +9,40 @@ var camera: PanZoomCamera
 
 var network_file_path: String
 
-var lane_vertex_db = EditorContentDataDB.new()
-var lane_db = EditorContentDataDB.new()
-var split_db = EditorContentDataDB.new()
-var stoplight_db = EditorContentDataDB.new()
+var content_data_script_dict = {
+	&"lane_vertices": VertexData,
+	&"lanes": LaneData,
+	&"splits": SplitData,
+	&"stoplights": StoplightData,
+}
+
+var content_db = EditorContentDataDB.new(content_data_script_dict.keys())
 
 @onready var _content_owner = get_tree().root
 
 
+func _init():
+	content_data_script_dict.make_read_only()
+
+
 func to_dict() -> Dictionary:
-	return {
-		&"lane_vertices": lane_vertex_db.contents.map(VertexData.to_dict),
-		&"lanes": lane_db.contents.map(LaneData.to_dict),
-		&"splits": split_db.contents.map(SplitData.to_dict),
-		&"stoplights": stoplight_db.contents.map(StoplightData.to_dict),
-	}
+	var dict: Dictionary
+
+	for group_name in content_data_script_dict:
+		var group = content_db.get_group(group_name)
+		var script = content_data_script_dict[group_name]
+		dict[group_name] = group.contents.map(script.to_dict)
+
+	return dict
 
 
 func from_dict(dict: Dictionary):
 	undo_redo.clear_history()
 
-	lane_vertex_db.contents = dict.get(&"lane_vertices", []).map(VertexData.from_dict)
-	lane_db.contents = dict.get(&"lanes", []).map(LaneData.from_dict)
-	split_db.contents = dict.get(&"splits", []).map(SplitData.from_dict)
-	stoplight_db.contents = dict.get(&"stoplights", []).map(StoplightData.from_dict)
+	for group_name in content_data_script_dict:
+		var group = content_db.get_group(group_name)
+		var script = content_data_script_dict[group_name]
+		group.contents = dict.get(group_name, []).map(script.from_dict)
 
 
 func set_content_node_owner(content_node: EditorContent):
