@@ -19,8 +19,8 @@ var block_targeted: bool = false:
 
 
 func _update_process():
-	set_process(selecting or selected or block_targeting or block_targeted)
-	queue_redraw()
+	super()
+	set_process(is_processing() or block_targeting or block_targeted)
 
 
 func _update_z_index():
