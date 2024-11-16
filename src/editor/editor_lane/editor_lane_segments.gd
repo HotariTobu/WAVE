@@ -1,5 +1,5 @@
 class_name EditorLaneSegments
-extends EditorContent
+extends EditorBlockTargetable
 
 var _collision_shape_dict: Dictionary
 
@@ -35,10 +35,14 @@ func _draw():
 	draw_polyline(points, setting.lane_color, setting.lane_width)
 
 	var color: Color
-	if selecting:
-		color = setting.lane_selecting_color
+	if block_targeting:
+		color = setting.lane_block_targeting_color
+	elif block_targeted:
+		color = setting.lane_block_targeted_color
+	elif selecting:
+		color = setting.selecting_color
 	elif selected:
-		color = setting.lane_selected_color
+		color = setting.selected_color
 	else:
 		return
 

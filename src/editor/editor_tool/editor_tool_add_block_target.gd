@@ -1,133 +1,49 @@
-extends EditorTool
+extends "res://src/editor/editor_tool/editor_tool_base_select.gd"
 
 const TOOL_DISPLAY_NAME = 'Add Block Target tool'
-const TOOL_STATUS_HINT = 'Left click: select a source, Right click: select a target, Shift: show sources, Ctrl/Cmd: show targets'
+const TOOL_STATUS_HINT = 'Left click: select a source, Shift + Left click: add/remove selected sources, Right click: toggle a target, Ctrl/Cmd: show targets'
 
-var _editor_global = editor_global
-
-var _hovered_items: Array[EditorSelectable] = []
-var _last_hovered_item: EditorSelectable = null:
+var _source_sources: Array[EditorBindingSource]:
 	get:
-		return _last_hovered_item
+		return _source_sources
 	set(next):
-		var prev = _last_hovered_item
+		var prev = _source_sources
+		_unbind_source_sources(prev)
+		_bind_source_sources(next)
+		_source_sources = next
+		_update_target_id_set()
 
-		if prev != null:
-			prev.selecting = false
-			_update_source_visibility(prev, false)
-			_update_target_visibility(prev, false)
-
-		if next != null:
-			next.selecting = true
-			_update_source_visibility(next, _is_sources_visible)
-			_update_target_visibility(next, _is_targets_visible)
-
-		_last_hovered_item = next
-
-var _selected_source_item: EditorSelectable = null:
+var _target_id_set = Set.new():
 	get:
-		return _selected_source_item
+		return _target_id_set
 	set(next):
-		var prev = _selected_source_item
+		var prev = _target_id_set
+		
+		for target_node in _get_block_targetables(prev.to_array()):
+			target_node.block_targeted = false
+		
+		for target_node in _get_block_targetables(next.to_array()):
+			target_node.block_targeted = true
+			
+		_target_id_set = next
 
-		if prev != null:
-			prev.selected = false
-
-		if next != null:
-			next.selected = true
-
-		_selected_source_item = next
-
-var _selected_target_item: EditorSelectable = null:
+var _are_targets_visible: bool = false:
 	get:
-		return _selected_target_item
-	set(next):
-		var prev = _selected_target_item
-
-		if prev != null:
-			prev.selected = false
-
-		if next != null:
-			next.selected = true
-
-		_selected_target_item = next
-
-var _selected_stoplight: EditorStoplight = null:
-	get:
-		return _selected_stoplight
-	set(next):
-		var prev = _selected_stoplight
-
-		if prev != null:
-			prev.opened = false
-
-		if next != null:
-			next.opened = true
-
-		_selected_stoplight = next
-
-var _is_sources_visible: bool = false:
-	get:
-		return _is_sources_visible
+		return _are_targets_visible
 	set(value):
-		_is_sources_visible = value
-
-		var item = _last_hovered_item
-		if item == null:
-			return
-
-		_update_source_visibility(item, value)
-
-var _is_targets_visible: bool = false:
-	get:
-		return _is_targets_visible
-	set(value):
-		_is_targets_visible = value
-
-		var item = _last_hovered_item
-		if item == null:
-			return
-
-		_update_target_visibility(item, value)
-
-func _ready():
-	set_process_unhandled_input(false)
+		_are_targets_visible = value
+		_update_targets_visibility(_last_hovered_item, value)
 
 func _unhandled_input(event: InputEvent):
-	if event is InputEventMouseMotion:
-		queue_redraw()
-
-	elif event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
-			_select_source()
-
-		elif event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed:
-			_select_target()
+	super(event)
+	
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed:
+			_toggle_target()
 
 	elif event is InputEventKey:
-		if event.keycode == KEY_SHIFT:
-			_is_sources_visible = event.pressed
-
-		elif event.keycode == KEY_CTRL or event.keycode == KEY_META:
-			_is_targets_visible = event.pressed
-
-		elif event.is_action_pressed(&"ui_cancel"):
-			_cancel()
-
-func _draw():
-	var start_pos: Vector2
-
-	if _selected_source_item != null:
-		start_pos = _selected_source_item.to_global(_selected_source_item.get_center())
-	elif _selected_target_item != null:
-		start_pos = _selected_target_item.to_global(_selected_target_item.get_center())
-	else:
-		return
-
-	var end_pos = get_local_mouse_position()
-	var color = setting.block_line_color
-
-	draw_dashed_line(start_pos, end_pos, color)
+		if event.keycode == KEY_CTRL or event.keycode == KEY_META:
+			_are_targets_visible = event.pressed
 
 func get_display_name() -> String:
 	return TOOL_DISPLAY_NAME
@@ -136,121 +52,120 @@ func get_status_hint() -> String:
 	return TOOL_STATUS_HINT
 
 func activate() -> void:
-	set_process_unhandled_input(true)
+	super()
 
 	var mask = EditorPhysicsLayer.BRIDGE_SEGMENTS | EditorPhysicsLayer.LANE_SEGMENTS | EditorPhysicsLayer.STOPLIGHT
-	_editor_global.pointer_area.collision_mask = mask
+	_pointer_area.collision_mask = mask
 
-	_editor_global.pointer_area.area_entered.connect(_on_pointer_area_area_entered)
-	_editor_global.pointer_area.area_exited.connect(_on_pointer_area_area_exited)
-
+	_editor_global.data.bind(&"selected_items").using(_get_source_sources).to(self, &"_source_sources")
+	
 func deactivate() -> void:
-	set_process_unhandled_input(false)
+	super()
+	
+	_editor_global.data.unbind(&"selected_items").from(self, &"_source_sources")
+	
+func _on_selecting(item: EditorSelectable):
+	_update_targets_visibility(item, _are_targets_visible)
 
-	_editor_global.pointer_area.collision_mask = 0
+func _on_decselecting(item: EditorSelectable):
+	_update_targets_visibility(item, false)
 
-	_editor_global.pointer_area.area_entered.disconnect(_on_pointer_area_area_entered)
-	_editor_global.pointer_area.area_exited.disconnect(_on_pointer_area_area_exited)
+func _get_source_sources(items: Array[EditorSelectable]) -> Array[EditorBindingSource]:
+	var source_sources: Array[EditorBindingSource]
+	
+	for item in items:
+		var content_node = item as EditorContent
+		if content_node == null:
+			continue
+			
+		var content = content_node.data
+		if &"block_target_ids" not in content:
+			continue
+		
+		var content_source = _editor_global.source_db.get_or_add(content)
+		source_sources.append(content_source)
+		
+	return source_sources
 
-	_cancel()
-	_hovered_items.clear()
-	_last_hovered_item = null
-	_is_sources_visible = false
-	_is_targets_visible = false
+func _bind_source_sources(source_sources: Array[EditorBindingSource]):
+	for source_source in source_sources:
+		source_source.add_callback(&"block_target_ids", _update_target_id_set)
 
+func _unbind_source_sources(source_sources: Array[EditorBindingSource]):
+	for source_source in source_sources:
+		source_source.remove_callback(&"block_target_ids", _update_target_id_set)
+		
+func _update_target_id_set():
+	var block_target_id_sets: Array[Set]
+	
+	for source_source in _source_sources:
+		var block_target_id_set = Set.from_array(source_source.block_target_ids)
+		block_target_id_sets.append(block_target_id_set)
+	
+	if block_target_id_sets.is_empty():
+		_target_id_set = Set.new()
+		return
+	
+	var target_id_set = block_target_id_sets.pop_back() as Set
+	
+	for block_target_id_set in block_target_id_sets:
+		target_id_set = target_id_set.intersection(block_target_id_set)
+		
+	_target_id_set = target_id_set
 
-func _on_pointer_area_area_entered(area):
-	var item = area as EditorSelectable
-	_hovered_items.append(item)
-	_last_hovered_item = item
+func _update_targets_visibility(source_node: EditorSelectable, are_targets_visible: bool):
+	if source_node is not EditorContent:
+		return
+		
+	var source = source_node.data
+	if &"block_target_ids" not in source:
+		return
+	
+	for target_node in _get_block_targetables(source.block_target_ids):
+		target_node.block_targeting = are_targets_visible
 
-func _on_pointer_area_area_exited(area):
-	var item = area as EditorSelectable
-	_hovered_items.erase(item)
-	if _hovered_items.is_empty():
-		_last_hovered_item = null
+func _get_block_targetables(block_target_ids: Array) -> Array[EditorBlockTargetable]:
+	var block_targetables = block_target_ids.map(_editor_global.get_content_node)
+	return Array(block_targetables, TYPE_OBJECT, &"Area2D", EditorBlockTargetable)
+
+func _toggle_target():
+	var item = _last_hovered_item
+	if item == null:
+		return
+
+	if item is not EditorLaneSegments:
+		return
+		
+	var content = item.data
+	if _target_id_set.has(content.id):
+		_remove_block_target(content)
 	else:
-		_last_hovered_item = _hovered_items.back()
+		_add_block_target(content)
 
-
-func _select_source():
-	var item = _last_hovered_item
-	if item == null:
-		return
-
-	if item is EditorStoplightCore:
-		_selected_stoplight = item.stoplight
-		return
-
-	_selected_source_item = item
-
-	if _selected_target_item == null:
-		return
-
-	_add_block_target()
-
-
-func _select_target():
-	var item = _last_hovered_item
-	if item == null:
-		return
-
-	if item is EditorStoplightCore or item is EditorStoplightSector:
-		return
-
-	_selected_target_item = item
-
-	if _selected_source_item == null:
-		return
-
-	_add_block_target()
-
-func _add_block_target():
-	var source = _get_source(_selected_source_item)
-	var target = _get_target(_selected_target_item)
-
+func _add_block_target(target: ContentData):
 	_editor_global.undo_redo.create_action("Add block target")
-	_editor_global.undo_redo.add_do_method(func(): source.block_targets.append(target))
-	_editor_global.undo_redo.add_do_method(func(): target.block_sources.append(source))
-	_editor_global.undo_redo.add_undo_method(func(): source.block_targets.erase(target))
-	_editor_global.undo_redo.add_undo_method(func(): target.block_sources.erase(source))
+	
+	for source_source in _source_sources:
+		var prev = source_source.block_target_ids as Array
+		var next = prev.duplicate()
+		next.append(target.id)
+		next.make_read_only()
+		
+		_editor_global.undo_redo.add_do_property(source_source, &"block_target_ids", next)
+		_editor_global.undo_redo.add_undo_property(source_source, &"block_target_ids", prev)
+	
 	_editor_global.undo_redo.commit_action()
 
-	_selected_source_item = null
-	_selected_target_item = null
-
-func _cancel():
-	_selected_source_item = null
-	_selected_target_item = null
-	_selected_stoplight = null
-
-static func _update_source_visibility(item: EditorSelectable, is_sources_visible: bool):
-	var target = _get_target(item)
-	if target == null:
-		return
-
-	for block_source in target.block_sources:
-		block_source.selecting = is_sources_visible
-
-static func _update_target_visibility(item: EditorSelectable, is_targets_visible: bool):
-	var source = _get_source(item)
-	if source == null:
-		return
-
-	for block_target in source.block_targets:
-		block_target.selecting = is_targets_visible
-
-static func _get_source(item: EditorSelectable):
-	if item is EditorStoplightSector:
-		return item.split
-
-	if item is EditorLaneSegments:
-		return item.lane
-
-	return null
-
-static func _get_target(item: EditorSelectable):
-	if item is EditorLaneSegments:
-		return item.lane
-
-	return null
+func _remove_block_target(target: ContentData):
+	_editor_global.undo_redo.create_action("Remove block target")
+	
+	for source_source in _source_sources:
+		var prev = source_source.block_target_ids as Array
+		var next = prev.duplicate()
+		next.erase(target.id)
+		next.make_read_only()
+		
+		_editor_global.undo_redo.add_do_property(source_source, &"block_target_ids", next)
+		_editor_global.undo_redo.add_undo_property(source_source, &"block_target_ids", prev)
+	
+	_editor_global.undo_redo.commit_action()
