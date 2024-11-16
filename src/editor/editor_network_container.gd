@@ -33,7 +33,7 @@ func _connect_content_db(content_db: EditorContentDataDB, script: GDScript):
 
 func _renew_content_node(contents: Array[ContentData], node_dict: Dictionary, script: GDScript):
 	for node in node_dict.values():
-		_content_container.remove_child(node)
+		node.queue_free()
 
 	node_dict.clear()
 
