@@ -58,9 +58,6 @@ func get_status_hint() -> String:
 func activate() -> void:
 	super()
 
-	var mask = EditorPhysicsLayer.BRIDGE_SEGMENTS | EditorPhysicsLayer.LANE_SEGMENTS | EditorPhysicsLayer.STOPLIGHT
-	_pointer_area.collision_mask = mask
-
 	var converter = ItemsToSourcesConverter.new(EditorContent)
 	var filter = BlockSourceFilter.new()
 	_editor_global.data.bind(&"selected_items").using(converter).using(filter).to(self, &"_source_sources")
@@ -71,6 +68,10 @@ func deactivate() -> void:
 
 	_editor_global.data.unbind(&"selected_items").from(self, &"_source_sources")
 	_source_sources = []
+
+
+func _get_mask() -> int:
+	return EditorPhysicsLayer.BRIDGE_SEGMENTS | EditorPhysicsLayer.LANE_SEGMENTS | EditorPhysicsLayer.STOPLIGHT
 
 
 func _on_selecting(item: EditorSelectable):

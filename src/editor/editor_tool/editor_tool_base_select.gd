@@ -42,7 +42,7 @@ func _unhandled_input(event: InputEvent):
 func activate() -> void:
 	set_process_unhandled_input(true)
 
-	_pointer_area.collision_mask = EditorPhysicsLayer.SELECTABLE
+	_pointer_area.collision_mask = _get_mask()
 
 	_pointer_area.area_entered.connect(_on_pointer_area_area_entered)
 	_pointer_area.area_exited.connect(_on_pointer_area_area_exited)
@@ -58,6 +58,10 @@ func deactivate() -> void:
 
 	_hovered_items.clear()
 	_last_hovered_item = null
+
+
+func _get_mask() -> int:
+	return EditorPhysicsLayer.SELECTABLE
 
 
 func _on_pointer_area_area_entered(area):
