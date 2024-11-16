@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://rxqbforscflu"]
+
+[ext_resource type="Script" path="res://src/editor/editor_ui/numeric_box.gd" id="1_38bwh"]
+[ext_resource type="Script" path="res://src/editor/editor_ui/vector_2_panel.gd" id="1_f6inv"]
+
+[node name="Vector2Panel" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_f6inv")
+
+[node name="XRow" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="XRow"]
+layout_mode = 2
+text = "X"
+
+[node name="NumericBox" type="LineEdit" parent="XRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+select_all_on_focus = true
+script = ExtResource("1_38bwh")
+
+[node name="YRow" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="YRow"]
+layout_mode = 2
+text = "Y"
+
+[node name="NumericBox" type="LineEdit" parent="YRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+select_all_on_focus = true
+script = ExtResource("1_38bwh")
+
+[connection signal="value_changed" from="XRow/NumericBox" to="." method="_on_x_box_value_changed"]
+[connection signal="value_changed" from="YRow/NumericBox" to="." method="_on_y_box_value_changed"]
