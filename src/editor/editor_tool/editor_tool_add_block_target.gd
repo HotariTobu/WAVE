@@ -1,7 +1,7 @@
 extends "res://src/editor/editor_tool/editor_tool_base_select.gd"
 
 const TOOL_DISPLAY_NAME = "Add Block Target tool"
-const TOOL_STATUS_HINT = "Left click: select a source, Shift + Left click: add/remove selected sources, Right click: toggle a target, Ctrl/Cmd: show targets"
+const TOOL_STATUS_HINT = "Left click: select a source, Shift + Left click: toggle a source, Right click: toggle a target, Ctrl/Cmd: show targets"
 
 var _source_sources: Array[EditorBindingSource]:
 	get:

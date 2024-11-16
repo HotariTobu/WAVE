@@ -1,7 +1,7 @@
 extends "res://src/editor/editor_tool/editor_tool_base_select.gd"
 
 const TOOL_DISPLAY_NAME = "Move tool"
-const TOOL_STATUS_HINT = "Left click: select, Shift + Left click: add/remove select, Right drag: move"
+const TOOL_STATUS_HINT = "Left click: select, Shift + Left click: toggle selection, Right drag: move"
 
 @export var _content_container: Node
 
