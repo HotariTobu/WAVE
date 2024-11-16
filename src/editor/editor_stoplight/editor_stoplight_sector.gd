@@ -42,6 +42,10 @@ func _draw():
 func get_local_center() -> Vector2:
 	return _center
 
+func _update_process():
+	super()
+	set_process(is_processing() or is_visible_in_tree())
+
 func update(radius: float, start_angle: float, end_angle: float):
 	var point_count = floori((end_angle - start_angle) * setting.stoplight_sector_delta_angle_inv)
 	_points.resize(point_count)
