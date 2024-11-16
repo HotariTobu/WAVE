@@ -70,6 +70,7 @@ func deactivate() -> void:
 	super()
 
 	_editor_global.data.unbind(&"selected_items").from(self, &"_source_sources")
+	_source_sources = []
 
 
 func _on_selecting(item: EditorSelectable):
@@ -178,5 +179,5 @@ class BlockSourceFilter:
 		var source_sources = source_value.filter(is_block_source)
 		return Array(source_sources, TYPE_OBJECT, &"RefCounted", EditorBindingSource)
 
-	static func is_block_source(content: ContentData) -> bool:
+	static func is_block_source(content) -> bool:
 		return &"block_target_ids" in content
