@@ -58,15 +58,14 @@ func get_status_hint() -> String:
 func activate() -> void:
 	super()
 
-	var converter = ItemsToSourcesConverter.new(EditorContent)
-	var filter = BlockSourceFilter.new()
-	_editor_global.data.bind(&"selected_items").using(converter).using(filter).to(self, &"_source_sources")
+	var converter = ContentsToFilteredSourcesConverter.new(_is_block_source)
+	_editor_global.data.bind(&"selected_contents").using(converter).to(self, &"_source_sources")
 
 
 func deactivate() -> void:
 	super()
 
-	_editor_global.data.unbind(&"selected_items").from(self, &"_source_sources")
+	_editor_global.data.unbind(&"selected_contents").from(self, &"_source_sources")
 	_source_sources = []
 
 
@@ -116,7 +115,7 @@ func _update_targets_visibility(source_node: EditorSelectable, are_targets_visib
 		return
 
 	var source = source_node.data
-	if not BlockSourceFilter.is_block_source(source):
+	if not _is_block_source(source):
 		return
 
 	for target_node in _get_block_targetables(source.block_target_ids):
@@ -173,12 +172,5 @@ func _remove_block_target(target: ContentData):
 	_editor_global.undo_redo.commit_action()
 
 
-class BlockSourceFilter:
-	extends BindingConverter
-
-	func source_to_target(source_value: Variant) -> Variant:
-		var source_sources = source_value.filter(is_block_source)
-		return Array(source_sources, TYPE_OBJECT, &"RefCounted", EditorBindingSource)
-
-	static func is_block_source(content) -> bool:
-		return &"block_target_ids" in content
+static func _is_block_source(content: ContentData) -> bool:
+	return &"block_target_ids" in content
