@@ -8,7 +8,9 @@ script = ExtResource("1_vlevv")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
-text = "Lane Vertex"
+text = "Lane Vertex/Vertices"
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 2
@@ -16,7 +18,7 @@ mouse_filter = 2
 
 [node name="Label2" type="Label" parent="."]
 layout_mode = 2
-text = "pos"
+text = "Pos"
 
 [node name="PosPanel" parent="." instance=ExtResource("2_0a7w1")]
 layout_mode = 2
