@@ -72,25 +72,16 @@ class Data:
 			tool = next
 			notified.emit(&"tool")
 
-	var selected_items: Array[EditorSelectable]:
+	var selected_contents: Array[ContentData]:
 		get:
-			var keys = _selected_item_set.keys()
-			var item_count = len(keys)
+			var contents = _selected_item_set.to_array().map(EditorContent.data_of)
+			return Array(contents, TYPE_OBJECT, &"RefCounted", ContentData)
 
-			var items: Array[EditorSelectable] = []
-			items.resize(item_count)
+	var _selected_item_set = Set.new()
 
-			for index in range(item_count):
-				items[index] = keys[index] as EditorSelectable
-
-			return items
-
-	var _selected_item_set = {}
-
-	func add_selected(item: EditorSelectable):
-		_selected_item_set[item] = false
+	func add_selected(item: EditorContent):
+		_selected_item_set.add(item)
 		item.selected = true
-		notified.emit(&"selected_items")
 
 		if item.tree_entered.is_connected(add_selected):
 			item.tree_entered.disconnect(add_selected)
@@ -98,9 +89,11 @@ class Data:
 		if not item.tree_exited.is_connected(remove_selected):
 			item.tree_exited.connect(remove_selected.bind(item))
 
-	func add_all_selected(items: Array[EditorSelectable]):
+		notified.emit(&"selected_contents")
+
+	func add_all_selected(items: Array[EditorContent]):
 		for item in items:
-			_selected_item_set[item] = false
+			_selected_item_set.add(item)
 			item.selected = true
 
 			if item.tree_entered.is_connected(add_selected):
@@ -109,12 +102,11 @@ class Data:
 			if not item.tree_exited.is_connected(remove_selected):
 				item.tree_exited.connect(remove_selected.bind(item))
 
-		notified.emit(&"selected_items")
+		notified.emit(&"selected_contents")
 
-	func remove_selected(item: EditorSelectable):
+	func remove_selected(item: EditorContent):
 		_selected_item_set.erase(item)
 		item.selected = false
-		notified.emit(&"selected_items")
 
 		if not item.tree_entered.is_connected(add_selected):
 			item.tree_entered.connect(add_selected.bind(item))
@@ -122,15 +114,18 @@ class Data:
 		if item.tree_exited.is_connected(remove_selected):
 			item.tree_exited.disconnect(remove_selected)
 
+		notified.emit(&"selected_contents")
+
 	func clear_selected():
-		for item in _selected_item_set:
+		for item in _selected_item_set.to_array():
 			item.selected = false
 
 			if item.tree_exited.is_connected(remove_selected):
 				item.tree_exited.disconnect(remove_selected)
 
 		_selected_item_set.clear()
-		notified.emit(&"selected_items")
 
-	func has_selected(item: EditorSelectable):
-		return item in _selected_item_set
+		notified.emit(&"selected_contents")
+
+	func has_selected(item: EditorContent):
+		return _selected_item_set.has(item)
