@@ -14,13 +14,6 @@ var lane_db = EditorContentDataDB.new()
 var split_db = EditorContentDataDB.new()
 var stoplight_db = EditorContentDataDB.new()
 
-var content_db = EditorContentDataDB.view([
-	lane_vertex_db,
-	lane_db,
-	split_db,
-	stoplight_db,
-])
-
 @onready var _content_owner = get_tree().root
 
 
@@ -45,8 +38,10 @@ func from_dict(dict: Dictionary):
 func set_content_node_owner(content_node: EditorContent):
 	content_node.owner = _content_owner
 
+
 func get_content_node(content_id: StringName) -> EditorContent:
 	return _content_owner.get_node("%" + content_id)
+
 
 class Data:
 	signal notified(property: StringName)
