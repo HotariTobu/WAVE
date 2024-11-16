@@ -33,7 +33,7 @@ var _split_cells: Array[Control] = []:
 
 		_split_cells = new_split_cells
 
-@onready var _pos_panel: Vector2Panel = $PosPanel
+@onready var _pos_panel = $PosPanel
 @onready var _x_box: NumericBox = _pos_panel.get_x_box()
 @onready var _y_box: NumericBox = _pos_panel.get_y_box()
 

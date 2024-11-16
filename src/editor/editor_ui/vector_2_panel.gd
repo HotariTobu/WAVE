@@ -1,4 +1,3 @@
-class_name Vector2Panel
 extends VBoxContainer
 
 signal value_changed(new_value: Vector2)
