@@ -9,13 +9,15 @@ var type = DEFAULT_TYPE
 
 func _init(vertex: VertexData):
 	super(vertex, EditorPhysicsLayer.LANE_VERTEX)
-	
+
 	add_child(create_point())
+
 
 func _ready():
 	super()
-	
+
 	_source.bind(&"pos").to(self, &"position")
+
 
 func _draw():
 	var color: Color
@@ -34,3 +36,8 @@ func _draw():
 
 	var radius = setting.selection_radius / zoom_factor
 	draw_circle(Vector2.ZERO, radius, color)
+
+
+func _update_z_index():
+	super()
+	z_index += 10
