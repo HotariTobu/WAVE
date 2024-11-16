@@ -53,7 +53,7 @@ func _draw():
 	draw_circle(points[-1], radius, color)
 
 
-func get_center() -> Vector2:
+func get_local_center() -> Vector2:
 	return _center
 
 

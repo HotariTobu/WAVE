@@ -12,13 +12,13 @@ var _segments: Array[CollisionShape2D]:
 		return _segments
 	set(next):
 		var prev = _segments
-		
+
 		for child in prev:
 			child.queue_free()
-			
+
 		for child in next:
 			add_child(child)
-			
+
 		_segments = next
 
 func _init(split: SplitData):
@@ -27,7 +27,7 @@ func _init(split: SplitData):
 func _draw():
 	if len(_points) < 2:
 		return
-		
+
 	var color: Color
 	if selecting:
 		color = _selecting_color
@@ -39,7 +39,7 @@ func _draw():
 	var width = setting.selection_radius / zoom_factor
 	draw_polyline(_points, color, width)
 
-func get_center() -> Vector2:
+func get_local_center() -> Vector2:
 	return _center
 
 func update(radius: float, start_angle: float, end_angle: float):
@@ -58,7 +58,7 @@ func update(radius: float, start_angle: float, end_angle: float):
 	_selected_color = Color.from_hsv(hue, setting.stoplight_sector_saturation, 1.0, 1.0)
 
 	_center = _get_point(radius, center_angle)
-	
+
 	var segments: Array[CollisionShape2D]
 	segments.resize(point_count - 1)
 
@@ -67,9 +67,9 @@ func update(radius: float, start_angle: float, end_angle: float):
 		segment.shape.a = _points[index]
 		segment.shape.b = _points[index + 1]
 		segments[index] = segment
-		
+
 	_segments = segments
-	
+
 	queue_redraw()
 
 static func _get_point(radius: float, angle: float) -> Vector2:
