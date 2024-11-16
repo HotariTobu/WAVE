@@ -6,7 +6,7 @@ var content_container: Node:
 
 var _editor_global = editor_global
 
-var _property_content_map = {}
+var _property_content_dict: Dictionary
 var _property_content: EditorPropertyPanelContent = null:
 	get:
 		return _property_content
@@ -21,28 +21,29 @@ var _property_content: EditorPropertyPanelContent = null:
 
 		_property_content = next
 
+
 func _ready():
 	for child in content_container.get_children():
 		var content = child as EditorPropertyPanelContent
-		var type = content.get_target_type()
-		_property_content_map[type] = content
+		var type = content.get_target_content_type()
+		assert(type != null)
+		_property_content_dict[type] = content
 
-	_editor_global.data.bind(&'selected_items').using(_determine_property_content).to(self, &'_property_content')
+	_editor_global.data.bind(&"selected_contents").using(_determine_property_content).to(self, &"_property_content")
 
-func _determine_property_content(items: Array[EditorSelectable]):
-	var len_items = len(items)
-	if len_items == 0:
+
+func _determine_property_content(contents: Array[ContentData]):
+	var len_contents = len(contents)
+	if len_contents == 0:
 		return null
 
-	var first_item = items.front() as EditorSelectable
-	var first_type = first_item.get_script()
+	var type_of = func(object: Object): return object.get_script()
+	var types = contents.map(type_of)
 
-	for index in range(1, len_items):
-		var item = items[index] as EditorSelectable
-		var type = item.get_script()
-		if first_type == type:
-			continue
+	var first_type = types.front()
+	var same_type = func(type): return type == first_type
 
-		return null
+	if types.all(same_type):
+		return _property_content_dict.get(first_type)
 
-	return _property_content_map.get(first_type)
+	return null

@@ -5,22 +5,6 @@ const CrossIcon = preload("res://assets/cross.svg")
 
 const DURATION_LABEL = "Duration %s"
 
-var stoplight_sources: Array[EditorBindingSource]:
-	get:
-		return stoplight_sources
-	set(next):
-		var prev = stoplight_sources
-
-		if not prev.is_empty():
-			_unbind_cells(prev)
-
-		if not next.is_empty():
-			_bind_cells(next)
-
-		stoplight_sources = next
-
-var _editor_global = editor_global
-
 var _split_cells: Array[Control] = []:
 	get:
 		return _split_cells
@@ -45,24 +29,12 @@ func _ready():
 	_y_box.value_changed.connect(_on_y_box_value_changed)
 
 
-func get_target_type():
-	return EditorStoplightCore
+func get_target_content_type() -> GDScript:
+	return StoplightData
 
 
-func activate():
-	super()
-	var converter = ItemsToSourcesConverter.new(EditorStoplightCore)
-	_editor_global.data.bind(&"selected_items").using(converter).to(self, &"stoplight_sources")
-
-
-func deactivate():
-	super()
-	_editor_global.data.unbind(&"selected_items").from(self, &"stoplight_sources")
-	stoplight_sources = []
-
-
-func _bind_cells(sources: Array[EditorBindingSource]):
-	var first_source = sources.front() as EditorBindingSource
+func _bind_cells(next_sources: Array[EditorBindingSource]):
+	var first_source = next_sources.front() as EditorBindingSource
 
 	var x_of = func(pos: Vector2): return pos.x
 	var y_of = func(pos: Vector2): return pos.y
@@ -72,27 +44,27 @@ func _bind_cells(sources: Array[EditorBindingSource]):
 
 	var unity_converter = UnifyConverter.from_property(first_source, &"offset")
 
-	for source in sources:
+	for source in next_sources:
 		source.bind(&"pos").using(x_of).using(unity_converter_x).to(_x_box, &"value")
 		source.bind(&"pos").using(y_of).using(unity_converter_y).to(_y_box, &"value")
 
 		source.bind(&"offset").using(unity_converter).to(_offset_box, &"value")
 
-	if len(sources) == 1:
+	if len(next_sources) == 1:
 		var split_cell_creator = SplitCellCreator.new(first_source)
 		first_source.bind(&"split_ids").using(split_cell_creator).to(self, &"_split_cells")
 
 
-func _unbind_cells(sources: Array[EditorBindingSource]):
-	var first_source = sources.front() as EditorBindingSource
+func _unbind_cells(prev_sources: Array[EditorBindingSource]):
+	var first_source = prev_sources.front() as EditorBindingSource
 
-	for source in sources:
+	for source in prev_sources:
 		source.unbind(&"pos").from(_x_box, &"value")
 		source.unbind(&"pos").from(_y_box, &"value")
 
 		source.unbind(&"offset").from(_offset_box, &"value")
 
-	if len(sources) == 1:
+	if len(prev_sources) == 1:
 		first_source.unbind(&"split_ids").from(self, &"_split_cells")
 		_split_cells = []
 
@@ -100,7 +72,7 @@ func _unbind_cells(sources: Array[EditorBindingSource]):
 func _on_x_box_value_changed(new_value):
 	_editor_global.undo_redo.create_action("Change stoplight pos x")
 
-	for source in stoplight_sources:
+	for source in sources:
 		var prev = source.pos as Vector2
 		var next = Vector2(new_value, prev.y)
 
@@ -113,7 +85,7 @@ func _on_x_box_value_changed(new_value):
 func _on_y_box_value_changed(new_value):
 	_editor_global.undo_redo.create_action("Change stoplight pos y")
 
-	for source in stoplight_sources:
+	for source in sources:
 		var prev = source.pos as Vector2
 		var next = Vector2(prev.x, new_value)
 
@@ -126,7 +98,7 @@ func _on_y_box_value_changed(new_value):
 func _on_offset_box_value_changed(new_value: float):
 	_editor_global.undo_redo.create_action("Change stoplight offset")
 
-	for source in stoplight_sources:
+	for source in sources:
 		_editor_global.undo_redo.add_do_property(source, &"offset", new_value)
 		_editor_global.undo_redo.add_undo_property(source, &"offset", source.offset)
 

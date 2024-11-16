@@ -2,22 +2,6 @@ extends EditorPropertyPanelContent
 
 const WEIGHT_LABEL = "Weight %s"
 
-var lane_sources: Array[EditorBindingSource]:
-	get:
-		return lane_sources
-	set(next):
-		var prev = lane_sources
-
-		if not prev.is_empty():
-			_unbind_cells(prev)
-
-		if not next.is_empty():
-			_bind_cells(next)
-
-		lane_sources = next
-
-var _editor_global = editor_global
-
 var _option_cells: Array[Control]:
 	get:
 		return _option_cells
@@ -35,42 +19,30 @@ var _option_cells: Array[Control]:
 @onready var _speed_limit_box = $SpeedLimitBox
 
 
-func get_target_type():
-	return EditorLaneSegments
+func get_target_content_type() -> GDScript:
+	return LaneData
 
 
-func activate():
-	super()
-	var converter = ItemsToSourcesConverter.new(EditorLaneSegments)
-	_editor_global.data.bind(&"selected_items").using(converter).to(self, &"lane_sources")
-
-
-func deactivate():
-	super()
-	_editor_global.data.unbind(&"selected_items").from(self, &"lane_sources")
-	lane_sources = []
-
-
-func _bind_cells(sources: Array[EditorBindingSource]):
-	var first_source = sources.front() as EditorBindingSource
+func _bind_cells(next_sources: Array[EditorBindingSource]):
+	var first_source = next_sources.front() as EditorBindingSource
 
 	var unity_converter = UnifyConverter.from_property(first_source, &"speed_limit")
 
-	for source in sources:
+	for source in next_sources:
 		source.bind(&"speed_limit").using(unity_converter).to(_speed_limit_box, &"value")
 
-	if len(sources) == 1:
+	if len(next_sources) == 1:
 		var option_cell_creator = OptionCellCreator.new()
 		first_source.bind(&"next_option_dict").using(option_cell_creator).to(self, &"_option_cells")
 
 
-func _unbind_cells(sources: Array[EditorBindingSource]):
-	var first_source = sources.front() as EditorBindingSource
+func _unbind_cells(prev_sources: Array[EditorBindingSource]):
+	var first_source = prev_sources.front() as EditorBindingSource
 
-	for source in sources:
+	for source in prev_sources:
 		source.unbind(&"speed_limit").from(_speed_limit_box, &"value")
 
-	if len(sources) == 1:
+	if len(prev_sources) == 1:
 		first_source.unbind(&"next_option_dict").from(self, &"_option_cells")
 		_option_cells = []
 
@@ -78,7 +50,7 @@ func _unbind_cells(sources: Array[EditorBindingSource]):
 func _on_speed_limit_box_value_changed(new_value: float):
 	_editor_global.undo_redo.create_action("Change lane speed limit")
 
-	for source in lane_sources:
+	for source in sources:
 		_editor_global.undo_redo.add_do_property(source, &"speed_limit", new_value)
 		_editor_global.undo_redo.add_undo_property(source, &"speed_limit", source.speed_limit)
 
