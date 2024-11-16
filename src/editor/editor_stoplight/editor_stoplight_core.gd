@@ -51,7 +51,7 @@ func _get_sectors_of(split_ids: Array) -> Array[EditorStoplightSector]:
 
 
 func _bind_sectors(sectors: Array[EditorStoplightSector]):
-	var unify_converter = UnifyConverter.new(self, &"selected", true)
+	var unify_converter = UnifyConverter.from_property(self, &"selected", true)
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
 
 	for sector in sectors:

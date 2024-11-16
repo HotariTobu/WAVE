@@ -52,7 +52,7 @@ func deactivate():
 func _bind_cells(sources: Array[EditorBindingSource]):
 	var first_source = sources.front() as EditorBindingSource
 
-	var unity_converter = UnifyConverter.new(first_source, &'offset')
+	var unity_converter = UnifyConverter.from_property(first_source, &'offset')
 
 	for source in sources:
 		source.bind(&'offset').using(unity_converter).to(_offset_box, &'value')

@@ -54,7 +54,7 @@ func deactivate():
 func _bind_cells(sources: Array[EditorBindingSource]):
 	var first_source = sources.front() as EditorBindingSource
 
-	var unity_converter = UnifyConverter.new(first_source, &"speed_limit")
+	var unity_converter = UnifyConverter.from_property(first_source, &"speed_limit")
 
 	for source in sources:
 		source.bind(&"speed_limit").using(unity_converter).to(_speed_limit_box, &"value")
