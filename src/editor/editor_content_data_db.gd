@@ -22,6 +22,11 @@ func get_group(group_name: StringName) -> Group:
 	return _group_dict[group_name]
 
 
+func group_of(content_id: StringName) -> Group:
+	var group_name = _group_name_dict[content_id]
+	return _group_dict[group_name]
+
+
 func group_name_of(content_id: StringName) -> StringName:
 	return _group_name_dict[content_id]
 
