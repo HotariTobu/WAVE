@@ -62,14 +62,14 @@ func _start_move():
 	_preview_container.position = Vector2.ZERO
 
 	_base_pos = _current_pos
-	_tree.call_group(Group.SELECTION, &"reparent", _preview_container, false)
+	_tree.call_group(NodeGroup.SELECTION, &"reparent", _preview_container, false)
 
 
 func _end_move():
 	if _base_pos == Vector2.INF:
 		return
 
-	var items = _tree.get_nodes_in_group(Group.SELECTION)
+	var items = _tree.get_nodes_in_group(NodeGroup.SELECTION)
 	var movable_node_set = _get_movable_node_set(items)
 	if movable_node_set.is_empty():
 		return
@@ -94,7 +94,7 @@ func _cancel():
 
 func _dispose():
 	_base_pos = Vector2.INF
-	_tree.call_group(Group.SELECTION, &"reparent", _content_container, false)
+	_tree.call_group(NodeGroup.SELECTION, &"reparent", _content_container, false)
 
 
 static func _get_movable_node_set(items: Array):

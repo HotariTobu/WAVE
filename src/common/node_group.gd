@@ -1,3 +1,3 @@
-class_name Group
+class_name NodeGroup
 
 const SELECTION = &"selection"
