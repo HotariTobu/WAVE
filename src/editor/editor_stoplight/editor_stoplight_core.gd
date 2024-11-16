@@ -35,9 +35,9 @@ func _draw():
 
 	var color: Color
 	if selecting:
-		color = setting.stoplight_selecting_color
+		color = setting.selecting_color
 	elif selected:
-		color = setting.stoplight_selected_color
+		color = setting.selected_color
 	else:
 		return
 

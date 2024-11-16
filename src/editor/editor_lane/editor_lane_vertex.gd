@@ -24,17 +24,11 @@ func _draw():
 			Type.START:
 				color = setting.lane_start_point_selecting_color
 			Type.WAY:
-				color = setting.lane_way_point_selecting_color
+				color = setting.selecting_color
 			Type.END:
 				color = setting.lane_end_point_selecting_color
 	elif selected:
-		match type:
-			Type.START:
-				color = setting.lane_start_point_selected_color
-			Type.WAY:
-				color = setting.lane_way_point_selected_color
-			Type.END:
-				color = setting.lane_end_point_selected_color
+		color = setting.selected_color
 	else:
 		return
 
