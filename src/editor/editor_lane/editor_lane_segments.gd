@@ -37,10 +37,10 @@ func _draw():
 	var color: Color
 	if block_targeting:
 		color = setting.lane_block_targeting_color
-	elif block_targeted:
-		color = setting.lane_block_targeted_color
 	elif selecting:
 		color = setting.selecting_color
+	elif block_targeted:
+		color = setting.lane_block_targeted_color
 	elif selected:
 		color = setting.selected_color
 	else:

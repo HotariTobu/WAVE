@@ -25,8 +25,8 @@ func _update_process():
 
 func _update_z_index():
 	if block_targeting:
-		z_index = 4
+		z_index = 2
 	elif block_targeted:
-		z_index = 3
+		z_index = 1
 	else:
 		super()
