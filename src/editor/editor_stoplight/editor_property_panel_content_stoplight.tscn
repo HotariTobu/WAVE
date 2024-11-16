@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bmtl50s4f3xx6"]
+[gd_scene load_steps=4 format=3 uid="uid://bmtl50s4f3xx6"]
 
 [ext_resource type="Script" path="res://src/editor/editor_stoplight/editor_property_panel_content_stoplight.gd" id="1_xnxg7"]
 [ext_resource type="Script" path="res://src/editor/editor_ui/numeric_box.gd" id="2_gxjhw"]
+[ext_resource type="PackedScene" uid="uid://rxqbforscflu" path="res://src/editor/editor_ui/vector_2_panel.tscn" id="2_y6l7q"]
 
 [node name="EditorPropertyPanelContentStoplight" type="GridContainer"]
 script = ExtResource("1_xnxg7")
@@ -15,6 +16,13 @@ layout_mode = 2
 mouse_filter = 2
 
 [node name="Label2" type="Label" parent="."]
+layout_mode = 2
+text = "Pos"
+
+[node name="PosPanel" parent="." instance=ExtResource("2_y6l7q")]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="."]
 layout_mode = 2
 text = "Offset"
 
