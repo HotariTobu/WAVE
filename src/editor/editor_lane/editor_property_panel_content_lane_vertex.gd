@@ -19,11 +19,6 @@ var _editor_global = editor_global
 @onready var _pos_panel = $PosPanel
 
 
-func _ready():
-	$PosPanel/XRow/Label.set_deferred(&"size_flags_horizontal", Control.SIZE_FILL)
-	$PosPanel/YRow/Label.set_deferred(&"size_flags_horizontal", Control.SIZE_FILL)
-
-
 func get_target_type():
 	return EditorLaneVertex
 

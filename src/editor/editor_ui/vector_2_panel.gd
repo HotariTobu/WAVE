@@ -14,6 +14,11 @@ signal value_changed(new_value: Vector2)
 @onready var _y_box = $YRow/NumericBox
 
 
+func _ready():
+	$XRow/Label.size_flags_horizontal = SIZE_FILL
+	$YRow/Label.size_flags_horizontal = SIZE_FILL
+
+
 func get_x_box() -> NumericBox:
 	return _x_box
 

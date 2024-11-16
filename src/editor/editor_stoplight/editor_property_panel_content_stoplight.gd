@@ -129,7 +129,7 @@ class SplitCellCreator:
 		duration_box.value_changed.connect(_on_duration_box_value_changed.bind(split_source))
 
 		var remove_split_button = IconButton.new(CrossIcon)
-		remove_split_button.set_deferred(&'size_flags_horizontal', Control.SIZE_FILL)
+		remove_split_button.size_flags_horizontal |= SIZE_NO_EXPAND
 		_connect_hover_signals_for_selecting(remove_split_button, stoplight_sector_node)
 		remove_split_button.pressed.connect(_on_remove_split_button_pressed.bind(split))
 
