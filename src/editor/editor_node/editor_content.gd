@@ -21,8 +21,8 @@ func _init(content: ContentData, layer: int):
 
 func _ready():
 	super()
-	owner = get_tree().root
-
+	_editor_global.set_content_node_owner(self)
+	
 	_source = _editor_global.source_db.get_or_add(_data)
 
 
