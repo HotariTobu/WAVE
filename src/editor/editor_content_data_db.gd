@@ -76,7 +76,7 @@ class Group:
 
 			for content in new_contents:
 				_content_dict[content.id] = content
-				_group_name_dict[content.id] = self
+				_group_name_dict[content.id] = _name
 
 			var typed_array = Array(new_contents, TYPE_OBJECT, &"RefCounted", ContentData)
 			contents_renewed.emit(typed_array)
