@@ -91,11 +91,13 @@ class Group:
 		_group_name_dict = group_name_dict
 
 	func add(content: ContentData) -> void:
+		assert(not _content_dict.has(content.id))
 		_content_dict[content.id] = content
 		_group_name_dict[content.id] = _name
 		content_added.emit(content)
 
 	func remove(content: ContentData) -> void:
+		assert(_content_dict.has(content.id))
 		_content_dict.erase(content.id)
 		_group_name_dict.erase(content.id)
 		content_removed.emit(content)
