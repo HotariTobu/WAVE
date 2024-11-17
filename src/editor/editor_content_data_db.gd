@@ -34,15 +34,15 @@ func group_name_of(content_id: StringName) -> StringName:
 func add(group_name: StringName, content: ContentData) -> void:
 	var group = _group_dict[group_name] as Group
 	group._content_dict[content.id] = content
-	group.content_added.emit(content)
 	_group_name_dict[content.id] = group_name
+	group.content_added.emit(content)
 
 
 func remove(group_name: StringName, content: ContentData) -> void:
 	var group = _group_dict[group_name] as Group
 	group._content_dict.erase(content.id)
-	group.content_removed.emit(content)
 	_group_name_dict.erase(content.id)
+	group.content_removed.emit(content)
 
 
 func has_of(content_id: StringName) -> bool:
@@ -69,9 +69,14 @@ class Group:
 			return _content_dict.values()
 
 		set(new_contents):
+			for content_id in _content_dict:
+				_group_name_dict.erase(content_id)
+
 			_content_dict.clear()
+
 			for content in new_contents:
 				_content_dict[content.id] = content
+				_group_name_dict[content.id] = self
 
 			var typed_array = Array(new_contents, TYPE_OBJECT, &"RefCounted", ContentData)
 			contents_renewed.emit(typed_array)
@@ -87,13 +92,13 @@ class Group:
 
 	func add(content: ContentData) -> void:
 		_content_dict[content.id] = content
-		content_added.emit(content)
 		_group_name_dict[content.id] = _name
+		content_added.emit(content)
 
 	func remove(content: ContentData) -> void:
 		_content_dict.erase(content.id)
-		content_removed.emit(content)
 		_group_name_dict.erase(content.id)
+		content_removed.emit(content)
 
 	func has_of(content_id: StringName) -> bool:
 		return _content_dict.has(content_id)
