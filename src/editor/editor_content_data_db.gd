@@ -18,6 +18,7 @@ func _init(group_name_list: Array):
 
 	_group_dict.make_read_only()
 
+
 func get_group(group_name: StringName) -> Group:
 	return _group_dict[group_name]
 
@@ -33,16 +34,12 @@ func group_name_of(content_id: StringName) -> StringName:
 
 func add(group_name: StringName, content: ContentData) -> void:
 	var group = _group_dict[group_name] as Group
-	group._content_dict[content.id] = content
-	_group_name_dict[content.id] = group_name
-	group.content_added.emit(content)
+	group.add(content)
 
 
 func remove(group_name: StringName, content: ContentData) -> void:
 	var group = _group_dict[group_name] as Group
-	group._content_dict.erase(content.id)
-	_group_name_dict.erase(content.id)
-	group.content_removed.emit(content)
+	group.remove(content)
 
 
 func has_of(content_id: StringName) -> bool:
@@ -52,7 +49,7 @@ func has_of(content_id: StringName) -> bool:
 func data_of(content_id: StringName) -> ContentData:
 	var group_name = _group_name_dict[content_id]
 	var group = _group_dict[group_name] as Group
-	return group._content_dict[content_id]
+	return group.data_of(content_id)
 
 
 class Group:
