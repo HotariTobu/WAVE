@@ -178,7 +178,6 @@ class SplitCellCreator:
 		var prev = _stoplight_source.split_ids as Array
 		var next = prev.duplicate()
 		next.append(split.id)
-		next.make_read_only()
 
 		_editor_global.undo_redo.create_action("Add stoplight split")
 
@@ -195,7 +194,6 @@ class SplitCellCreator:
 		var prev = _stoplight_source.split_ids as Array
 		var next = prev.duplicate()
 		next.erase(split.id)
-		next.make_read_only()
 
 		_editor_global.undo_redo.create_action("Remove stoplight split")
 

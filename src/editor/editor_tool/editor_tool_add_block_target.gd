@@ -149,7 +149,6 @@ func _add_block_target(target: ContentData):
 		var prev = source_source.block_target_ids as Array
 		var next = prev.duplicate()
 		next.append(target.id)
-		next.make_read_only()
 
 		_editor_global.undo_redo.add_do_property(source_source, &"block_target_ids", next)
 		_editor_global.undo_redo.add_undo_property(source_source, &"block_target_ids", prev)
@@ -164,7 +163,6 @@ func _remove_block_target(target: ContentData):
 		var prev = source_source.block_target_ids as Array
 		var next = prev.duplicate()
 		next.erase(target.id)
-		next.make_read_only()
 
 		_editor_global.undo_redo.add_do_property(source_source, &"block_target_ids", next)
 		_editor_global.undo_redo.add_undo_property(source_source, &"block_target_ids", prev)

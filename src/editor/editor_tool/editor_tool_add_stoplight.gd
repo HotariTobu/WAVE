@@ -51,8 +51,6 @@ func _add_new_stoplight():
 		split_ids.append(split.id)
 		new_splits.append(split)
 
-	split_ids.make_read_only()
-
 	var stoplight = StoplightData.new()
 	stoplight.pos = get_local_mouse_position()
 	stoplight.offset = setting.default_stoplight_offset

@@ -206,16 +206,12 @@ func _commit_lane():
 
 		new_vertices.append(vertex)
 
-	vertex_ids.make_read_only()
-
 	var next_option_dict: Dictionary
 
 	for lane in _next_lanes:
 		var option = LaneData.OptionData.new()
 		option.weight = setting.default_option_weight
 		next_option_dict[lane.id] = option
-
-	next_option_dict.make_read_only()
 
 	var new_lane = LaneData.new()
 	new_lane.vertex_ids = vertex_ids
@@ -240,7 +236,6 @@ func _commit_lane():
 		var prev = lane.next_option_dict
 		var next = prev.duplicate()
 		next[new_lane.id] = option
-		next.make_read_only()
 
 		var source = _editor_global.source_db.get_or_add(lane)
 		_editor_global.undo_redo.add_do_property(source, &"next_option_dict", next)
