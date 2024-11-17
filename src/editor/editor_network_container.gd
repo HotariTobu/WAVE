@@ -13,6 +13,7 @@ var content_node_script_dict = {
 @onready var _content_container = $ContentContainer
 @onready var _tool_container = $ToolContainer
 
+
 func _init():
 	content_node_script_dict.make_read_only()
 
@@ -21,8 +22,11 @@ func _ready():
 	_editor_global.camera = _camera
 
 	for group in _editor_global.content_db.groups:
+		var node_dict: Dictionary
 		var script = content_node_script_dict[group.name]
-		_connect_content_db(group, script)
+		group.contents_renewed.connect(_renew_content_node.bind(node_dict, script))
+		group.content_added.connect(_add_content_node.bind(node_dict, script))
+		group.content_removed.connect(_remove_content_node.bind(node_dict))
 
 	var tools: Array[EditorTool] = []
 	for child in _tool_container.get_children():
@@ -31,13 +35,6 @@ func _ready():
 
 	_editor_global.data.tools = tools
 	_editor_global.data.tool = tools[0]
-
-
-func _connect_content_db(group: EditorContentDataDB.Group, script: GDScript):
-	var node_dict: Dictionary
-	group.contents_renewed.connect(_renew_content_node.bind(node_dict, script))
-	group.content_added.connect(_add_content_node.bind(node_dict, script))
-	group.content_removed.connect(_remove_content_node.bind(node_dict))
 
 
 func _renew_content_node(contents: Array[ContentData], node_dict: Dictionary, script: GDScript):
