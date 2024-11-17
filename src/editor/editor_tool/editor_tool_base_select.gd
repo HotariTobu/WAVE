@@ -11,7 +11,7 @@ var _last_hovered_item: EditorSelectable:
 
 		if prev != null:
 			prev.selecting = false
-			_on_decselecting(prev)
+			_on_deselecting(prev)
 
 		if next != null:
 			next.selecting = true
@@ -83,7 +83,7 @@ func _on_selecting(_item: EditorSelectable):
 	pass
 
 
-func _on_decselecting(_item: EditorSelectable):
+func _on_deselecting(_item: EditorSelectable):
 	pass
 
 

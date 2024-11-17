@@ -77,7 +77,7 @@ func _on_selecting(item: EditorSelectable):
 	_update_targets_visibility(item, _are_targets_visible)
 
 
-func _on_decselecting(item: EditorSelectable):
+func _on_deselecting(item: EditorSelectable):
 	_update_targets_visibility(item, false)
 
 
