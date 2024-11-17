@@ -24,7 +24,7 @@ func _ready():
 	for group in _editor_global.content_db.groups:
 		var node_dict: Dictionary
 		var script = content_node_script_dict[group.name]
-		group.contents_renewed.connect(_renew_content_node.bind(node_dict, script))
+		group.contents_renewed.connect(_renew_content_nodes.bind(node_dict, script))
 		group.content_added.connect(_add_content_node.bind(node_dict, script))
 		group.content_removed.connect(_remove_content_node.bind(node_dict))
 
@@ -37,7 +37,7 @@ func _ready():
 	_editor_global.data.tool = tools[0]
 
 
-func _renew_content_node(contents: Array[ContentData], node_dict: Dictionary, script: GDScript):
+func _renew_content_nodes(contents: Array[ContentData], node_dict: Dictionary, script: GDScript):
 	for node in node_dict.values():
 		node.queue_free()
 
