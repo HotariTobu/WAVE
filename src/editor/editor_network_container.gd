@@ -1,13 +1,13 @@
 extends Node2D
 
-var _editor_global = editor_global
-
 var content_node_script_dict = {
 	&"lane_vertices": EditorLaneVertex,
 	&"lanes": EditorLaneSegments,
 	&"splits": EditorStoplightSector,
 	&"stoplights": EditorStoplightCore,
 }
+
+var _editor_global = editor_global
 
 @onready var _camera = $Camera
 @onready var _content_container = $ContentContainer
