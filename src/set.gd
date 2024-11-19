@@ -3,8 +3,12 @@ class_name Set
 var _data: Dictionary
 
 
-func add(value: Variant) -> void:
+func add(value: Variant) -> bool:
+	if value in _data:
+		return false
+
 	_data[value] = null
+	return true
 
 
 func add_all(values: Array) -> void:
