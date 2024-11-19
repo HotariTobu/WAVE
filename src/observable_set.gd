@@ -32,7 +32,7 @@ func clear() -> void:
 
 
 func duplicate(deep: bool = false) -> Set:
-	var new_set = super()
+	var new_set = super(deep)
 	duplicated.emit()
 	return new_set
 
