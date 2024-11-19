@@ -66,13 +66,13 @@ func make_read_only() -> void:
 	_data.make_read_only()
 
 
-func merge(another: Set, overwrite: bool = false) -> void:
-	_data.merge(another._data, overwrite)
+func merge(another: Set) -> void:
+	_data.merge(another._data)
 
 
-func merged(another: Set, overwrite: bool = false) -> Set:
+func merged(another: Set) -> Set:
 	var new_set = Set.new()
-	new_set._data = _data.merged(another._data, overwrite)
+	new_set._data = _data.merged(another._data)
 	return new_set
 
 
