@@ -60,11 +60,11 @@ func _get_sectors_of(split_ids: Array) -> Array[EditorStoplightSector]:
 	return Array(sectors, TYPE_OBJECT, &"Area2D", EditorStoplightSector)
 
 
-func _bind_sectors(sectors: Array[EditorStoplightSector]):
+func _bind_sectors(next_sectors: Array[EditorStoplightSector]):
 	var unify_converter = UnifyConverter.from_property(self, &"selected", true)
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
 
-	for sector in sectors:
+	for sector in next_sectors:
 		_source.bind(&"pos").to(sector, &"position")
 
 		var sector_source = _editor_global.source_db.get_or_add(sector, &"notified")
@@ -76,10 +76,10 @@ func _bind_sectors(sectors: Array[EditorStoplightSector]):
 		split_source.add_callback(&"duration", _update_sectors)
 
 
-func _unbind_sectors(sectors: Array[EditorStoplightSector]):
+func _unbind_sectors(prev_sectors: Array[EditorStoplightSector]):
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
 
-	for sector in sectors:
+	for sector in prev_sectors:
 		_source.unbind(&"pos").from(sector, &"position")
 
 		var sector_source = _editor_global.source_db.get_or_add(sector, &"notified")
