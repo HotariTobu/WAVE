@@ -16,16 +16,19 @@ var _vertices: Array[VertexData]:
 		queue_redraw()
 		_update_center()
 
-@onready var _lane_vertex_db = _editor_global.content_db.get_group(&"lane_vertices")
+var _lane_vertex_db = _editor_global.content_db.get_group(&"lane_vertices")
+
 
 func _init(lane: LaneData):
 	super(lane, EditorPhysicsLayer.LANE_SEGMENTS)
 
 
-func _ready():
-	super()
-
+func _enter_tree():
 	_source.bind(&"vertex_ids").using(_get_vertices_of).to(self, &"_vertices")
+
+
+func _exit_tree():
+	_source.unbind(&"vertex_ids").from(self, &"_vertices")
 
 
 func _draw():

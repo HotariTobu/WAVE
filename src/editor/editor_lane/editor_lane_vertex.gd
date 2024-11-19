@@ -13,10 +13,12 @@ func _init(vertex: VertexData):
 	add_child(create_point())
 
 
-func _ready():
-	super()
-
+func _enter_tree():
 	_source.bind(&"pos").to(self, &"position")
+
+
+func _exit_tree():
+	_source.unbind(&"pos").from(self, &"position")
 
 
 func _draw():

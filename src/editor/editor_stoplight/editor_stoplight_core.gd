@@ -20,14 +20,20 @@ func _init(stoplight: StoplightData):
 	add_child(create_point())
 
 
-func _ready():
-	super()
-
+func _enter_tree():
 	_source.bind(&"pos").to(self, &"position")
 	_source.bind(&"split_ids").using(_get_sectors_of).to(self, &"_sectors")
 
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
 	core_source.bind(&"selected").to(core_source, &"opened")
+
+
+func _exit_tree():
+	_source.unbind(&"pos").from(self, &"position")
+	_source.unbind(&"split_ids").from(self, &"_sectors")
+
+	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
+	core_source.unbind(&"selected").from(core_source, &"opened")
 
 
 func _draw():

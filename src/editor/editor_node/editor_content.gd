@@ -17,13 +17,12 @@ func _init(content: ContentData, layer: int):
 	name = content.id
 
 	_data = content
+	_source = _editor_global.source_db.get_or_add(_data)
 
 
 func _ready():
 	super()
 	_editor_global.set_content_node_owner(self)
-	
-	_source = _editor_global.source_db.get_or_add(_data)
 
 
 static func data_of(node: EditorContent) -> ContentData:
