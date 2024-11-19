@@ -108,9 +108,13 @@ func _remove_segment_collision_shapes(vertices: Array[VertexData]):
 
 
 func _update_center():
+	var points = _vertices.map(VertexData.pos_of)
+	if len(points) < 2:
+		return
+
 	var curve = Curve2D.new()
-	for vertex in _vertices:
-		curve.add_point(vertex.pos)
+	for point in points:
+		curve.add_point(point)
 
 	var length = curve.get_baked_length()
 	_center = curve.sample_baked(length / 2)
