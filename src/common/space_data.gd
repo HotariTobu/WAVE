@@ -1,7 +1,7 @@
 class_name SpaceData
 extends SegmentsData
 
-var block_target_ids: Array
+var block_target_ids: Array[StringName]
 
 static func to_dict(data: ContentData) -> Dictionary:
 	assert(data is SpaceData)
