@@ -2,6 +2,15 @@ class_name EditorBindingSource
 extends BindingSource
 
 
+func _set(property, value):
+	super(property, value)
+
+	if not has_user_signal(property):
+		return
+
+	emit_signal(property)
+
+
 func add_callback(property: StringName, callback: Callable):
 	assert(property in _source_object)
 	assert(callback.is_valid())
@@ -20,12 +29,3 @@ func remove_callback(property: StringName, callback: Callable):
 
 	if get_signal_connection_list(property).is_empty():
 		remove_user_signal(property)
-
-
-func _set(property, value):
-	super(property, value)
-
-	if not has_user_signal(property):
-		return
-
-	emit_signal(property)
