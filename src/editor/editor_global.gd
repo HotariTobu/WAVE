@@ -50,7 +50,11 @@ func set_content_node_owner(content_node: EditorContent):
 
 
 func get_content_node(content_id: StringName) -> EditorContent:
-	return _content_owner.get_node("%" + content_id)
+	var node = _content_owner.get_node("%" + content_id)
+	
+	assert(node != null)
+	
+	return node
 
 
 class Data:
