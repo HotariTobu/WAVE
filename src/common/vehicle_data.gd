@@ -9,7 +9,7 @@ var min_following_distance: float
 var max_following_distance: float
 
 
-static func to_dict(data: ContentData) -> Dictionary:
+static func to_dict(data: VehicleData) -> Dictionary:
 	return {
 		&"length": data.length,
 		&"relative_speed": data.relative_speed,
@@ -19,9 +19,9 @@ static func to_dict(data: ContentData) -> Dictionary:
 	}
 
 
-static func from_dict(dict: Dictionary, script: GDScript = ContentData) -> ContentData:
+static func from_dict(dict: Dictionary, script: GDScript = VehicleData) -> VehicleData:
 	var data = script.new()
-	assert(data is ContentData)
+	assert(data is VehicleData)
 	data.length = dict.get(&"length", NAN)
 	data.relative_speed = dict.get(&"relative_speed", NAN)
 	data.max_speed = dict.get(&"max_speed", NAN)
