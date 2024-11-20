@@ -11,6 +11,7 @@ var _editor_global = editor_global
 	EditorMenuButton.new('Edit', [
 		EditorMenuItem.new('Undo', _editor_global.undo_redo.undo, &'ui_undo'),
 		EditorMenuItem.new('Redo', _editor_global.undo_redo.redo, &'ui_redo'),
+		EditorMenuItem.new('Delete', $Delete.delete_selection, &'ui_text_delete'),
 	]),
 ]
 
