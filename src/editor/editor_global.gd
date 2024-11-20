@@ -9,40 +9,27 @@ var camera: PanZoomCamera
 
 var network_file_path: String
 
-var content_data_script_dict = {
-	&"lane_vertices": VertexData,
-	&"lanes": LaneData,
-	&"splits": SplitData,
-	&"stoplights": StoplightData,
-}
-
-var content_db = EditorContentDataDB.new(content_data_script_dict.keys())
+var content_db = EditorContentDataDB.new(NetworkData.group_names)
 
 @onready var _content_owner = get_tree().root
 
 
-func _init():
-	content_data_script_dict.make_read_only()
+func get_network_dict() -> Dictionary:
+	var network = NetworkData.new()
+
+	for group in content_db.groups:
+		network[group.name] = group.contents
+
+	return NetworkData.to_dict(network)
 
 
-func to_dict() -> Dictionary:
-	var dict: Dictionary
-
-	for group_name in content_data_script_dict:
-		var group = content_db.get_group(group_name)
-		var script = content_data_script_dict[group_name]
-		dict[group_name] = group.contents.map(script.to_dict)
-
-	return dict
-
-
-func from_dict(dict: Dictionary):
+func set_network_dict(dict: Dictionary):
 	undo_redo.clear_history()
 
-	for group_name in content_data_script_dict:
-		var group = content_db.get_group(group_name)
-		var script = content_data_script_dict[group_name]
-		group.contents = dict.get(group_name, []).map(script.from_dict)
+	var network = NetworkData.from_dict(dict)
+
+	for group in content_db.groups:
+		group.contents = network[group.name]
 
 
 func set_content_node_owner(content_node: EditorContent):
@@ -51,9 +38,9 @@ func set_content_node_owner(content_node: EditorContent):
 
 func get_content_node(content_id: StringName) -> EditorContent:
 	var node = _content_owner.get_node("%" + content_id)
-	
+
 	assert(node != null)
-	
+
 	return node
 
 

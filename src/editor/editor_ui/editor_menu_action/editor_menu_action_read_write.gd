@@ -32,8 +32,8 @@ func _read_network(path: String):
 		_show_error('Failed to open file', error)
 		return
 
-	var network = file.get_var()
-	_editor_global.from_dict(network)
+	var network_dict = file.get_var()
+	_editor_global.set_network_dict(network_dict)
 
 	file.close()
 
@@ -47,8 +47,8 @@ func _write_network(path: String):
 		_show_error('Failed to open file', error)
 		return
 
-	var network = _editor_global.to_dict()
-	file.store_var(network)
+	var network_dict = _editor_global.get_network_dict()
+	file.store_var(network_dict)
 
 	file.close()
 
