@@ -23,6 +23,7 @@ static func _static_init():
 
 static func to_dict(data: NetworkData) -> Dictionary:
 	var dict: Dictionary
+	dict[&"version"] = 0
 
 	for group_name in content_data_script_dict:
 		var script = content_data_script_dict[group_name]
@@ -32,10 +33,16 @@ static func to_dict(data: NetworkData) -> Dictionary:
 
 
 static func from_dict(dict: Dictionary) -> NetworkData:
+	var version = dict.get(&"version")
+
 	var data = NetworkData.new()
 
-	for group_name in content_data_script_dict:
-		var script = content_data_script_dict[group_name]
-		data[group_name] = dict.get(group_name, []).map(script.from_dict)
+	match version:
+		0:
+			for group_name in content_data_script_dict:
+				var script = content_data_script_dict[group_name]
+				data[group_name] = dict.get(group_name, []).map(script.from_dict)
+		_:
+			return null
 
 	return data
