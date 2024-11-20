@@ -14,19 +14,17 @@ var content_db = EditorContentDataDB.new(NetworkData.group_names)
 @onready var _content_owner = get_tree().root
 
 
-func get_network_dict() -> Dictionary:
+func get_network() -> NetworkData:
 	var network = NetworkData.new()
 
 	for group in content_db.groups:
 		network[group.name] = group.contents
 
-	return NetworkData.to_dict(network)
+	return network
 
 
-func set_network_dict(dict: Dictionary):
+func set_network(network: NetworkData):
 	undo_redo.clear_history()
-
-	var network = NetworkData.from_dict(dict)
 
 	for group in content_db.groups:
 		group.contents = network[group.name]
