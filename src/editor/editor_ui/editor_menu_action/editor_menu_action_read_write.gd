@@ -66,10 +66,10 @@ func _write_network(path: String):
 	_editor_global.network_file_path = path
 
 
-func _show_error(message: String, error = OK):
+func _show_error(message: String, error = null):
 	var text: String
 
-	if error == OK:
+	if error == null:
 		text = message
 	else:
 		text = "%s: %s" % [message, error_string(error)]
