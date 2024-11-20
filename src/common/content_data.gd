@@ -18,7 +18,7 @@ static func id_of(data: ContentData) -> StringName:
 
 static func to_dict(data: ContentData) -> Dictionary:
 	return {
-		&"id": id_of(data),
+		&"id": data.id,
 	}
 
 
