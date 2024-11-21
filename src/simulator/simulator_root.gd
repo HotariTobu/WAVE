@@ -2,13 +2,13 @@ extends Node
 
 enum NetworkSource { MEMORY, FILE }
 
-const Status = Simulator.Status
+const Status = SimulatorManager.Status
 
 var _parameter = ParameterData.new()
 
 var _data = BindingSource.new(Data.new(), &"notified")
 
-var _simulator: Simulator = null
+var _simulator: SimulatorManager = null
 var _thread = Thread.new()
 var _mutex = Mutex.new()
 
@@ -80,7 +80,7 @@ func _run_simulation() -> SimulationData:
 		NetworkSource.FILE:
 			network = _read_network(network_file_path)
 
-	var simulator = Simulator.new(parameter, network)
+	var simulator = SimulatorManager.new(parameter, network)
 	simulator.status_changed.connect(_on_simulator_status_changed)
 
 	_mutex.lock()

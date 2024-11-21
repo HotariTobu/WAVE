@@ -1,4 +1,4 @@
-class_name Simulator
+class_name SimulatorManager
 
 signal status_changed(new_status: Status)
 
