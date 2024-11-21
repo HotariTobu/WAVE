@@ -18,7 +18,7 @@ signal path_changed(new_path: String)
 		$PathBox.editable = value
 		$BrowseButton.disabled = not value
 
-@export var file_mode: FileDialog.FileMode:
+@export var file_mode: FileDialog.FileMode = FileDialog.FILE_MODE_SAVE_FILE:
 	get:
 		return $FileDialog.file_mode
 	set(value):
