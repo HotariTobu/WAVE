@@ -36,11 +36,11 @@ layout_mode = 2
 button_group = SubResource("ButtonGroup_uebk0")
 text = "Use a network read from an external file"
 
-[node name="NetworkPathRow" type="MarginContainer" parent="VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 30
 
-[node name="NetworkPathPanel" parent="VBoxContainer/NetworkPathRow" instance=ExtResource("3_0g5ep")]
+[node name="NetworkPathPanel" parent="VBoxContainer/MarginContainer" instance=ExtResource("3_0g5ep")]
 unique_name_in_owner = true
 layout_mode = 2
 filters = PackedStringArray("*.wavenetwork")
