@@ -3,12 +3,14 @@ class_name SimulatorPreparedData
 var network = SimulatorNetworkData.new()
 
 var ordered_lane: Array[SimulatorLaneData]
+var entry_lanes: Array[SimulatorLaneData]
 
 
 func _init(should_exit: Callable, parameter: ParameterData, common_network: NetworkData):
 	network.assign(common_network)
 
 	_init_ordered_lane(should_exit)
+	_init_entry_lanes()
 
 	breakpoint
 
@@ -47,3 +49,9 @@ func _init_ordered_lane(should_exit: Callable):
 					rest_lanes.append(prev_lane)
 
 		lanes = rest_lanes.filter(unvisited)
+
+
+func _init_entry_lanes():
+	for lane in network.lanes:
+		if lane.prev_lanes.is_empty():
+			entry_lanes.append(lane)
