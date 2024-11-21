@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://of3bmugoqexm"]
+
+[ext_resource type="Script" path="res://src/simulator/path_panel.gd" id="1_s7g4y"]
+
+[node name="PathPanel" type="HBoxContainer"]
+offset_right = 459.0
+offset_bottom = 31.0
+script = ExtResource("1_s7g4y")
+
+[node name="PathBox" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BrowseButton" type="Button" parent="."]
+layout_mode = 2
+text = "Browse..."
+
+[node name="FileDialog" type="FileDialog" parent="."]
+ok_button_text = "Save"
+access = 2
+use_native_dialog = true
+
+[connection signal="text_submitted" from="PathBox" to="." method="_on_path_box_text_submitted"]
+[connection signal="pressed" from="BrowseButton" to="." method="_on_browse_button_pressed"]
+[connection signal="dir_selected" from="FileDialog" to="." method="_on_file_dialog_dir_selected"]
+[connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]

@@ -1,0 +1,105 @@
+[gd_scene load_steps=6 format=3 uid="uid://b8b0o7kbfcpfo"]
+
+[ext_resource type="Script" path="res://src/simulator/simulator_root.gd" id="1_ssr3d"]
+[ext_resource type="PackedScene" uid="uid://blg6o7cni0t0n" path="res://src/simulator/parameter_panel.tscn" id="2_wry1n"]
+[ext_resource type="PackedScene" uid="uid://of3bmugoqexm" path="res://src/simulator/path_panel.tscn" id="3_0g5ep"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_6oqft"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_uebk0"]
+
+[node name="SimulatorRoot" type="VBoxContainer"]
+offset_right = 800.0
+offset_bottom = 146.0
+script = ExtResource("1_ssr3d")
+
+[node name="ParameterPanel" parent="." instance=ExtResource("2_wry1n")]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="NetworkMemoryOption" type="CheckBox" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+button_group = SubResource("ButtonGroup_6oqft")
+text = "Use the current network"
+
+[node name="NetworkFileOption" type="CheckBox" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+button_group = SubResource("ButtonGroup_uebk0")
+text = "Use a network read from an external file"
+
+[node name="NetworkPathRow" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+
+[node name="NetworkPathPanel" parent="VBoxContainer/NetworkPathRow" instance=ExtResource("3_0g5ep")]
+unique_name_in_owner = true
+layout_mode = 2
+filters = PackedStringArray("*.wavenetwork")
+
+[node name="HSeparator2" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 30
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="StartButton" type="Button" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Start"
+
+[node name="CancelButton" type="Button" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Cancel"
+
+[node name="SaveButton" type="Button" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Save"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ProgressBarTimer" type="Timer" parent="."]
+autostart = true
+
+[node name="SimulationSaveFileDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+size = Vector2i(207, 175)
+access = 2
+filters = PackedStringArray("*.wavesimulation")
+use_native_dialog = true
+
+[node name="ErrorAcceptDialog" type="AcceptDialog" parent="."]
+auto_translate_mode = 1
+title = "Error!"
+initial_position = 1
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="timeout" from="ProgressBarTimer" to="." method="_on_progress_bar_timer_timeout"]
+[connection signal="file_selected" from="SimulationSaveFileDialog" to="." method="_on_simulation_save_file_dialog_file_selected"]

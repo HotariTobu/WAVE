@@ -33,3 +33,6 @@ var stoplight_sector_saturation = 0.5
 
 var lane_block_targeted_color = Color("#f01616")
 var lane_block_targeting_color = Color(lane_block_targeted_color, 0.5)
+
+var default_step_delta = 10
+var default_max_step = 10
