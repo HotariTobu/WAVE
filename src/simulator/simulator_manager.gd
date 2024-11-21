@@ -26,18 +26,12 @@ var _status: Status = Status.INITIALIZED:
 var _is_canceled: bool = false
 var _is_prepared: bool = false
 
-var _should_exit: bool:
-	get:
-		if _is_canceled:
-			_status = Status.CANCELED
-			return true
-
-		return false
+var _current_step: int
 
 var _parameter: ParameterData
 var _network: NetworkData
 
-var _current_step: int
+var _prepared_data: SimulatorPreparedData
 
 
 func _init(parameter: ParameterData, network: NetworkData):
@@ -55,11 +49,10 @@ func prepare() -> void:
 
 	_current_step = 0
 
-	for _i in range(5):
-		if _should_exit:
-			return
+	_prepared_data = SimulatorPreparedData.new(_should_exit, _parameter, _network)
 
-		OS.delay_msec(1000)
+	if _should_exit():
+		return
 
 	_status = Status.PREPARED
 	_is_prepared = true
@@ -79,7 +72,7 @@ func start() -> SimulationData:
 	for step in range(_parameter.max_step):
 		_current_step = step
 
-		if _should_exit:
+		if _should_exit():
 			return null
 
 		OS.delay_msec(1000)
@@ -90,3 +83,11 @@ func start() -> SimulationData:
 
 func stop() -> void:
 	_is_canceled = true
+
+
+func _should_exit():
+	if _is_canceled:
+		_status = Status.CANCELED
+		return true
+
+	return false
