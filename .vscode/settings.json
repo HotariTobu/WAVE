@@ -5,6 +5,7 @@
 		"roundi",
 		"targetable",
 		"targetables",
-		"wavenetwork"
+		"wavenetwork",
+		"wavesimulation"
 	]
 }

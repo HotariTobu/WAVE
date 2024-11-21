@@ -32,8 +32,8 @@ func _ready():
 	_data.bind(&"indeterminate").to(%ProgressBar, &"indeterminate")
 	_data.bind(&"sync_progress").using(invert_converter).to($ProgressBarTimer, &"paused")
 
-	_data.bind(&"max_progress_valule").using(BindingUtils.to_float).to(%ProgressBar, &"max_value")
-	_data.bind(&"progress_valule").using(BindingUtils.to_float).to_progress_bar(%ProgressBar)
+	_data.bind(&"max_progress_value").using(BindingUtils.to_float).to(%ProgressBar, &"max_value")
+	_data.bind(&"progress_value").using(BindingUtils.to_float).to_progress_bar(%ProgressBar)
 
 	_data.bind(&"simulation").using(case.new(Data.NULL_SIMULATION)).to(%SaveButton, &"disabled")
 
@@ -44,10 +44,10 @@ func _exit_tree():
 
 func _status_hook(status: Status) -> Status:
 	if status == Status.RUNNING:
-		_data.progress_valule = 0
+		_data.progress_value = 0
 
 	elif status == Status.COMPLETED:
-		_data.progress_valule = _data.max_progress_valule
+		_data.progress_value = _data.max_progress_value
 		_data.simulation = _thread.wait_to_finish()
 
 	return status
@@ -86,7 +86,7 @@ func _run_simulation() -> SimulationData:
 	_mutex.lock()
 	_simulator = simulator
 	_data.set_deferred(&"status", Status.INITIALIZED)
-	_data.set_deferred(&"max_progress_valule", parameter.max_step)
+	_data.set_deferred(&"max_progress_value", parameter.max_step)
 	_mutex.unlock()
 
 	simulator.prepare()
@@ -137,7 +137,7 @@ func _on_progress_bar_timer_timeout():
 	var current_step = _simulator.current_step
 	_mutex.unlock()
 
-	_data.progress_valule = current_step
+	_data.progress_value = current_step
 
 
 func _on_simulation_save_file_dialog_file_selected(path):
@@ -238,7 +238,7 @@ class Data:
 	var indeterminate: bool
 	var sync_progress: bool
 
-	var max_progress_valule: int
-	var progress_valule: int
+	var max_progress_value: int
+	var progress_value: int
 
 	var simulation: SimulationData = NULL_SIMULATION
