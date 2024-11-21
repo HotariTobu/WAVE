@@ -24,12 +24,18 @@ func _ready():
 	_data.bind(&"network_source").using(case.new(NetworkSource.FILE)).to(%NetworkPathPanel, &"enable")
 	_data.bind(&"network_file_path").to(%NetworkPathPanel, &"path", &"path_changed")
 
-	var invert_converter = InvertBoolBindingConverter.new()
 	_data.bind(&"status").using(_status_hook).using(_get_status_label).to_label(%StatusLabel)
+	_data.bind(&"status").using(_status_to_start_disabled).to(%StartButton, &"disabled")
+	_data.bind(&"status").using(_status_to_cancel_disabled).to(%CancelButton, &"disabled")
+
+	var invert_converter = InvertBoolBindingConverter.new()
 	_data.bind(&"indeterminate").to(%ProgressBar, &"indeterminate")
 	_data.bind(&"sync_progress").using(invert_converter).to($ProgressBarTimer, &"paused")
+
 	_data.bind(&"max_progress_valule").using(BindingUtils.to_float).to(%ProgressBar, &"max_value")
 	_data.bind(&"progress_valule").using(BindingUtils.to_float).to_progress_bar(%ProgressBar)
+
+	_data.bind(&"simulation").using(case.new(Data.NULL_SIMULATION)).to(%SaveButton, &"disabled")
 
 
 func _exit_tree():
@@ -45,6 +51,14 @@ func _status_hook(status: Status) -> Status:
 		_data.simulation = _thread.wait_to_finish()
 
 	return status
+
+
+func _status_to_start_disabled(status: Status) -> bool:
+	return status not in [Status.INITIALIZED, Status.COMPLETED, Status.CANCELED]
+
+
+func _status_to_cancel_disabled(status: Status) -> bool:
+	return status not in [Status.PREPARING, Status.RUNNING]
 
 
 func _run_simulation() -> SimulationData:
