@@ -12,6 +12,7 @@ var _simulator: Simulator = null
 var _thread = Thread.new()
 var _mutex = Mutex.new()
 
+
 func _ready():
 	_parameter = $ParameterPanel.parameter
 
@@ -29,12 +30,16 @@ func _ready():
 	_data.bind(&"sync_progress").using(invert_converter).to($ProgressBarTimer, &"paused")
 	_data.bind(&"max_progress_valule").using(BindingUtils.to_float).to(%ProgressBar, &"max_value")
 	_data.bind(&"progress_valule").using(BindingUtils.to_float).to_progress_bar(%ProgressBar)
-	
+
+
+func _exit_tree():
+	_on_cancel_button_pressed()
+
 
 func _status_hook(status: Status) -> Status:
 	if status == Status.RUNNING:
 		_data.progress_valule = 0
-		
+
 	elif status == Status.COMPLETED:
 		_data.progress_valule = _data.max_progress_valule
 		_data.simulation = _thread.wait_to_finish()
@@ -72,7 +77,7 @@ func _run_simulation() -> SimulationData:
 
 	simulator.prepare()
 	var simulation = simulator.start()
-	
+
 	if simulation == null:
 		return Data.NULL_SIMULATION
 
@@ -153,7 +158,7 @@ func _read_network(path: String) -> NetworkData:
 
 func _write_simulation(path: String, simulation: SimulationData):
 	var simulation_dict = SimulationData.to_dict(simulation)
-	
+
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		var error = FileAccess.get_open_error()
@@ -162,6 +167,7 @@ func _write_simulation(path: String, simulation: SimulationData):
 
 	file.store_var(simulation_dict)
 	file.close()
+
 
 func _show_error(message: String, error = null):
 	var text: String
