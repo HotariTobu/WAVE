@@ -16,6 +16,7 @@ var _option_cells: Array[Control]:
 
 		_option_cells = next
 
+@onready var _traffic_box = $TrafficBox
 @onready var _speed_limit_box = $SpeedLimitBox
 
 
@@ -26,10 +27,12 @@ func get_target_content_type() -> GDScript:
 func _bind_cells(next_sources: Array[EditorBindingSource]):
 	var first_source = next_sources.front() as EditorBindingSource
 
-	var unity_converter = UnifyConverter.from_property(first_source, &"speed_limit")
+	var traffic_converter = UnifyConverter.from_property(first_source, &"traffic")
+	var speed_limit_converter = UnifyConverter.from_property(first_source, &"speed_limit")
 
 	for source in next_sources:
-		source.bind(&"speed_limit").using(unity_converter).to(_speed_limit_box, &"value")
+		source.bind(&"traffic").using(traffic_converter).to(_traffic_box, &"value")
+		source.bind(&"speed_limit").using(speed_limit_converter).to(_speed_limit_box, &"value")
 
 	if len(next_sources) == 1:
 		var option_cell_creator = OptionCellCreator.new()
@@ -40,11 +43,22 @@ func _unbind_cells(prev_sources: Array[EditorBindingSource]):
 	var first_source = prev_sources.front() as EditorBindingSource
 
 	for source in prev_sources:
+		source.unbind(&"traffic").from(_traffic_box, &"value")
 		source.unbind(&"speed_limit").from(_speed_limit_box, &"value")
 
 	if len(prev_sources) == 1:
 		first_source.unbind(&"next_option_dict").from(self, &"_option_cells")
 		_option_cells = []
+
+
+func _on_traffic_box_value_changed(new_value):
+	_editor_global.undo_redo.create_action("Change lane traffic")
+
+	for source in sources:
+		_editor_global.undo_redo.add_do_property(source, &"traffic", new_value)
+		_editor_global.undo_redo.add_undo_property(source, &"traffic", source.traffic)
+
+	_editor_global.undo_redo.commit_action()
 
 
 func _on_speed_limit_box_value_changed(new_value: float):

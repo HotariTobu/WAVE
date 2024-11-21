@@ -1,6 +1,7 @@
 class_name SimulatorLaneData
 extends SimulatorSpaceData
 
+var traffic: int
 var speed_limit: int
 var next_option_dict: Dictionary
 
@@ -11,6 +12,7 @@ var prev_lanes: Array[SimulatorLaneData]
 func assign(content: ContentData, data_of: Callable) -> void:
 	super(content, data_of)
 	var lane = content as LaneData
+	traffic = lane.traffic
 	speed_limit = lane.speed_limit
 	assign_dict(&"next_option_dict", lane.next_option_dict, data_of)
 

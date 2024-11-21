@@ -1,6 +1,7 @@
 class_name LaneData
 extends SpaceData
 
+var traffic: float
 var speed_limit: int
 var next_option_dict: Dictionary
 
@@ -23,6 +24,7 @@ var _next_option_dict: Dictionary:
 static func to_dict(data: ContentData) -> Dictionary:
 	assert(data is LaneData)
 	var dict = super(data)
+	dict[&"traffic"] = data.traffic
 	dict[&"speed_limit"] = data.speed_limit
 	dict[&"next_option_dict"] = data._next_option_dict
 	return dict
@@ -31,6 +33,7 @@ static func to_dict(data: ContentData) -> Dictionary:
 static func from_dict(dict: Dictionary, script: GDScript = LaneData) -> ContentData:
 	var data = super(dict, script)
 	assert(data is LaneData)
+	data.traffic = dict.get(&"traffic", NAN)
 	data.speed_limit = dict.get(&"speed_limit", NAN)
 	data._next_option_dict = dict.get(&"next_option_dict", {})
 	return data
