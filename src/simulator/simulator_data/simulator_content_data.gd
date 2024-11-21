@@ -1,8 +1,10 @@
 class_name SimulatorContentData
 
+var id: StringName
 
-func assign(_content: ContentData, _data_of: Callable) -> void:
-	pass
+
+func assign(content: ContentData, _data_of: Callable) -> void:
+	id = content.id
 
 
 func assign_array(self_property: StringName, base_array: Array, data_of: Callable) -> void:
