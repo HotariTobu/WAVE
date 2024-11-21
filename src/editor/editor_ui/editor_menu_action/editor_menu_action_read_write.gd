@@ -52,13 +52,14 @@ func _read_network(path: String):
 
 
 func _write_network(path: String):
+	var network = _editor_global.get_network()
+	var network_dict = NetworkData.to_dict(network)
+
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		var error = FileAccess.get_open_error()
 		_show_error("Failed to open file", error)
 		return
-
-	var network_dict = _editor_global.get_network_dict()
 
 	file.store_var(network_dict)
 	file.close()
