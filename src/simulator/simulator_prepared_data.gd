@@ -1,5 +1,11 @@
 class_name SimulatorPreparedData
 
+var step_delta: float
+var max_step: int
+
+var vehicle_spawn_before_start: bool
+var vehicle_spawn_after_start: bool
+
 var network = SimulatorNetworkData.new()
 
 var ordered_lane: Array[SimulatorLaneData]
@@ -11,12 +17,18 @@ static var rng = RandomNumberGenerator.new()
 
 
 func _init(should_exit: Callable, parameter: ParameterData, common_network: NetworkData):
+	step_delta = parameter.step_delta
+	max_step = parameter.max_step
+
+	vehicle_spawn_before_start = parameter.vehicle_spawn_before_start
+	vehicle_spawn_after_start = parameter.vehicle_spawn_after_start
+
 	network.assign(common_network)
 
 	_init_ordered_lane(should_exit)
-	_init_entry_lanes()
+	_init_entry_lanes(should_exit)
 
-	_init_vehicles(parameter)
+	_init_vehicles(should_exit, parameter)
 
 	breakpoint
 
@@ -68,13 +80,16 @@ func _init_ordered_lane(should_exit: Callable):
 		lanes = rest_lanes.filter(unvisited)
 
 
-func _init_entry_lanes():
+func _init_entry_lanes(should_exit: Callable):
 	for lane in network.lanes:
+		if should_exit.call():
+			return
+
 		if lane.prev_lanes.is_empty():
 			entry_lanes.append(lane)
 
 
-func _init_vehicles(parameter: ParameterData):
+func _init_vehicles(should_exit: Callable, parameter: ParameterData):
 	var vehicle_count = parameter.vehicle_spawn_limit
 	vehicles.resize(vehicle_count)
 
@@ -87,6 +102,9 @@ func _init_vehicles(parameter: ParameterData):
 	var max_following_distance_rng = NormalDistributionRangeRandom.new(rng, parameter.vehicle_max_following_distance_range, parameter.vehicle_max_following_distance_mean)
 
 	for index in range(vehicle_count):
+		if should_exit.call():
+			return
+
 		var vehicle = VehicleData.new()
 		vehicles[index] = vehicle
 
