@@ -10,13 +10,13 @@ var vehicle_spawn_limit: int
 var vehicle_length_options: Array[RandomOption]
 
 var vehicle_relative_speed_range: IntRange
-var vehicle_relative_speed_average: int
+var vehicle_relative_speed_mean: int
 var vehicle_max_speed_range: IntRange
-var vehicle_max_speed_average: int
+var vehicle_max_speed_mean: int
 var vehicle_min_following_distance_range: IntRange
-var vehicle_min_following_distance_average: int
+var vehicle_min_following_distance_mean: int
 var vehicle_max_following_distance_range: IntRange
-var vehicle_max_following_distance_average: int
+var vehicle_max_following_distance_mean: int
 
 
 static func to_dict(data: ParameterData) -> Dictionary:
@@ -28,13 +28,13 @@ static func to_dict(data: ParameterData) -> Dictionary:
 		&"vehicle_spawn_limit": data.vehicle_spawn_limit,
 		&"vehicle_length_options": data.vehicle_length_options.map(RandomOption.to_dict),
 		&"vehicle_relative_speed_range": IntRange.to_dict(data.vehicle_relative_speed_range),
-		&"vehicle_relative_speed_average": data.vehicle_relative_speed_average,
+		&"vehicle_relative_speed_mean": data.vehicle_relative_speed_mean,
 		&"vehicle_max_speed_range": IntRange.to_dict(data.vehicle_max_speed_range),
-		&"vehicle_max_speed_average": data.vehicle_max_speed_average,
+		&"vehicle_max_speed_mean": data.vehicle_max_speed_mean,
 		&"vehicle_min_following_distance_range": IntRange.to_dict(data.vehicle_min_following_distance_range),
-		&"vehicle_min_following_distance_average": data.vehicle_min_following_distance_average,
+		&"vehicle_min_following_distance_mean": data.vehicle_min_following_distance_mean,
 		&"vehicle_max_following_distance_range": IntRange.to_dict(data.vehicle_max_following_distance_range),
-		&"vehicle_max_following_distance_average": data.vehicle_max_following_distance_average,
+		&"vehicle_max_following_distance_mean": data.vehicle_max_following_distance_mean,
 	}
 
 
@@ -47,13 +47,13 @@ static func from_dict(dict: Dictionary) -> ParameterData:
 	data.vehicle_spawn_limit = dict.get(&"vehicle_spawn_limit", NAN)
 	data.vehicle_length_options.assign(dict.get(&"vehicle_length_options", NAN).map(RandomOption.from_dict))
 	data.vehicle_relative_speed_range = IntRange.from_dict(dict.get(&"vehicle_relative_speed_range", NAN))
-	data.vehicle_relative_speed_average = dict.get(&"vehicle_relative_speed_average", NAN)
+	data.vehicle_relative_speed_mean = dict.get(&"vehicle_relative_speed_mean", NAN)
 	data.vehicle_max_speed_range = IntRange.from_dict(dict.get(&"vehicle_max_speed_range", NAN))
-	data.vehicle_max_speed_average = dict.get(&"vehicle_max_speed_average", NAN)
+	data.vehicle_max_speed_mean = dict.get(&"vehicle_max_speed_mean", NAN)
 	data.vehicle_min_following_distance_range = IntRange.from_dict(dict.get(&"vehicle_min_following_distance_range", NAN))
-	data.vehicle_min_following_distance_average = dict.get(&"vehicle_min_following_distance_average", NAN)
+	data.vehicle_min_following_distance_mean = dict.get(&"vehicle_min_following_distance_mean", NAN)
 	data.vehicle_max_following_distance_range = IntRange.from_dict(dict.get(&"vehicle_max_following_distance_range", NAN))
-	data.vehicle_max_following_distance_average = dict.get(&"vehicle_max_following_distance_average", NAN)
+	data.vehicle_max_following_distance_mean = dict.get(&"vehicle_max_following_distance_mean", NAN)
 	return data
 
 
@@ -72,9 +72,7 @@ class RandomOption:
 		}
 
 	static func from_dict(dict: Dictionary) -> RandomOption:
-		var value = dict.get(&"value", NAN)
-		var weight = dict.get(&"weight", NAN)
-		return RandomOption.new(value, weight)
+		return RandomOption.new(dict[&"value"], dict[&"weight"])
 
 
 class IntRange:
@@ -92,6 +90,4 @@ class IntRange:
 		}
 
 	static func from_dict(dict: Dictionary) -> IntRange:
-		var begin = dict.get(&"begin", NAN)
-		var end = dict.get(&"end", NAN)
-		return IntRange.new(begin, end)
+		return IntRange.new(dict[&"begin"], dict[&"end"])
