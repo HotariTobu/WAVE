@@ -13,6 +13,7 @@ var vehicle_relative_speed_range: IntRange
 var vehicle_relative_speed_mean: int
 var vehicle_max_speed_range: IntRange
 var vehicle_max_speed_mean: int
+
 var vehicle_min_following_distance_range: IntRange
 var vehicle_min_following_distance_mean: int
 var vehicle_max_following_distance_range: IntRange
@@ -64,6 +65,12 @@ class RandomOption:
 	func _init(_value: Variant, _weight: float):
 		value = _value
 		weight = _weight
+
+	static func value_of(data: RandomOption) -> Variant:
+		return data.value
+
+	static func weight_of(data: RandomOption) -> float:
+		return data.weight
 
 	static func to_dict(data: RandomOption) -> Dictionary:
 		return {
