@@ -2,7 +2,7 @@ class_name Spot
 
 enum Shape {CIRCLE, TRIANGLE, SQUARE}
 
-static func draw_to(canvas: CanvasItem, color: Color, radius: float, shape: Shape):
+static func draw_to(canvas: CanvasItem, color: Color, radius: float, shape: Shape) -> void:
 	match shape:
 		Shape.CIRCLE:
 			canvas.draw_circle(Vector2.ZERO, radius, color)
