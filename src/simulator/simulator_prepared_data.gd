@@ -1,47 +1,40 @@
 class_name SimulatorPreparedData
 
-var step_delta: float
-var max_step: int
+const BASE_TRAFFIC_LENGTH = 100
 
-var vehicle_spawn_before_start: bool
-var vehicle_spawn_after_start: bool
-
+var parameter: ParameterData
 var network = SimulatorNetworkData.new()
 
-var ordered_lane: Array[SimulatorLaneData]
-var entry_lanes: Array[SimulatorLaneData]
+var rng = RandomNumberGenerator.new()
 
+var ordered_lane: Array[SimulatorLaneData]
+
+var vehicle_creator: SimulatorVehicleCreator
 var vehicles: Array[VehicleData]
 
-static var rng = RandomNumberGenerator.new()
+var entry_lanes: Array[SimulatorLaneData]
 
 
-func _init(should_exit: Callable, parameter: ParameterData, common_network: NetworkData):
-	step_delta = parameter.step_delta
-	max_step = parameter.max_step
+func _init(should_exit: Callable, parameter_data: ParameterData, network_data: NetworkData):
+	parameter = parameter_data
+	network.assign(network_data)
 
-	vehicle_spawn_before_start = parameter.vehicle_spawn_before_start
-	vehicle_spawn_after_start = parameter.vehicle_spawn_after_start
-
-	network.assign(common_network)
+	_init_rng_seed()
 
 	_init_ordered_lane(should_exit)
-	_init_entry_lanes(should_exit)
 
-	_init_vehicles(should_exit, parameter)
+	vehicle_creator = SimulatorVehicleCreator.new(rng, parameter)
+
+	_init_entry_lanes(should_exit)
 
 	breakpoint
 
 
-static func _static_init():
-	var crypto = Crypto.new()
-	var seed_num = 0
-	var seed_bytes = crypto.generate_random_bytes(4)
-	seed_num |= seed_bytes[0] << 24
-	seed_num |= seed_bytes[1] << 16
-	seed_num |= seed_bytes[2] << 8
-	seed_num |= seed_bytes[3]
-	rng.seed = seed_num
+func _init_rng_seed():
+	if parameter.random_seed < 0:
+		rng.randomize()
+	else:
+		rng.seed = parameter.random_seed
 
 
 func _init_ordered_lane(should_exit: Callable):
@@ -79,8 +72,64 @@ func _init_ordered_lane(should_exit: Callable):
 
 		lanes = rest_lanes.filter(unvisited)
 
+	ordered_lane.make_read_only()
+
+
+func _init_initial_vehicles(should_exit: Callable):
+	if not parameter.vehicle_spawn_before_start:
+		return
+
+	for lane in ordered_lane:
+		if should_exit.call():
+			return
+
+		var scale = ceili(lane.length / BASE_TRAFFIC_LENGTH)
+		var snapped_length = BASE_TRAFFIC_LENGTH * scale
+		var scaled_traffic = lane.traffic * scale
+		var trial_number = roundi(scaled_traffic)
+
+		var secured = lane.overflowed
+		var pending_vehicles: Array[VehicleData]
+
+		for _i in range(trial_number):
+			if lane.length < secured:
+				break
+
+			if lane.length < rng.randi_range(0, snapped_length):
+				continue
+
+			var vehicle = vehicle_creator.create()
+
+			secured += vehicle.length
+			pending_vehicles.append(vehicle)
+
+		var pending_vehicle_count = len(pending_vehicles)
+		var margin = maxf(lane.length - secured, 0.0)
+		var next_pos = lane.overflowed
+
+		for index in range(pending_vehicle_count):
+			var rest_count = pending_vehicle_count - index
+			var gap = rng.randf_range(0.0, margin / rest_count)
+
+			var pos = next_pos + gap
+			var vehicle = pending_vehicles[index]
+
+			var item = SimulatorLaneData.VehiclePos.new()
+			item.pos = pos
+			item.vehicle = vehicle
+			lane.items.append(item)
+
+			margin -= gap
+			next_pos = item.pos + vehicle.length
+
+		lane.update_overflowing()
+		vehicles.append_array(pending_vehicles)
+
 
 func _init_entry_lanes(should_exit: Callable):
+	if not parameter.vehicle_spawn_after_start:
+		return
+
 	for lane in network.lanes:
 		if should_exit.call():
 			return
@@ -88,72 +137,4 @@ func _init_entry_lanes(should_exit: Callable):
 		if lane.prev_lanes.is_empty():
 			entry_lanes.append(lane)
 
-
-func _init_vehicles(should_exit: Callable, parameter: ParameterData):
-	var vehicle_count = parameter.vehicle_spawn_limit
-	vehicles.resize(vehicle_count)
-
-	var length_rng = WeightedArrayRandom.new(rng, parameter.vehicle_length_options)
-
-	var relative_speed_rng = NormalDistributionRangeRandom.new(rng, parameter.vehicle_relative_speed_range, parameter.vehicle_relative_speed_mean)
-	var max_speed_rng = NormalDistributionRangeRandom.new(rng, parameter.vehicle_max_speed_range, parameter.vehicle_max_speed_mean)
-
-	var min_following_distance_rng = NormalDistributionRangeRandom.new(rng, parameter.vehicle_min_following_distance_range, parameter.vehicle_min_following_distance_mean)
-	var max_following_distance_rng = NormalDistributionRangeRandom.new(rng, parameter.vehicle_max_following_distance_range, parameter.vehicle_max_following_distance_mean)
-
-	for index in range(vehicle_count):
-		if should_exit.call():
-			return
-
-		var vehicle = VehicleData.new()
-		vehicles[index] = vehicle
-
-		vehicle.length = length_rng.next()
-
-		vehicle.relative_speed = relative_speed_rng.next()
-		vehicle.max_speed = max_speed_rng.next()
-
-		vehicle.min_following_distance = min_following_distance_rng.next()
-		vehicle.max_following_distance = max_following_distance_rng.next()
-
-
-class WeightedArrayRandom:
-	var _rng: RandomNumberGenerator
-
-	var _weights: PackedFloat32Array
-	var _values: PackedFloat32Array
-
-	func _init(rng: RandomNumberGenerator, options: Array[ParameterData.RandomOption]):
-		_rng = rng
-
-		var weights = options.map(ParameterData.RandomOption.weight_of)
-		var values = options.map(ParameterData.RandomOption.value_of)
-		_weights = PackedFloat32Array(weights)
-		_values = PackedFloat32Array(values)
-
-	func next() -> float:
-		var index = _rng.rand_weighted(_weights)
-		return _values[index]
-
-
-class NormalDistributionRangeRandom:
-	var _rng: RandomNumberGenerator
-
-	var _min_value: float
-	var _max_value: float
-
-	var _mean: float
-	var _deviation: float
-
-	func _init(rng: RandomNumberGenerator, range_value: ParameterData.IntRange, mean: int):
-		_rng = rng
-
-		_min_value = range_value.begin
-		_max_value = range_value.end
-
-		_mean = mean
-		_deviation = minf(abs(_min_value - mean), abs(_max_value - mean))
-
-	func next() -> float:
-		var value = _rng.randfn(_mean, _deviation)
-		return clampf(value, _min_value, _max_value)
+	entry_lanes.make_read_only()
