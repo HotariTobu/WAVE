@@ -11,6 +11,17 @@ static func draw_to(canvas: CanvasItem, points: PackedVector2Array, color: Color
 	for index in range(point_count - 1):
 		var from = points[index]
 		var to = points[index + 1]
-		var side = from.direction_to(to).orthogonal() * half_width
-		var segment_points = [from + side, from - side, to]
+		
+		var normal = from.direction_to(to).orthogonal()
+		
+		var from_side = normal * width
+		var to_side = normal * half_width
+		
+		var segment_points = [
+			from + from_side,
+			from - from_side,
+			to - to_side,
+			to + to_side,
+		]
+		
 		canvas.draw_colored_polygon(segment_points, color)

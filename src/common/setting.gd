@@ -2,7 +2,7 @@ class_name Setting
 extends Node
 
 var lane_color = Color("#b2b2b2")
-var lane_width = 2.0
+var lane_width = 1.5
 
 var stoplight_color = Color("#fffdd4")
 var stoplight_radius = 4.0
