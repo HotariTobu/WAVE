@@ -1,17 +1,17 @@
 [gd_scene load_steps=4 format=3 uid="uid://blg6o7cni0t0n"]
 
-[ext_resource type="Script" path="res://src/simulator/parameter_panel.gd" id="1_kvo3v"]
+[ext_resource type="Script" path="res://src/simulator/simulator_parameter_panel.gd" id="1_kvo3v"]
 [ext_resource type="Script" path="res://src/editor/editor_ui/numeric_box.gd" id="1_nvq3g"]
 [ext_resource type="LabelSettings" uid="uid://dn2qcijbjp0kh" path="res://src/header_label.tres" id="3_3f7yv"]
 
-[node name="ParameterPanel" type="HBoxContainer"]
+[node name="SimulatorParameterPanel" type="HBoxContainer"]
 offset_right = 219.0
 offset_bottom = 189.0
+script = ExtResource("1_kvo3v")
 
 [node name="GridContainer" type="GridContainer" parent="."]
 layout_mode = 2
 columns = 2
-script = ExtResource("1_kvo3v")
 
 [node name="Label" type="Label" parent="GridContainer"]
 layout_mode = 2

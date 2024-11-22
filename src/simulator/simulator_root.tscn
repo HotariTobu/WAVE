@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://b8b0o7kbfcpfo"]
 
 [ext_resource type="Script" path="res://src/simulator/simulator_root.gd" id="1_ssr3d"]
-[ext_resource type="PackedScene" uid="uid://blg6o7cni0t0n" path="res://src/simulator/parameter_panel.tscn" id="2_wry1n"]
+[ext_resource type="PackedScene" uid="uid://blg6o7cni0t0n" path="res://src/simulator/simulator_parameter_panel.tscn" id="2_wry1n"]
 [ext_resource type="PackedScene" uid="uid://of3bmugoqexm" path="res://src/simulator/path_panel.tscn" id="3_0g5ep"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_6oqft"]
@@ -14,7 +14,6 @@ offset_bottom = 146.0
 script = ExtResource("1_ssr3d")
 
 [node name="ParameterPanel" parent="." instance=ExtResource("2_wry1n")]
-custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
