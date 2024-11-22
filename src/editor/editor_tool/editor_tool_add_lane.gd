@@ -328,6 +328,9 @@ func _unselect():
 
 
 func _calc_initial_traffic() -> float:
+	if setting.force_default_lane_traffic:
+		return setting.default_lane_traffic
+		
 	if _prev_lanes.is_empty():
 		return setting.default_lane_traffic
 
@@ -347,6 +350,9 @@ func _calc_initial_traffic() -> float:
 
 
 func _calc_initial_speed_limit() -> int:
+	if setting.force_default_lane_speed_limit:
+		return setting.default_lane_speed_limit
+		
 	var sum_speed_limit = 0.0
 
 	for lane in _prev_lanes:
