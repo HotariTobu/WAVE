@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://blg6o7cni0t0n"]
+[gd_scene load_steps=4 format=3 uid="uid://blg6o7cni0t0n"]
 
 [ext_resource type="Script" path="res://src/simulator/parameter_panel.gd" id="1_kvo3v"]
 [ext_resource type="Script" path="res://src/editor/editor_ui/numeric_box.gd" id="1_nvq3g"]
+[ext_resource type="LabelSettings" uid="uid://dn2qcijbjp0kh" path="res://src/header_label.tres" id="3_3f7yv"]
 
 [node name="ParameterPanel" type="GridContainer"]
 offset_right = 300.0
@@ -32,3 +33,34 @@ size_flags_horizontal = 3
 select_all_on_focus = true
 script = ExtResource("1_nvq3g")
 suffix = " step"
+
+[node name="Label3" type="Label" parent="."]
+layout_mode = 2
+text = "Vehicle"
+label_settings = ExtResource("3_3f7yv")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="Label4" type="Label" parent="."]
+layout_mode = 2
+text = "Spawn before start"
+
+[node name="VehicleSpawnBeforeStartSwitch" type="CheckButton" parent="."]
+layout_mode = 2
+
+[node name="Label5" type="Label" parent="."]
+layout_mode = 2
+text = "Spawn after start"
+
+[node name="VehicleSpawnAfterStartSwitch" type="CheckButton" parent="."]
+layout_mode = 2
+
+[node name="Label6" type="Label" parent="."]
+layout_mode = 2
+text = "Spawn limit"
+
+[node name="VehicleSpawnLimitBox" type="LineEdit" parent="."]
+layout_mode = 2
+select_all_on_focus = true
+script = ExtResource("1_nvq3g")

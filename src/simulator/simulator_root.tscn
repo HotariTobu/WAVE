@@ -14,7 +14,7 @@ offset_bottom = 146.0
 script = ExtResource("1_ssr3d")
 
 [node name="ParameterPanel" parent="." instance=ExtResource("2_wry1n")]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
