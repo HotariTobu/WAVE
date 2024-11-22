@@ -38,6 +38,32 @@ var lane_block_targeting_color = Color(lane_block_targeted_color, 0.5)
 var default_step_delta = 10
 var default_max_step = 10
 
-var default_vehicle_spawn_before_start: = true
+var default_vehicle_spawn_before_start := true
 var default_vehicle_spawn_after_start = true
 var default_vehicle_spawn_limit = 1
+
+var default_vehicle_length_options = [
+	ParameterData.RandomOption.new(2.5, 6.7),
+	ParameterData.RandomOption.new(3.0, 6.7),
+	ParameterData.RandomOption.new(3.4, 6.7),
+	ParameterData.RandomOption.new(4.1, 138.3),
+	ParameterData.RandomOption.new(4.7, 138.3),
+	ParameterData.RandomOption.new(4.8, 138.3),
+	ParameterData.RandomOption.new(5.0, 44),
+	ParameterData.RandomOption.new(6.0, 77),
+	ParameterData.RandomOption.new(7.0, 77),
+	ParameterData.RandomOption.new(8.0, 28.5),
+	ParameterData.RandomOption.new(9.0, 28.5),
+	ParameterData.RandomOption.new(10.0, 24.5),
+	ParameterData.RandomOption.new(11.0, 24.5),
+	ParameterData.RandomOption.new(12.0, 20),
+]
+
+var default_vehicle_relative_speed_range = ParameterData.IntRange.new(0, 30)
+var default_vehicle_relative_speed_average = 10
+var default_vehicle_max_speed_range = ParameterData.IntRange.new(80, 150)
+var default_vehicle_max_speed_average = 110
+var default_vehicle_min_following_distance_range = ParameterData.IntRange.new(1, 5)
+var default_vehicle_min_following_distance_average = 2
+var default_vehicle_max_following_distance_range = ParameterData.IntRange.new(10, 100)
+var default_vehicle_max_following_distance_average = 50
