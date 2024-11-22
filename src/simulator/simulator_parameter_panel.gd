@@ -30,10 +30,10 @@ var _vehicle_length_cells: Array[Control]:
 func _ready():
 	_parameter.step_delta = setting.default_step_delta
 	_parameter.max_step = setting.default_max_step
+	_parameter.random_seed = setting.default_random_seed
 
 	_parameter.vehicle_spawn_before_start = setting.default_vehicle_spawn_before_start
 	_parameter.vehicle_spawn_after_start = setting.default_vehicle_spawn_after_start
-	_parameter.vehicle_spawn_limit = setting.default_vehicle_spawn_limit
 
 	_parameter.vehicle_length_options = setting.default_vehicle_length_options
 
@@ -48,10 +48,10 @@ func _ready():
 
 	_source.bind(&"step_delta").to(%StepDeltaBox, &"value", &"value_changed")
 	_source.bind(&"max_step").to(%MaxStepBox, &"value", &"value_changed")
+	_source.bind(&"random_seed").to(%RandomSeed, &"value", &"value_changed")
 
 	_source.bind(&"vehicle_spawn_before_start").to_check_button(%VehicleSpawnBeforeStartSwitch)
 	_source.bind(&"vehicle_spawn_after_start").to_check_button(%VehicleSpawnAfterStartSwitch)
-	_source.bind(&"vehicle_spawn_limit").to(%VehicleSpawnLimitBox, &"value", &"value_changed")
 
 	var vehicle_length_option_cell_creator = RandomOptionCellCreator.new()
 	vehicle_length_option_cell_creator.suffix = " m"
@@ -96,7 +96,7 @@ class RandomOptionCellCreator:
 	extends BindingConverter
 
 	signal option_removed(option: ParameterData.RandomOption)
-	
+
 	var prefix: String
 	var suffix: String
 

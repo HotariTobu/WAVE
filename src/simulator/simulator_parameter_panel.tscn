@@ -36,6 +36,15 @@ layout_mode = 2
 script = ExtResource("1_nvq3g")
 suffix = " step(s)"
 
+[node name="Label6" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Random seed"
+
+[node name="RandomSeed" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+
 [node name="HSeparator" type="HSeparator" parent="GridContainer"]
 layout_mode = 2
 
@@ -65,15 +74,6 @@ text = "Spawn after start"
 [node name="VehicleSpawnAfterStartSwitch" type="CheckButton" parent="GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-
-[node name="Label6" type="Label" parent="GridContainer"]
-layout_mode = 2
-text = "Spawn limit"
-
-[node name="VehicleSpawnLimitBox" type="LineEdit" parent="GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-script = ExtResource("1_nvq3g")
 
 [node name="Label7" type="Label" parent="GridContainer"]
 layout_mode = 2
