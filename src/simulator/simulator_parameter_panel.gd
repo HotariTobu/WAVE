@@ -55,6 +55,7 @@ func _ready():
 
 	var vehicle_length_option_cell_creator = RandomOptionCellCreator.new()
 	vehicle_length_option_cell_creator.suffix = " m"
+	vehicle_length_option_cell_creator.min_value = 1.0
 	_source.bind(&"vehicle_length_options").using(vehicle_length_option_cell_creator).to(self, &"_vehicle_length_cells")
 	vehicle_length_option_cell_creator.option_removed.connect(_on_vehicle_length_option_remove_button_pressed)
 
@@ -99,6 +100,8 @@ class RandomOptionCellCreator:
 
 	var prefix: String
 	var suffix: String
+	var min_value: float = -INF
+	var max_value: float = INF
 
 	var _option_source_dict: Dictionary
 
@@ -119,6 +122,8 @@ class RandomOptionCellCreator:
 		var value_box = NumericBox.new()
 		value_box.prefix = prefix
 		value_box.suffix = suffix
+		value_box.min_value = min_value
+		value_box.max_value = max_value
 		source.bind(&"value").to(value_box, &"value", value_box.value_changed)
 
 		var weight_box = NumericBox.new()

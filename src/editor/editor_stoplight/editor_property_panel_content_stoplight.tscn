@@ -31,5 +31,6 @@ layout_mode = 2
 select_all_on_focus = true
 script = ExtResource("2_gxjhw")
 suffix = " s"
+min_value = 0.0
 
 [connection signal="value_changed" from="OffsetBox" to="." method="_on_offset_box_value_changed"]
