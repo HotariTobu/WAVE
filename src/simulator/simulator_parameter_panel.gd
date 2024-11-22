@@ -123,7 +123,7 @@ class RandomOptionCellCreator:
 
 		var weight_box = NumericBox.new()
 		weight_box.min_value = 0
-		source.bind(&"value").to(weight_box, &"value", weight_box.value_changed)
+		source.bind(&"weight").to(weight_box, &"value", weight_box.value_changed)
 
 		var remove_button = IconButton.new(CrossIcon)
 		remove_button.pressed.connect(_on_remove_button_pressed.bind(option))
