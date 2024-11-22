@@ -13,6 +13,9 @@ var _editor_global = editor_global
 		EditorMenuItem.new('Redo', _editor_global.undo_redo.redo, &'ui_redo'),
 		EditorMenuItem.new('Delete', $Delete.delete_selection, &'ui_text_delete'),
 	]),
+	EditorMenuButton.new('Simulation', [
+		EditorMenuItem.new('Run...', $Simulation.open_simulator_window),
+	]),
 ]
 
 var _just_closed = false

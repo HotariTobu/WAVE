@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://s2ceebgwvycn"]
+
+[ext_resource type="Script" path="res://src/editor/editor_ui/editor_menu_action/editor_menu_action_simulation.gd" id="1_y8iws"]
+[ext_resource type="PackedScene" uid="uid://b8b0o7kbfcpfo" path="res://src/simulator/simulator_root.tscn" id="2_1xbsh"]
+
+[node name="EditorMenuActionSimulation" type="Node"]
+script = ExtResource("1_y8iws")
+
+[node name="SimulatorWindow" type="Window" parent="."]
+title = "Simulator"
+initial_position = 1
+size = Vector2i(1000, 800)
+visible = false
+force_native = true
+
+[node name="CenterContainer" type="CenterContainer" parent="SimulatorWindow"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SimulatorRoot" parent="SimulatorWindow/CenterContainer" instance=ExtResource("2_1xbsh")]
+layout_mode = 2
+
+[connection signal="close_requested" from="SimulatorWindow" to="." method="_on_simulator_window_close_requested"]
