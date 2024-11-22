@@ -72,7 +72,7 @@ class RandomOption:
 		}
 
 	static func from_dict(dict: Dictionary) -> RandomOption:
-		return RandomOption.new(dict[&"value"], dict[&"weight"])
+		return RandomOption.new(dict.get(&"value", 0), dict.get(&"weight", 0))
 
 
 class IntRange:
@@ -90,4 +90,4 @@ class IntRange:
 		}
 
 	static func from_dict(dict: Dictionary) -> IntRange:
-		return IntRange.new(dict[&"begin"], dict[&"end"])
+		return IntRange.new(dict.get(&"begin", 0), dict.get(&"end", 0))
