@@ -78,6 +78,17 @@ text = "Spawn after start"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="Label15" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Spawn rate"
+
+[node name="VehicleSpawnRate" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+min_value = 0.0
+max_value = 1.0
+
 [node name="Label7" type="Label" parent="GridContainer"]
 layout_mode = 2
 text = "Relative speed range"

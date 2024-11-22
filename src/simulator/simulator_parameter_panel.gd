@@ -34,6 +34,7 @@ func _ready():
 
 	_parameter.vehicle_spawn_before_start = setting.default_vehicle_spawn_before_start
 	_parameter.vehicle_spawn_after_start = setting.default_vehicle_spawn_after_start
+	_parameter.vehicle_spawn_rate = setting.default_vehicle_spawn_rate
 
 	_parameter.vehicle_length_options = setting.default_vehicle_length_options
 
@@ -52,6 +53,7 @@ func _ready():
 
 	_source.bind(&"vehicle_spawn_before_start").to_check_button(%VehicleSpawnBeforeStartSwitch)
 	_source.bind(&"vehicle_spawn_after_start").to_check_button(%VehicleSpawnAfterStartSwitch)
+	_source.bind(&"vehicle_spawn_rate").to(%VehicleSpawnRate, &"value", &"value_changed")
 
 	var vehicle_length_option_cell_creator = RandomOptionCellCreator.new()
 	vehicle_length_option_cell_creator.suffix = " m"

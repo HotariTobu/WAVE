@@ -7,6 +7,7 @@ var random_seed: int
 
 var vehicle_spawn_before_start: bool
 var vehicle_spawn_after_start: bool
+var vehicle_spawn_rate: float
 
 var vehicle_length_options: Array[RandomOption]
 
@@ -28,6 +29,7 @@ static func to_dict(data: ParameterData) -> Dictionary:
 		&"random_seed": data.random_seed,
 		&"vehicle_spawn_before_start": data.vehicle_spawn_before_start,
 		&"vehicle_spawn_after_start": data.vehicle_spawn_after_start,
+		&"vehicle_spawn_rate": data.vehicle_spawn_rate,
 		&"vehicle_length_options": data.vehicle_length_options.map(RandomOption.to_dict),
 		&"vehicle_relative_speed_range": IntRange.to_dict(data.vehicle_relative_speed_range),
 		&"vehicle_relative_speed_mean": data.vehicle_relative_speed_mean,
@@ -45,8 +47,9 @@ static func from_dict(dict: Dictionary) -> ParameterData:
 	data.step_delta = dict.get(&"step_delta", NAN)
 	data.max_step = dict.get(&"max_step", NAN)
 	data.random_seed = dict.get(&"random_seed", NAN)
-	data.vehicle_spawn_before_start = dict.get(&"vehicle_spawn_before_start", NAN)
-	data.vehicle_spawn_after_start = dict.get(&"vehicle_spawn_after_start", NAN)
+	data.vehicle_spawn_before_start = dict.get(&"vehicle_spawn_before_start", false)
+	data.vehicle_spawn_after_start = dict.get(&"vehicle_spawn_after_start", false)
+	data.vehicle_spawn_rate = dict.get(&"vehicle_spawn_rate", NAN)
 	data.vehicle_length_options.assign(dict.get(&"vehicle_length_options", NAN).map(RandomOption.from_dict))
 	data.vehicle_relative_speed_range = IntRange.from_dict(dict.get(&"vehicle_relative_speed_range", NAN))
 	data.vehicle_relative_speed_mean = dict.get(&"vehicle_relative_speed_mean", NAN)

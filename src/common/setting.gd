@@ -44,6 +44,7 @@ var default_random_seed = 0
 
 var default_vehicle_spawn_before_start := true
 var default_vehicle_spawn_after_start = true
+var default_vehicle_spawn_rate = 0.8
 
 var default_vehicle_length_options = [
 	ParameterData.RandomOption.new(2.5, 6.7),
