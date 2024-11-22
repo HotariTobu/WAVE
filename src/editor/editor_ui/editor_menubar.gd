@@ -74,9 +74,12 @@ class EditorMenuItem:
 
 	var shortcut = Shortcut.new()
 
-	func _init(_label: String, _action: Callable, _action_name = &''):
+	func _init(_label: String, _action: Callable, _action_name = null):
 		label = _label
 		action = _action
+
+		if _action_name is not StringName:
+			return
 
 		var shortcut_event = InputEventAction.new()
 		shortcut_event.action = _action_name
