@@ -30,6 +30,11 @@ func _init(should_exit: Callable, parameter_data: ParameterData, network_data: N
 	breakpoint
 
 
+func add_vehicle(vehicle: VehicleData):
+	vehicle.index = len(vehicles)
+	vehicles.append(vehicle)
+
+
 func _init_rng_seed():
 	if parameter.random_seed < 0:
 		rng.randomize()
@@ -123,7 +128,9 @@ func _init_initial_vehicles(should_exit: Callable):
 			next_pos = item.pos + vehicle.length
 
 		lane.update_overflowing()
-		vehicles.append_array(pending_vehicles)
+
+		for vehicle in pending_vehicles:
+			add_vehicle(vehicle)
 
 
 func _init_entry_lanes(should_exit: Callable):

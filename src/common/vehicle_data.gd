@@ -1,5 +1,7 @@
 class_name VehicleData
 
+var index: int
+
 var length: float
 
 var relative_speed: float
