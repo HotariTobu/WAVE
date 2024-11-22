@@ -34,7 +34,7 @@ text = "Speed Limit"
 layout_mode = 2
 select_all_on_focus = true
 script = ExtResource("2_wp16w")
-suffix = " km/s"
+suffix = " km/h"
 min_value = 1.0
 max_value = 120.0
 
