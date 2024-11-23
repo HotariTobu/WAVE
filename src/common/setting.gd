@@ -40,7 +40,7 @@ var lane_block_targeting_color = Color(lane_block_targeted_color, 0.5)
 
 var default_step_delta = 1
 var default_max_step = 10
-var default_random_seed = 0
+var default_random_seed = 5
 
 var default_vehicle_spawn_before_start := true
 var default_vehicle_spawn_after_start = true
