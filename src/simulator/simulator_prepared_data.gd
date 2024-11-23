@@ -138,9 +138,12 @@ func _init_entry_lanes(should_exit: Callable):
 		if not lane.prev_lanes.is_empty():
 			continue
 
+		var one_per_step = lane.traffic * lane.speed_limit * parameter.step_delta
+		var interval = roundi(1.0 / one_per_step)
+
 		var entry_point = VehicleEntryPoint.new()
 		entry_point.entry_lane = lane
-		entry_point.interval = 1.0 / (lane.traffic * lane.speed_limit * parameter.step_delta)
+		entry_point.interval = interval
 
 		vehicle_entry_points.append(entry_point)
 
