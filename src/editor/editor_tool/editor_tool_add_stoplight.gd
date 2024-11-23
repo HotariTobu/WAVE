@@ -46,14 +46,12 @@ func _add_new_stoplight():
 	var new_splits: Array[SplitData]
 
 	for _index in range(setting.default_split_count):
-		var split = SplitData.new()
-		split.duration = setting.default_split_duration
+		var split = SplitData.from_dict({})
 		split_ids.append(split.id)
 		new_splits.append(split)
 
-	var stoplight = StoplightData.new()
+	var stoplight = StoplightData.from_dict({})
 	stoplight.pos = get_local_mouse_position()
-	stoplight.offset = setting.default_stoplight_offset
 	stoplight.split_ids = split_ids
 
 	_editor_global.undo_redo.create_action("Add stoplight")

@@ -6,7 +6,7 @@ var parameter: ParameterData:
 	get:
 		return _parameter
 
-var _parameter = ParameterData.new()
+var _parameter = ParameterData.from_dict({})
 
 var _vehicle_length_cells: Array[Control]:
 	get:
@@ -28,25 +28,6 @@ var _vehicle_length_cells: Array[Control]:
 
 
 func _ready():
-	_parameter.step_delta = setting.default_step_delta
-	_parameter.max_step = setting.default_max_step
-	_parameter.random_seed = setting.default_random_seed
-
-	_parameter.vehicle_spawn_before_start = setting.default_vehicle_spawn_before_start
-	_parameter.vehicle_spawn_after_start = setting.default_vehicle_spawn_after_start
-	_parameter.vehicle_spawn_rate = setting.default_vehicle_spawn_rate
-
-	_parameter.vehicle_length_options = setting.default_vehicle_length_options
-
-	_parameter.vehicle_relative_speed_range = setting.default_vehicle_relative_speed_range
-	_parameter.vehicle_relative_speed_mean = setting.default_vehicle_relative_speed_mean
-	_parameter.vehicle_max_speed_range = setting.default_vehicle_max_speed_range
-	_parameter.vehicle_max_speed_mean = setting.default_vehicle_max_speed_mean
-	_parameter.vehicle_min_following_distance_range = setting.default_vehicle_min_following_distance_range
-	_parameter.vehicle_min_following_distance_mean = setting.default_vehicle_min_following_distance_mean
-	_parameter.vehicle_max_following_distance_range = setting.default_vehicle_max_following_distance_range
-	_parameter.vehicle_max_following_distance_mean = setting.default_vehicle_max_following_distance_mean
-
 	_source.bind(&"step_delta").to(%StepDeltaBox, &"value", &"value_changed")
 	_source.bind(&"max_step").to(%MaxStepBox, &"value", &"value_changed")
 	_source.bind(&"random_seed").to(%RandomSeed, &"value", &"value_changed")

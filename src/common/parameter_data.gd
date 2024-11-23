@@ -44,21 +44,21 @@ static func to_dict(data: ParameterData) -> Dictionary:
 
 static func from_dict(dict: Dictionary) -> ParameterData:
 	var data = ParameterData.new()
-	data.step_delta = dict.get(&"step_delta", NAN)
-	data.max_step = dict.get(&"max_step", NAN)
-	data.random_seed = dict.get(&"random_seed", NAN)
-	data.vehicle_spawn_before_start = dict.get(&"vehicle_spawn_before_start", false)
-	data.vehicle_spawn_after_start = dict.get(&"vehicle_spawn_after_start", false)
-	data.vehicle_spawn_rate = dict.get(&"vehicle_spawn_rate", NAN)
-	data.vehicle_length_options.assign(dict.get(&"vehicle_length_options", NAN).map(RandomOption.from_dict))
-	data.vehicle_relative_speed_range = IntRange.from_dict(dict.get(&"vehicle_relative_speed_range", NAN))
-	data.vehicle_relative_speed_mean = dict.get(&"vehicle_relative_speed_mean", NAN)
-	data.vehicle_max_speed_range = IntRange.from_dict(dict.get(&"vehicle_max_speed_range", NAN))
-	data.vehicle_max_speed_mean = dict.get(&"vehicle_max_speed_mean", NAN)
-	data.vehicle_min_following_distance_range = IntRange.from_dict(dict.get(&"vehicle_min_following_distance_range", NAN))
-	data.vehicle_min_following_distance_mean = dict.get(&"vehicle_min_following_distance_mean", NAN)
-	data.vehicle_max_following_distance_range = IntRange.from_dict(dict.get(&"vehicle_max_following_distance_range", NAN))
-	data.vehicle_max_following_distance_mean = dict.get(&"vehicle_max_following_distance_mean", NAN)
+	data.step_delta = dict.get(&"step_delta", setting.default_step_delta)
+	data.max_step = dict.get(&"max_step", setting.default_max_step)
+	data.random_seed = dict.get(&"random_seed", setting.default_random_seed)
+	data.vehicle_spawn_before_start = dict.get(&"vehicle_spawn_before_start", setting.default_vehicle_spawn_before_start)
+	data.vehicle_spawn_after_start = dict.get(&"vehicle_spawn_after_start", setting.default_vehicle_spawn_after_start)
+	data.vehicle_spawn_rate = dict.get(&"vehicle_spawn_rate", setting.default_vehicle_spawn_rate)
+	data.vehicle_length_options.assign(dict.get(&"vehicle_length_options", setting.default_vehicle_length_options).map(RandomOption.from))
+	data.vehicle_relative_speed_range = IntRange.from(dict.get(&"vehicle_relative_speed_range", setting.default_vehicle_relative_speed_range))
+	data.vehicle_relative_speed_mean = dict.get(&"vehicle_relative_speed_mean", setting.default_vehicle_relative_speed_mean)
+	data.vehicle_max_speed_range = IntRange.from(dict.get(&"vehicle_max_speed_range", setting.default_vehicle_max_speed_range))
+	data.vehicle_max_speed_mean = dict.get(&"vehicle_max_speed_mean", setting.default_vehicle_max_speed_mean)
+	data.vehicle_min_following_distance_range = IntRange.from(dict.get(&"vehicle_min_following_distance_range", setting.default_vehicle_min_following_distance_range))
+	data.vehicle_min_following_distance_mean = dict.get(&"vehicle_min_following_distance_mean", setting.default_vehicle_min_following_distance_mean)
+	data.vehicle_max_following_distance_range = IntRange.from(dict.get(&"vehicle_max_following_distance_range", setting.default_vehicle_max_following_distance_range))
+	data.vehicle_max_following_distance_mean = dict.get(&"vehicle_max_following_distance_mean", setting.default_vehicle_max_following_distance_mean)
 	return data
 
 
@@ -82,8 +82,14 @@ class RandomOption:
 			&"weight": data.weight,
 		}
 
-	static func from_dict(dict: Dictionary) -> RandomOption:
-		return RandomOption.new(dict.get(&"value", 0), dict.get(&"weight", 0))
+	static func from(obj) -> RandomOption:
+		if obj is Dictionary:
+			return RandomOption.new(obj.get(&"value", NAN), obj.get(&"weight", NAN))
+		elif obj is RandomOption:
+			return obj
+		else:
+			push_error("Unexpected arg: RandomOption.from")
+			return RandomOption.new(NAN, NAN)
 
 
 class IntRange:
@@ -100,5 +106,11 @@ class IntRange:
 			&"end": data.end,
 		}
 
-	static func from_dict(dict: Dictionary) -> IntRange:
-		return IntRange.new(dict.get(&"begin", 0), dict.get(&"end", 0))
+	static func from(obj) -> IntRange:
+		if obj is Dictionary:
+			return IntRange.new(obj.get(&"begin", 0), obj.get(&"end", 0))
+		elif obj is IntRange:
+			return obj
+		else:
+			push_error("Unexpected arg: IntRange.from")
+			return IntRange.new(0, 0)

@@ -14,5 +14,5 @@ static func to_dict(data: ContentData) -> Dictionary:
 static func from_dict(dict: Dictionary, script: GDScript = SegmentsData) -> ContentData:
 	var data = super(dict, script)
 	assert(data is SegmentsData)
-	data.vertex_ids = dict.get(&"vertex_ids", [])
+	data.vertex_ids.assign(dict.get(&"vertex_ids", []))
 	return data

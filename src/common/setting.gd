@@ -17,7 +17,7 @@ var force_default_lane_speed_limit = false
 
 var default_lane_traffic = 1.0
 var default_lane_speed_limit = 60
-var default_option_weight = 1.0
+var default_lane_option_weight = 1.0
 
 var default_stoplight_offset = 0.0
 var default_split_count = 2
