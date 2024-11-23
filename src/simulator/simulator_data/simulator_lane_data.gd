@@ -1,6 +1,7 @@
 class_name SimulatorLaneData
 extends SimulatorSpaceData
 
+const TRAFFIC_FACTOR = 1.0 / 100.0
 const SPEED_FACTOR = 1000.0 / 3600.0
 
 var traffic: int
@@ -19,7 +20,7 @@ var overflowing: float
 func assign(content: ContentData, data_of: Callable) -> void:
 	super(content, data_of)
 	var lane = content as LaneData
-	traffic = lane.traffic
+	traffic = lane.traffic * TRAFFIC_FACTOR
 	speed_limit = lane.speed_limit * SPEED_FACTOR
 	assign_dict(&"next_option_dict", lane.next_option_dict, data_of)
 

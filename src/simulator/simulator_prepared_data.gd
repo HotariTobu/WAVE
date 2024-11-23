@@ -1,7 +1,5 @@
 class_name SimulatorPreparedData
 
-const BASE_TRAFFIC_LENGTH = 100
-
 var parameter: ParameterData
 var network = SimulatorNetworkData.new()
 
@@ -88,10 +86,7 @@ func _init_initial_vehicles(should_exit: Callable):
 		if should_exit.call():
 			return
 
-		var scale = ceili(lane.length / BASE_TRAFFIC_LENGTH)
-		var snapped_length = BASE_TRAFFIC_LENGTH * scale
-		var scaled_traffic = lane.traffic * scale
-		var trial_number = roundi(scaled_traffic)
+		var trial_number = roundi(lane.length * lane.traffic)
 
 		var secured = lane.overflowed
 		var pending_vehicles: Array[VehicleData]
@@ -100,7 +95,7 @@ func _init_initial_vehicles(should_exit: Callable):
 			if lane.length < secured:
 				break
 
-			if lane.length < rng.randi_range(0, snapped_length):
+			if parameter.vehicle_spawn_rate <= rng.randf():
 				continue
 
 			var vehicle = vehicle_creator.create()
