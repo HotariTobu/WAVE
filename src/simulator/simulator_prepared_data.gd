@@ -9,8 +9,7 @@ var ordered_lane: Array[SimulatorLaneData]
 
 var vehicle_creator: SimulatorVehicleCreator
 var vehicles: Array[VehicleData]
-
-var entry_lanes: Array[SimulatorLaneData]
+var vehicle_entry_points: Array[VehicleEntryPoint]
 
 
 func _init(should_exit: Callable, parameter_data: ParameterData, network_data: NetworkData):
@@ -136,7 +135,18 @@ func _init_entry_lanes(should_exit: Callable):
 		if should_exit.call():
 			return
 
-		if lane.prev_lanes.is_empty():
-			entry_lanes.append(lane)
+		if not lane.prev_lanes.is_empty():
+			continue
 
-	entry_lanes.make_read_only()
+		var entry_point = VehicleEntryPoint.new()
+		entry_point.entry_lane = lane
+		entry_point.interval = 1.0 / (lane.traffic * lane.speed_limit * parameter.step_delta)
+
+		vehicle_entry_points.append(entry_point)
+
+	vehicle_entry_points.make_read_only()
+
+
+class VehicleEntryPoint:
+	var entry_lane: SimulatorLaneData
+	var interval: int
