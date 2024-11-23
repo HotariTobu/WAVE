@@ -4,8 +4,8 @@ extends SimulatorSpaceData
 const TRAFFIC_FACTOR = 1.0 / 100.0
 const SPEED_FACTOR = 1000.0 / 3600.0
 
-var traffic: int
-var speed_limit: int
+var traffic: float
+var speed_limit: float
 var next_option_dict: Dictionary
 
 var next_lanes: Array[SimulatorLaneData]
