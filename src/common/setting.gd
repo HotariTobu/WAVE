@@ -70,4 +70,4 @@ var default_vehicle_max_speed_mean = 110
 var default_vehicle_min_following_distance_range = ParameterData.IntRange.new(1, 5)
 var default_vehicle_min_following_distance_mean = 2
 var default_vehicle_max_following_distance_range = ParameterData.IntRange.new(10, 100)
-var default_vehicle_max_following_distance_mean = 50
+var default_vehicle_max_following_distance_mean = 70
