@@ -21,7 +21,7 @@ func _init(should_exit: Callable, parameter_data: ParameterData, network_data: N
 	_init_ordered_lane(should_exit)
 
 	vehicle_creator = SimulatorVehicleCreator.new(rng, parameter)
-
+	_init_initial_vehicles(should_exit)
 	_init_entry_lanes(should_exit)
 
 	breakpoint
