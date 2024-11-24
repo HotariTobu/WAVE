@@ -25,6 +25,7 @@ func init_params():
 
 func spawn_at(lane: SimulatorLaneData, pos: float, step: int):
 	over_last_pos = pos
+	spawn_step = step
 	pos_history.append(pos)
 	_enter(lane, step)
 

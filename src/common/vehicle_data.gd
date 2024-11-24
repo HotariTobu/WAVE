@@ -11,6 +11,7 @@ var max_speed: float
 var min_following_distance: float
 var max_following_distance: float
 
+var spawn_step: int
 var pos_history: PackedFloat32Array
 var lane_history: Dictionary
 
@@ -24,6 +25,7 @@ static func to_dict(data: VehicleData) -> Dictionary:
 		&"max_speed": data.max_speed,
 		&"min_following_distance": data.min_following_distance,
 		&"max_following_distance": data.max_following_distance,
+		&"spawn_step": data.spawn_step,
 		&"pos_history": data.pos_history,
 		&"lane_history": data.lane_history,
 	}
@@ -39,6 +41,7 @@ static func from_dict(dict: Dictionary, script: GDScript = VehicleData) -> Vehic
 	data.max_speed = dict.get(&"max_speed", NAN)
 	data.min_following_distance = dict.get(&"min_following_distance", NAN)
 	data.max_following_distance = dict.get(&"max_following_distance", NAN)
+	data.spawn_step = dict.get(&"spawn_step", NAN)
 	data.pos_history = dict.get(&"pos_history", [])
 	data.lane_history = dict.get(&"lane_history", {})
 	return data
