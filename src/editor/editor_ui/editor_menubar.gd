@@ -15,6 +15,7 @@ var _editor_global = editor_global
 	]),
 	EditorMenuButton.new('Simulation', [
 		EditorMenuItem.new('Run...', $Simulation.open_simulator_window),
+		EditorMenuItem.new('Play...', $Simulation.open_player_window),
 	]),
 ]
 

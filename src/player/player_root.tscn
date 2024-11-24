@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bfykb810ftpvk"]
+
+[ext_resource type="PackedScene" uid="uid://b6ytdel3mu6qp" path="res://src/player/player_network_container.tscn" id="1_fjuj1"]
+[ext_resource type="PackedScene" uid="uid://do35ab20g2g1" path="res://src/player/player_ui.tscn" id="2_muxrk"]
+
+[node name="PlayerRoot" type="Node"]
+
+[node name="NetworkContainer" parent="." instance=ExtResource("1_fjuj1")]
+
+[node name="PlayerUi" parent="." instance=ExtResource("2_muxrk")]

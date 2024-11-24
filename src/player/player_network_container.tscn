@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6ytdel3mu6qp"]
+
+[ext_resource type="Script" path="res://src/player/player_network_container.gd" id="1_oedem"]
+[ext_resource type="Script" path="res://src/common/camera.gd" id="2_e0eh6"]
+
+[node name="PlayerNetworkContainer" type="Node2D"]
+script = ExtResource("1_oedem")
+
+[node name="Camera" type="Camera2D" parent="."]
+script = ExtResource("2_e0eh6")
+
+[node name="ContentContainer" type="Node" parent="."]
+
+[node name="AgentContainer" type="Node" parent="."]

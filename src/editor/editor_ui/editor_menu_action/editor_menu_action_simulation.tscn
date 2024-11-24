@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://s2ceebgwvycn"]
+[gd_scene load_steps=6 format=3 uid="uid://s2ceebgwvycn"]
 
 [ext_resource type="Script" path="res://src/editor/editor_ui/editor_menu_action/editor_menu_action_simulation.gd" id="1_y8iws"]
 [ext_resource type="PackedScene" uid="uid://b8b0o7kbfcpfo" path="res://src/simulator/simulator_root.tscn" id="2_1xbsh"]
+[ext_resource type="PackedScene" uid="uid://bfykb810ftpvk" path="res://src/player/player_root.tscn" id="3_8vtpm"]
+[ext_resource type="Script" path="res://src/common/common_ui/common_error_dialog.gd" id="3_rev5p"]
+[ext_resource type="Script" path="res://src/editor/action_queue.gd" id="5_kk0fv"]
 
 [node name="EditorMenuActionSimulation" type="Node"]
 script = ExtResource("1_y8iws")
@@ -23,4 +26,30 @@ grow_vertical = 2
 [node name="SimulatorRoot" parent="SimulatorWindow/CenterContainer" instance=ExtResource("2_1xbsh")]
 layout_mode = 2
 
+[node name="PlayerWindow" type="Window" parent="."]
+title = "Player"
+initial_position = 1
+size = Vector2i(1000, 600)
+visible = false
+force_native = true
+
+[node name="PlayerRoot" parent="PlayerWindow" instance=ExtResource("3_8vtpm")]
+
+[node name="SimulationOpenFileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.wavesimulation")
+use_native_dialog = true
+
+[node name="ErrorDialog" type="AcceptDialog" parent="."]
+auto_translate_mode = 1
+script = ExtResource("3_rev5p")
+
+[node name="ActionQueue" type="Node" parent="."]
+script = ExtResource("5_kk0fv")
+
 [connection signal="close_requested" from="SimulatorWindow" to="." method="_on_simulator_window_close_requested"]
+[connection signal="close_requested" from="PlayerWindow" to="." method="_on_player_window_close_requested"]
+[connection signal="file_selected" from="SimulationOpenFileDialog" to="." method="_on_simulation_open_file_dialog_file_selected"]
