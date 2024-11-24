@@ -37,7 +37,7 @@ func move_to(lane: SimulatorLaneData, step: int):
 
 
 func die(step: int):
-	lane_history[step] = null
+	die_step = step
 
 
 func get_speed_rate(preferred_speed: float) -> float:
