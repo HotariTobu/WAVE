@@ -21,6 +21,7 @@ func _init(should_exit_callable: Callable, parameter_data: ParameterData, networ
 	parameter = parameter_data
 	network.assign(network_data)
 
+	simulation.parameter = parameter_data
 	simulation.network = network_data
 
 	_init_rng_seed()
