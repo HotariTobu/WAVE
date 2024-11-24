@@ -91,6 +91,52 @@ max_value = 1.0
 
 [node name="Label7" type="Label" parent="GridContainer"]
 layout_mode = 2
+text = "Max acceleration range"
+
+[node name="VehicleMaxAccelerationRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " m/s^2"
+min_value = 1.0
+max_value = 10.0
+
+[node name="Label17" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Max acceleration mean"
+
+[node name="VehicleMaxAccelerationMeanBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+suffix = " m/s^2"
+min_value = 1.0
+max_value = 10.0
+
+[node name="Label18" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Condition speed range"
+
+[node name="VehicleConditionSpeedRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " km/h"
+min_value = 1.0
+max_value = 30.0
+
+[node name="Label19" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Condition speed mean"
+
+[node name="VehicleConditionSpeedMeanBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+suffix = " km/h"
+min_value = 1.0
+max_value = 30.0
+
+[node name="Label16" type="Label" parent="GridContainer"]
+layout_mode = 2
 text = "Relative speed range"
 
 [node name="VehicleRelativeSpeedRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]

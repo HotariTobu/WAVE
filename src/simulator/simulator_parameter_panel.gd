@@ -42,10 +42,16 @@ func _ready():
 	_source.bind(&"vehicle_length_options").using(vehicle_length_option_cell_creator).to(self, &"_vehicle_length_cells")
 	vehicle_length_option_cell_creator.option_removed.connect(_on_vehicle_length_option_remove_button_pressed)
 
+	_source.bind(&"vehicle_max_acceleration_range").to(%VehicleMaxAccelerationRangePanel, &"range_value", &"range_value_changed")
+	_source.bind(&"vehicle_max_acceleration_mean").to(%VehicleMaxAccelerationMeanBox, &"value", &"value_changed")
+	
+	_source.bind(&"vehicle_condition_speed_range").to(%VehicleConditionSpeedRangePanel, &"range_value", &"range_value_changed")
+	_source.bind(&"vehicle_condition_speed_mean").to(%VehicleConditionSpeedMeanBox, &"value", &"value_changed")
 	_source.bind(&"vehicle_relative_speed_range").to(%VehicleRelativeSpeedRangePanel, &"range_value", &"range_value_changed")
 	_source.bind(&"vehicle_relative_speed_mean").to(%VehicleRelativeSpeedMeanBox, &"value", &"value_changed")
 	_source.bind(&"vehicle_max_speed_range").to(%VehicleMaxSpeedRangePanel, &"range_value", &"range_value_changed")
 	_source.bind(&"vehicle_max_speed_mean").to(%VehicleMaxSpeedMeanBox, &"value", &"value_changed")
+	
 	_source.bind(&"vehicle_min_following_distance_range").to(%VehicleMinFollowingDistanceRangePanel, &"range_value", &"range_value_changed")
 	_source.bind(&"vehicle_min_following_distance_mean").to(%VehicleMinFollowingDistanceMeanBox, &"value", &"value_changed")
 	_source.bind(&"vehicle_max_following_distance_range").to(%VehicleMaxFollowingDistanceRangePanel, &"range_value", &"range_value_changed")

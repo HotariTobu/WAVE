@@ -11,7 +11,9 @@ var next_option_dict: Dictionary
 var next_lanes: Array[SimulatorLaneData]
 var prev_lanes: Array[SimulatorLaneData]
 
-var items: Array[VehiclePos]
+var next_lane_chooser: SimulatorRandomWeightedArray = null
+
+var vehicles: Array[SimulatorVehicleData]
 
 var overflowed: float
 var overflowing: float
@@ -30,11 +32,12 @@ func assign(content: ContentData, data_of: Callable) -> void:
 	for next_lane in next_lanes:
 		next_lane.prev_lanes.append(self)
 
-	overflowed = 0.0
+	overflowed = -INF
 	overflowing = -length
 
+
 func update_overflowed():
-	overflowed = 0.0
+	overflowed = -INF
 
 	for next_lane in next_lanes:
 		if overflowed < next_lane.overflowing:
@@ -42,16 +45,12 @@ func update_overflowed():
 
 
 func update_overflowing():
-	if items.is_empty():
+	if vehicles.is_empty():
 		overflowing = overflowed - length
 	else:
-		var last_item = items[-1]
-		overflowing = last_item.pos + last_item.vehicle.length - length
+		var last_vehicle = vehicles[-1]
+		var last_pos = last_vehicle.pos_history[-1]
+		overflowing = last_pos + last_vehicle.length - length
 
 	for prev_lane in prev_lanes:
 		prev_lane.update_overflowed()
-
-
-class VehiclePos:
-	var vehicle: VehicleData
-	var pos: float

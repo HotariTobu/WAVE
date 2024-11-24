@@ -1,35 +1,38 @@
 class_name SimulatorPreparedData
 
+var should_exit: Callable
 var parameter: ParameterData
 var network = SimulatorNetworkData.new()
 
 var rng = RandomNumberGenerator.new()
 
-var ordered_lane: Array[SimulatorLaneData]
+var ordered_lanes: Array[SimulatorLaneData]
 
 var vehicle_creator: SimulatorVehicleCreator
-var vehicles: Array[VehicleData]
 var vehicle_entry_points: Array[VehicleEntryPoint]
 
+var simulation = SimulationData.new()
 
-func _init(should_exit: Callable, parameter_data: ParameterData, network_data: NetworkData):
+var _inverted_step_delta: float
+
+
+func _init(should_exit_callable: Callable, parameter_data: ParameterData, network_data: NetworkData):
+	should_exit = should_exit_callable
 	parameter = parameter_data
 	network.assign(network_data)
 
+	simulation.network = network_data
+
 	_init_rng_seed()
 
-	_init_ordered_lane(should_exit)
+	_init_lanes()
+	_init_ordered_lanes()
 
 	vehicle_creator = SimulatorVehicleCreator.new(rng, parameter)
-	_init_initial_vehicles(should_exit)
-	_init_entry_lanes(should_exit)
+	_init_initial_vehicles()
+	_init_entry_lanes()
 
-	breakpoint
-
-
-func add_vehicle(vehicle: VehicleData):
-	vehicle.index = len(vehicles)
-	vehicles.append(vehicle)
+	_inverted_step_delta = 1.0 / parameter.step_delta
 
 
 func _init_rng_seed():
@@ -39,7 +42,25 @@ func _init_rng_seed():
 		rng.seed = parameter.random_seed
 
 
-func _init_ordered_lane(should_exit: Callable):
+func _init_lanes():
+	for lane in network.lanes:
+		if should_exit.call():
+			return
+
+		if lane.next_lanes.is_empty():
+			continue
+
+		var random_options: Array[ParameterData.RandomOption]
+
+		for next_lane in lane.next_option_dict:
+			var next_option = lane.next_option_dict[next_lane]
+			var random_option = ParameterData.RandomOption.new(next_lane, next_option.weight)
+			random_options.append(random_option)
+
+		lane.next_lane_chooser = SimulatorRandomWeightedArray.new(rng, random_options)
+
+
+func _init_ordered_lanes():
 	var lanes = network.lanes
 	var visited_lane_set = Set.new()
 
@@ -63,7 +84,7 @@ func _init_ordered_lane(should_exit: Callable):
 		while not lane_queue.is_empty() and not should_exit.call():
 			var lane = lane_queue.pop_back() as SimulatorLaneData
 
-			ordered_lane.append(lane)
+			ordered_lanes.append(lane)
 			visited_lane_set.add(lane)
 
 			for prev_lane in lane.prev_lanes.filter(unvisited):
@@ -74,21 +95,23 @@ func _init_ordered_lane(should_exit: Callable):
 
 		lanes = rest_lanes.filter(unvisited)
 
-	ordered_lane.make_read_only()
+	ordered_lanes.make_read_only()
 
 
-func _init_initial_vehicles(should_exit: Callable):
+func _init_initial_vehicles():
 	if not parameter.vehicle_spawn_before_start:
 		return
 
-	for lane in ordered_lane:
+	for lane in ordered_lanes:
 		if should_exit.call():
 			return
 
 		var trial_number = roundi(lane.length * lane.traffic)
 
-		var secured = lane.overflowed
-		var pending_vehicles: Array[VehicleData]
+		var next_pos = maxf(lane.overflowed, 0.0)
+
+		var secured = next_pos
+		var pending_vehicles: Array[SimulatorVehicleData]
 
 		for _i in range(trial_number):
 			if lane.length < secured:
@@ -104,30 +127,23 @@ func _init_initial_vehicles(should_exit: Callable):
 
 		var pending_vehicle_count = len(pending_vehicles)
 		var margin = maxf(lane.length - secured, 0.0)
-		var next_pos = lane.overflowed
 
 		for index in range(pending_vehicle_count):
 			var rest_count = pending_vehicle_count - index
 			var gap = rng.randf_range(0.0, margin / rest_count)
 
-			var pos = next_pos + gap
 			var vehicle = pending_vehicles[index]
-
-			var item = SimulatorLaneData.VehiclePos.new()
-			item.pos = pos
-			item.vehicle = vehicle
-			lane.items.append(item)
+			var pos = next_pos + gap
+			vehicle.spawn_at(lane, pos, -1)
 
 			margin -= gap
-			next_pos = item.pos + vehicle.length
+			next_pos = pos + vehicle.length
 
 		lane.update_overflowing()
-
-		for vehicle in pending_vehicles:
-			add_vehicle(vehicle)
+		simulation.vehicles.append_array(pending_vehicles)
 
 
-func _init_entry_lanes(should_exit: Callable):
+func _init_entry_lanes():
 	if not parameter.vehicle_spawn_after_start:
 		return
 
@@ -153,3 +169,5 @@ func _init_entry_lanes(should_exit: Callable):
 class VehicleEntryPoint:
 	var entry_lane: SimulatorLaneData
 	var interval: int
+
+	var last_entry_step: int

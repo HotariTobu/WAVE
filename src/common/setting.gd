@@ -47,27 +47,33 @@ var default_vehicle_spawn_after_start = true
 var default_vehicle_spawn_rate = 0.8
 
 var default_vehicle_length_options = [
-	ParameterData.RandomOption.new(2.5, 6.7),
-	ParameterData.RandomOption.new(3.0, 6.7),
-	ParameterData.RandomOption.new(3.4, 6.7),
-	ParameterData.RandomOption.new(4.1, 138.3),
-	ParameterData.RandomOption.new(4.7, 138.3),
-	ParameterData.RandomOption.new(4.8, 138.3),
-	ParameterData.RandomOption.new(5.0, 44),
-	ParameterData.RandomOption.new(6.0, 77),
-	ParameterData.RandomOption.new(7.0, 77),
-	ParameterData.RandomOption.new(8.0, 28.5),
-	ParameterData.RandomOption.new(9.0, 28.5),
-	ParameterData.RandomOption.new(10.0, 24.5),
-	ParameterData.RandomOption.new(11.0, 24.5),
-	ParameterData.RandomOption.new(12.0, 20),
-] as Array[ParameterData.RandomOption]
+	{&"value": 2.5, &"weight": 6.7},
+	{&"value": 3.0, &"weight": 6.7},
+	{&"value": 3.4, &"weight": 6.7},
+	{&"value": 4.1, &"weight": 138.3},
+	{&"value": 4.7, &"weight": 138.3},
+	{&"value": 4.8, &"weight": 138.3},
+	{&"value": 5.0, &"weight": 44},
+	{&"value": 6.0, &"weight": 77},
+	{&"value": 7.0, &"weight": 77},
+	{&"value": 8.0, &"weight": 28.5},
+	{&"value": 9.0, &"weight": 28.5},
+	{&"value": 10.0, &"weight": 24.5},
+	{&"value": 11.0, &"weight": 24.5},
+	{&"value": 12.0, &"weight": 20},
+]
 
-var default_vehicle_relative_speed_range = ParameterData.IntRange.new(-30, 30)
+var default_vehicle_max_acceleration_range = {&"begin": 1, &"end": 6}
+var default_vehicle_max_acceleration_mean = 3
+
+var default_vehicle_condition_speed_range = {&"begin": 8, &"end": 12}
+var default_vehicle_condition_speed_mean = 10
+var default_vehicle_relative_speed_range = {&"begin": -30, &"end": 30}
 var default_vehicle_relative_speed_mean = 10
-var default_vehicle_max_speed_range = ParameterData.IntRange.new(80, 150)
+var default_vehicle_max_speed_range = {&"begin": 80, &"end": 150}
 var default_vehicle_max_speed_mean = 110
-var default_vehicle_min_following_distance_range = ParameterData.IntRange.new(1, 5)
+
+var default_vehicle_min_following_distance_range = {&"begin": 1, &"end": 5}
 var default_vehicle_min_following_distance_mean = 2
-var default_vehicle_max_following_distance_range = ParameterData.IntRange.new(10, 100)
+var default_vehicle_max_following_distance_range = {&"begin": 10, &"end": 100}
 var default_vehicle_max_following_distance_mean = 70
