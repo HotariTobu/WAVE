@@ -49,6 +49,8 @@ func _status_hook(status: Status) -> Status:
 	elif status == Status.COMPLETED:
 		_data.progress_value = _data.max_progress_value
 		_data.simulation = _thread.wait_to_finish()
+		
+		$SimulationSaveFileDialog.show()
 
 	return status
 

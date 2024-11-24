@@ -1,14 +1,12 @@
 class_name PlayerLane
 extends Node2D
 
-var _points: PackedVector2Array
+var _lane: PlayerLaneData
 
 
 func _init(lane: LaneData):
-	var vertices = lane.vertex_ids.map(player_global.content_db.data_of)
-	var points = vertices.map(VertexData.pos_of)
-	_points = points
+	_lane = player_global.content_db.player_data_of(lane.id) as PlayerLaneData
 
 
 func _draw():
-	Lane.draw_to(self, _points, setting.lane_color, setting.lane_width)
+	Lane.draw_to(self, _lane.points, setting.lane_color, setting.lane_width)

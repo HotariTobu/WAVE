@@ -12,13 +12,26 @@ var simulation: SimulationData:
 
 var content_db: PlayerContentDataDB
 
-var step: float
+var exact_step: float:
+	get:
+		return exact_step
+	set(value):
+		exact_step = value
+		step_frac = fmod(value, 1.0)
+		prev_step = floori(value)
+		next_step = ceili(value)
+		if prev_step == next_step:
+			next_step += 1
+
+var step_frac: float
+var prev_step: int
+var next_step: int
 
 var data = BindingSource.new(Data.new())
 
 
 func _ready():
-	data.bind(&"time").using(_get_step).to(self, &"step")
+	data.bind(&"time").using(_get_step).to(self, &"exact_step")
 
 
 func _process(delta):
@@ -57,4 +70,4 @@ class Data:
 
 	func _update_process():
 		player_global.set_process(playing)
-		player_global.get_tree().call_group(NodeGroup.ANIMATABLE, &"set_process", playing)
+		#player_global.get_tree().call_group(NodeGroup.ANIMATABLE, &"set_process", playing)

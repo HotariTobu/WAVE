@@ -26,8 +26,9 @@ func init_params():
 func spawn_at(lane: SimulatorLaneData, pos: float, step: int):
 	over_last_pos = pos
 	spawn_step = step
+	die_step = -1
 	pos_history.append(pos)
-	_enter(lane, step)
+	_enter(lane, step - 1)
 
 
 func move_to(lane: SimulatorLaneData, step: int):
@@ -37,7 +38,7 @@ func move_to(lane: SimulatorLaneData, step: int):
 
 
 func die(step: int):
-	die_step = step
+	die_step = step + 1
 
 
 func get_speed_rate(preferred_speed: float) -> float:
@@ -49,7 +50,7 @@ func get_preferred_distance(speed_rate: float) -> float:
 
 
 func _enter(lane: SimulatorLaneData, step: int):
-	lane_history[step] = lane.id
+	lane_history[step - spawn_step + 1] = lane.id
 	lane.vehicles.append(self)
 
 

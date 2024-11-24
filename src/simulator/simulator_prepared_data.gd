@@ -135,7 +135,7 @@ func _init_initial_vehicles():
 
 			var vehicle = pending_vehicles[index]
 			var pos = next_pos + gap
-			vehicle.spawn_at(lane, pos, -1)
+			vehicle.spawn_at(lane, pos, 0)
 
 			margin -= gap
 			next_pos = pos + vehicle.length
