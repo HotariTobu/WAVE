@@ -3,9 +3,15 @@ extends Node
 
 func open_simulator_window():
 	$SimulatorWindow.show()
+	$SimulatorWindow.grab_focus()
 
 
 func open_player_window():
+	$PlayerWindow.show()
+	$PlayerWindow.grab_focus()
+
+
+func select_simulation():
 	$SimulationOpenFileDialog.show()
 
 
@@ -29,4 +35,4 @@ func _on_simulation_open_file_dialog_file_selected(path):
 		return
 
 	player_global.simulation = simulation
-	$ActionQueue.push($PlayerWindow.show)
+	$ActionQueue.push(open_player_window)
