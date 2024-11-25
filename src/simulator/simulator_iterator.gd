@@ -53,7 +53,7 @@ func _iterate_lanes(step: int):
 
 			var actual_distance = pos - rear_pos
 			var preferred_distance = vehicle.get_preferred_distance(last_speed_rate)
-			var possible_displacement = maxf(actual_distance - preferred_distance, 0.0)
+			var possible_displacement = maxf(0.0, actual_distance - preferred_distance)
 
 			var preferred_speed = vehicle.preferred_speed_getter.call(lane.speed_limit)
 			var preferred_speed_rate = vehicle.get_speed_rate(preferred_speed)
