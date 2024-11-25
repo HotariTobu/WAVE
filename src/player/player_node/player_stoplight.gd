@@ -26,8 +26,8 @@ func _init(stoplight: StoplightData):
 
 
 func _process(_delta):
-	var cycle_pos = _split_helper.get_cycle_pos(player_global.time)
-	var split_index = _split_helper.get_split_index(cycle_pos)
+	var cycle_pos = _split_helper.calc_cycle_pos(player_global.time)
+	var split_index = _split_helper.calc_split_index(cycle_pos)
 	var cumulative_time = _split_helper.cumulative_times[split_index]
 	var duration = _durations[split_index]
 

@@ -59,10 +59,10 @@ class Split:
 			cycle += duration
 			cumulative_times.append(cycle)
 
-	func get_cycle_pos(time: float) -> float:
+	func calc_cycle_pos(time: float) -> float:
 		return fposmod(time - offset, cycle)
 
-	func get_split_index(cycle_pos: float) -> int:
+	func calc_split_index(cycle_pos: float) -> int:
 		return cumulative_times.bsearch(cycle_pos)
 
 
