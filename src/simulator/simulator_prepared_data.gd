@@ -178,17 +178,26 @@ func _init_entry_lanes():
 
 
 func _init_block_sources():
+	if should_exit.call():
+		return
+
 	block_sources.append_array(network.splits.filter(_has_block_target))
 	block_sources.append_array(ordered_lanes.filter(_has_block_target))
 
 
 func _init_block_targets():
+	if should_exit.call():
+		return
+
 	var block_target_lanes = ordered_lanes.filter(_has_block_source)
 	block_targets.append_array(block_target_lanes)
 
 	var closable_lane_set = Set.new()
 
 	for lane in block_target_lanes:
+		if should_exit.call():
+			return
+
 		closable_lane_set.add_all(lane.prev_lanes)
 
 	closable_lanes.assign(closable_lane_set.to_array())

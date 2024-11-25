@@ -36,6 +36,9 @@ func _iterate_vehicle_entry_point(step: int):
 
 
 func _iterate_block_sources(step: int):
+	if should_exit.call():
+		return
+
 	var time = parameter.step_delta * step
 
 	for block_source in block_sources:
@@ -43,6 +46,9 @@ func _iterate_block_sources(step: int):
 
 
 func _iterate_block_targets():
+	if should_exit.call():
+		return
+
 	for block_target in block_targets:
 		block_target.is_blocked = block_target.block_sources.any(_is_blocking)
 
