@@ -99,7 +99,7 @@ func _update_sectors():
 		var split = sector.data as SplitData
 		durations.append(split.duration)
 
-	var sector_helpers = StoplightHelper.get_sector_helpers(data.offset, durations)
+	var sector_helpers = SectorHelper.get_sector_helpers(data.offset, durations)
 
 	for index in range(len(sectors)):
 		var sector = sectors[index]
