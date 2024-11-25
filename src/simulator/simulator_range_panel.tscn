@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b1jkmwu2ltfjy"]
 
 [ext_resource type="Script" path="res://src/simulator/simulator_range_panel.gd" id="1_4ax4l"]
-[ext_resource type="Script" path="res://src/editor/editor_ui/numeric_box.gd" id="2_wfreh"]
+[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="2_wfreh"]
 
 [node name="SimulatorRangePanel" type="HBoxContainer"]
 offset_right = 152.0

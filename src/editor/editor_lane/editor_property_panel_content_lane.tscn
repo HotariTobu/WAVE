@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bcug3d44uspg8"]
 
 [ext_resource type="Script" path="res://src/editor/editor_lane/editor_property_panel_content_lane.gd" id="1_bo4xe"]
-[ext_resource type="Script" path="res://src/editor/editor_ui/numeric_box.gd" id="2_wp16w"]
+[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="2_wp16w"]
 
 [node name="EditorPropertyPanelContentLane" type="GridContainer"]
 script = ExtResource("1_bo4xe")
