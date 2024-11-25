@@ -18,8 +18,9 @@ config/icon="res://assets/icon.svg"
 
 [autoload]
 
-editor_global="*res://src/editor/editor_global.gd"
 setting="*res://src/common/setting.gd"
+editor_global="*res://src/editor/editor_global.gd"
+player_global="*res://src/player/player_global.gd"
 
 [editor_plugins]
 

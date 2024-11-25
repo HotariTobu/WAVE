@@ -3,6 +3,24 @@ class_name Set
 var _data: Dictionary
 
 
+func _get_property_list():
+	return [
+		{
+			"name": "values",
+			"type": TYPE_ARRAY,
+			"hint": PROPERTY_HINT_ARRAY_TYPE,
+			"hint_string": "Values in the set.",
+		}
+	]
+
+
+func _get(property):
+	if property == &"values":
+		return to_array()
+
+	return null
+
+
 func add(value: Variant) -> bool:
 	if value in _data:
 		return false

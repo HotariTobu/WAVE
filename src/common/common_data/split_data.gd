@@ -16,6 +16,6 @@ static func to_dict(data: ContentData) -> Dictionary:
 static func from_dict(dict: Dictionary, script: GDScript = SplitData) -> ContentData:
 	var data = super(dict, script)
 	assert(data is SplitData)
-	data.duration = dict.get(&"duration", NAN)
-	data.block_target_ids = dict.get(&"block_target_ids", [])
+	data.duration = dict.get(&"duration", setting.default_split_duration)
+	data.block_target_ids.assign(dict.get(&"block_target_ids", []))
 	return data

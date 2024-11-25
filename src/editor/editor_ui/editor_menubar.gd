@@ -13,6 +13,10 @@ var _editor_global = editor_global
 		EditorMenuItem.new('Redo', _editor_global.undo_redo.redo, &'ui_redo'),
 		EditorMenuItem.new('Delete', $Delete.delete_selection, &'ui_text_delete'),
 	]),
+	EditorMenuButton.new('Simulation', [
+		EditorMenuItem.new('Run...', $Simulation.open_simulator_window),
+		EditorMenuItem.new('Play...', $Simulation.select_simulation),
+	]),
 ]
 
 var _just_closed = false
@@ -71,9 +75,12 @@ class EditorMenuItem:
 
 	var shortcut = Shortcut.new()
 
-	func _init(_label: String, _action: Callable, _action_name = &''):
+	func _init(_label: String, _action: Callable, _action_name = null):
 		label = _label
 		action = _action
+
+		if _action_name is not StringName:
+			return
 
 		var shortcut_event = InputEventAction.new()
 		shortcut_event.action = _action_name

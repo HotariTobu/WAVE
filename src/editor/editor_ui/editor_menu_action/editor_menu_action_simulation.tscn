@@ -1,0 +1,73 @@
+[gd_scene load_steps=6 format=3 uid="uid://s2ceebgwvycn"]
+
+[ext_resource type="Script" path="res://src/editor/editor_ui/editor_menu_action/editor_menu_action_simulation.gd" id="1_y8iws"]
+[ext_resource type="PackedScene" uid="uid://b8b0o7kbfcpfo" path="res://src/simulator/simulator_root.tscn" id="2_1xbsh"]
+[ext_resource type="PackedScene" uid="uid://bfykb810ftpvk" path="res://src/player/player_root.tscn" id="3_8vtpm"]
+[ext_resource type="Script" path="res://src/common/common_ui/common_error_dialog.gd" id="3_rev5p"]
+[ext_resource type="Script" path="res://src/editor/action_queue.gd" id="5_kk0fv"]
+
+[node name="EditorMenuActionSimulation" type="Node"]
+script = ExtResource("1_y8iws")
+
+[node name="SimulatorWindow" type="Window" parent="."]
+title = "Simulator"
+initial_position = 1
+size = Vector2i(1000, 600)
+visible = false
+force_native = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SimulatorWindow"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="CenterContainer" type="CenterContainer" parent="SimulatorWindow/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="SimulatorWindow/ScrollContainer/CenterContainer"]
+layout_mode = 2
+
+[node name="SimulatorRoot" parent="SimulatorWindow/ScrollContainer/CenterContainer/MarginContainer" instance=ExtResource("2_1xbsh")]
+layout_mode = 2
+
+[node name="PlayerWindow" type="Window" parent="."]
+title = "Player"
+initial_position = 1
+size = Vector2i(1000, 600)
+visible = false
+force_native = true
+
+[node name="PlayerRoot" parent="PlayerWindow" instance=ExtResource("3_8vtpm")]
+
+[node name="PlayConfirmationDialog" type="ConfirmationDialog" parent="."]
+title = "Simulation Completed!"
+initial_position = 2
+size = Vector2i(300, 100)
+ok_button_text = "Play now!"
+cancel_button_text = "Not now..."
+
+[node name="SimulationOpenFileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.wavesimulation")
+use_native_dialog = true
+
+[node name="ErrorDialog" type="AcceptDialog" parent="."]
+auto_translate_mode = 1
+script = ExtResource("3_rev5p")
+
+[node name="ActionQueue" type="Node" parent="."]
+script = ExtResource("5_kk0fv")
+
+[connection signal="close_requested" from="SimulatorWindow" to="." method="_on_simulator_window_close_requested"]
+[connection signal="completed" from="SimulatorWindow/ScrollContainer/CenterContainer/MarginContainer/SimulatorRoot" to="." method="_on_simulation_completed"]
+[connection signal="close_requested" from="PlayerWindow" to="." method="_on_player_window_close_requested"]
+[connection signal="confirmed" from="PlayConfirmationDialog" to="." method="_on_play_confirmation_dialog_confirmed"]
+[connection signal="file_selected" from="SimulationOpenFileDialog" to="." method="_on_simulation_open_file_dialog_file_selected"]

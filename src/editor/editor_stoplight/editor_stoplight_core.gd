@@ -22,6 +22,7 @@ func _init(stoplight: StoplightData):
 
 func _enter_tree():
 	_source.bind(&"pos").to(self, &"position")
+	_source.add_callback(&"offset", _update_sectors)
 	_source.bind(&"split_ids").using(_get_sectors_of).to(self, &"_sectors")
 
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
@@ -30,6 +31,7 @@ func _enter_tree():
 
 func _exit_tree():
 	_source.unbind(&"pos").from(self, &"position")
+	_source.remove_callback(&"offset", _update_sectors)
 	_source.unbind(&"split_ids").from(self, &"_sectors")
 
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
@@ -37,7 +39,7 @@ func _exit_tree():
 
 
 func _draw():
-	Spot.draw_to(self, setting.stoplight_color, setting.stoplight_radius, setting.stoplight_shape)
+	SpotHelper.draw_to(self, setting.stoplight_color, setting.stoplight_radius, setting.stoplight_shape)
 
 	var color: Color
 	if selecting:
@@ -92,31 +94,16 @@ func _unbind_sectors(prev_sectors: Array[EditorStoplightSector]):
 
 
 func _update_sectors():
-	var cycle = 0.0
-	var min_duration = INF
+	var sectors = _sectors
+	var durations: PackedFloat32Array
 
-	for sector in _sectors:
+	for sector in sectors:
 		var split = sector.data as SplitData
+		durations.append(split.duration)
 
-		var duration = split.duration
-		cycle += duration
-		if min_duration > duration:
-			min_duration = duration
+	var sector_helpers = SectorHelper.get_sector_helpers(data.offset, durations)
 
-	var angle_factor = TAU / cycle
-
-	var min_angle = min_duration * angle_factor
-	var sector_radius = setting.stoplight_sector_min_arc / min_angle
-	if sector_radius > setting.stoplight_sector_max_radius:
-		sector_radius = setting.stoplight_sector_max_radius
-
-	var sum = 0.0
-
-	for sector in _sectors:
-		var split = sector.data as SplitData
-
-		var start_angle = sum * angle_factor
-		sum += split.duration
-		var end_angle = sum * angle_factor
-
-		sector.update(sector_radius, start_angle, end_angle)
+	for index in range(len(sectors)):
+		var sector = sectors[index]
+		var sector_helper = sector_helpers[index]
+		sector.update(sector_helper)

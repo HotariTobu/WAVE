@@ -80,6 +80,7 @@ var _current_vertex: VertexData:
 @onready var _lane_vertex_db = _editor_global.content_db.get_group(&"lane_vertices")
 @onready var _lane_db = _editor_global.content_db.get_group(&"lanes")
 
+
 func _ready():
 	set_process_unhandled_input(false)
 
@@ -209,14 +210,19 @@ func _commit_lane():
 	var next_option_dict: Dictionary
 
 	for lane in _next_lanes:
-		var option = LaneData.OptionData.new()
-		option.weight = setting.default_option_weight
+		var option = LaneData.OptionData.from_dict({})
 		next_option_dict[lane.id] = option
 
-	var new_lane = LaneData.new()
+	var new_lane = LaneData.from_dict({})
 	new_lane.vertex_ids = vertex_ids
-	new_lane.speed_limit = _calc_initial_speed_limit()
 	new_lane.next_option_dict = next_option_dict
+	
+	if not setting.force_default_lane_traffic:
+		new_lane.traffic = _calc_initial_traffic()
+		
+	if not setting.force_default_lane_speed_limit:
+		new_lane.speed_limit = _calc_initial_speed_limit()
+	
 
 	_editor_global.undo_redo.create_action("Add lane")
 
@@ -230,8 +236,7 @@ func _commit_lane():
 	_editor_global.undo_redo.add_undo_method(_lane_db.remove.bind(new_lane))
 
 	for lane in _prev_lanes:
-		var option = LaneData.OptionData.new()
-		option.weight = setting.default_option_weight
+		var option = LaneData.OptionData.from_dict({})
 
 		var prev = lane.next_option_dict
 		var next = prev.duplicate()
@@ -323,6 +328,25 @@ func _unselect():
 	_selecting_prev_segments_nodes = []
 	_selecting_next_segments_nodes = []
 	_selecting_vertex_node = null
+
+
+func _calc_initial_traffic() -> float:
+	if _prev_lanes.is_empty():
+		return setting.default_lane_traffic
+
+	var initial_traffic = 0.0
+
+	for lane in _prev_lanes:
+		if lane.traffic == 0.0:
+			continue
+
+		var options = lane.next_option_dict.values()
+		var weights = options.map(func(option): return option.weight)
+		var sum_weight = weights.reduce(func(accum, weight): return accum + weight, 1.0)
+
+		initial_traffic += lane.traffic / sum_weight
+
+	return initial_traffic
 
 
 func _calc_initial_speed_limit() -> int:

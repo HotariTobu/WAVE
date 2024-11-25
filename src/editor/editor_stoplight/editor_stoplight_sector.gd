@@ -1,7 +1,8 @@
 class_name EditorStoplightSector
 extends EditorContent
 
-var _points = PackedVector2Array()
+var _sector_helper: SectorHelper
+
 var _selecting_color: Color
 var _selected_color: Color
 
@@ -21,62 +22,64 @@ var _segments: Array[CollisionShape2D]:
 
 		_segments = next
 
+
 func _init(split: SplitData):
 	super(split, EditorPhysicsLayer.STOPLIGHT_SECTOR)
 
+
 func _draw():
-	if len(_points) < 2:
+	if _sector_helper.point_count < 2:
 		return
 
 	var color: Color
 	if selecting:
-		color = _selecting_color
+		_sector_helper.color = _selecting_color
 	elif selected:
-		color = _selected_color
+		_sector_helper.color = _selected_color
 	else:
-		color = setting.stoplight_sector_color
+		_sector_helper.color = setting.stoplight_sector_inactive_color
 
 	var width = setting.selection_radius / zoom_factor
-	draw_polyline(_points, color, width)
+	_sector_helper.draw_to(self, width)
+
 
 func get_local_center() -> Vector2:
 	return _center
+
 
 func _update_process():
 	super()
 	set_process(is_processing() or is_visible_in_tree())
 
-func update(radius: float, start_angle: float, end_angle: float):
-	var point_count = floori((end_angle - start_angle) * setting.stoplight_sector_delta_angle_inv)
-	_points.resize(point_count)
-	for point_index in range(point_count):
-		var weight = float(point_index) / (point_count - 1)
-		var angle = lerpf(start_angle, end_angle, weight)
 
-		var point = _get_point(radius, angle)
-		_points[point_index] = point
+func update(sector_helper: SectorHelper):
+	_sector_helper = sector_helper
 
-	var center_angle = (start_angle + end_angle) / 2
-	var hue =  center_angle / TAU
-	_selecting_color = Color.from_hsv(hue, setting.stoplight_sector_saturation, 1.0, 0.5)
-	_selected_color = Color.from_hsv(hue, setting.stoplight_sector_saturation, 1.0, 1.0)
+	_selecting_color = Color(sector_helper.color, 0.5)
+	_selected_color = sector_helper.color
 
-	_center = _get_point(radius, center_angle)
+	var center_angle = (sector_helper.start_angle + sector_helper.end_angle) / 2
+	_center = Vector2.from_angle(center_angle) * sector_helper.radius
+
+	var points: PackedVector2Array
+	points.resize(sector_helper.point_count)
+
+	for point_index in range(sector_helper.point_count):
+		var weight = float(point_index) / (sector_helper.point_count - 1)
+		var angle = lerpf(sector_helper.start_angle, sector_helper.end_angle, weight)
+
+		var point = Vector2.from_angle(angle) * sector_helper.radius
+		points[point_index] = point
 
 	var segments: Array[CollisionShape2D]
-	segments.resize(point_count - 1)
+	segments.resize(sector_helper.point_count - 1)
 
-	for index in range(point_count - 1):
+	for index in range(sector_helper.point_count - 1):
 		var segment = create_segment()
-		segment.shape.a = _points[index]
-		segment.shape.b = _points[index + 1]
+		segment.shape.a = points[index]
+		segment.shape.b = points[index + 1]
 		segments[index] = segment
 
 	_segments = segments
 
 	queue_redraw()
-
-static func _get_point(radius: float, angle: float) -> Vector2:
-	var x = sin(angle) * radius
-	var y = -cos(angle) * radius
-	return Vector2(x, y)

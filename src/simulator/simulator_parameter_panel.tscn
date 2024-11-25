@@ -1,0 +1,258 @@
+[gd_scene load_steps=6 format=3 uid="uid://blg6o7cni0t0n"]
+
+[ext_resource type="Script" path="res://src/simulator/simulator_parameter_panel.gd" id="1_kvo3v"]
+[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="1_nvq3g"]
+[ext_resource type="LabelSettings" uid="uid://dn2qcijbjp0kh" path="res://src/header_label.tres" id="3_3f7yv"]
+[ext_resource type="PackedScene" uid="uid://b1jkmwu2ltfjy" path="res://src/simulator/simulator_range_panel.tscn" id="4_133vl"]
+[ext_resource type="Texture2D" uid="uid://q21h4fm426vm" path="res://assets/plus.svg" id="4_njuww"]
+
+[node name="SimulatorParameterPanel" type="HBoxContainer"]
+offset_right = 219.0
+offset_bottom = 189.0
+script = ExtResource("1_kvo3v")
+
+[node name="GridContainer" type="GridContainer" parent="."]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+columns = 2
+
+[node name="Label" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Step delta"
+
+[node name="StepDeltaBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+suffix = " s"
+min_value = 0.01
+
+[node name="Label2" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Max Step"
+
+[node name="MaxStepBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+suffix = " step(s)"
+min_value = 0.0
+
+[node name="Label6" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Random seed"
+
+[node name="RandomSeed" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+min_value = -1.0
+
+[node name="HSeparator" type="HSeparator" parent="GridContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="GridContainer"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Vehicle"
+label_settings = ExtResource("3_3f7yv")
+
+[node name="Control" type="Control" parent="GridContainer"]
+layout_mode = 2
+
+[node name="Label4" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Spawn before start"
+
+[node name="VehicleSpawnBeforeStartSwitch" type="CheckButton" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label5" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Spawn after start"
+
+[node name="VehicleSpawnAfterStartSwitch" type="CheckButton" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label15" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Spawn rate"
+
+[node name="VehicleSpawnRate" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+min_value = 0.0
+max_value = 1.0
+
+[node name="Label7" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Max acceleration range"
+
+[node name="VehicleMaxAccelerationRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " m/s^2"
+min_value = 1.0
+max_value = 10.0
+
+[node name="Label17" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Max acceleration mean"
+
+[node name="VehicleMaxAccelerationMeanBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+suffix = " m/s^2"
+min_value = 1.0
+max_value = 10.0
+
+[node name="Label16" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Base speed range"
+
+[node name="VehicleBaseSpeedRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " km/h"
+min_value = -100.0
+max_value = 100.0
+
+[node name="Label8" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Base speed mean"
+
+[node name="VehicleBaseSpeedMeanBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+suffix = " km/h"
+min_value = -100.0
+max_value = 100.0
+
+[node name="Label9" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Max speed range"
+
+[node name="VehicleMaxSpeedRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " km/h"
+min_value = 10.0
+max_value = 200.0
+
+[node name="Label10" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Max speed mean"
+
+[node name="VehicleMaxSpeedMeanBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+suffix = " km/h"
+min_value = 10.0
+max_value = 200.0
+
+[node name="Label11" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Low speed distance range"
+
+[node name="VehicleLowSpeedDistanceRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="Label12" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Low speed distance mean"
+
+[node name="VehicleLowSpeedDistanceMeanBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="Label13" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "High speed distance range"
+
+[node name="VehicleHighSpeedDistanceRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="Label14" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "High speed distance mean"
+
+[node name="VehicleHighSpeedDistanceMeanBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="VSeparator" type="VSeparator" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Vehicle length options"
+label_settings = ExtResource("3_3f7yv")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="VehicleLengthOptionContainer" type="GridContainer" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer/VehicleLengthOptionContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Value"
+
+[node name="Label2" type="Label" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer/VehicleLengthOptionContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Weight"
+
+[node name="Control" type="Control" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer/VehicleLengthOptionContainer"]
+layout_mode = 2
+
+[node name="VehicleLengthOptionAddButton" type="Button" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+icon = ExtResource("4_njuww")
+flat = true
+
+[connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer/VehicleLengthOptionAddButton" to="." method="_on_vehicle_length_option_add_button_pressed"]

@@ -13,5 +13,5 @@ static func to_dict(data: ContentData) -> Dictionary:
 static func from_dict(dict: Dictionary, script: GDScript = SpaceData) -> ContentData:
 	var data = super(dict, script)
 	assert(data is SpaceData)
-	data.block_target_ids = dict.get(&"block_target_ids", [])
+	data.block_target_ids.assign(dict.get(&"block_target_ids", []))
 	return data

@@ -1,12 +1,7 @@
-class_name Agent
-extends Node2D
+class_name AgentHelper
 
-var head_length: float
-var length: float
-var width: float
-var color: Color
 
-func _draw():
+static func draw_to(canvas: CanvasItem, head_length: float, length: float, color: Color, width: float) -> void:
 	var width_half = width / 2
 	var points = [
 		Vector2.ZERO,
@@ -15,5 +10,4 @@ func _draw():
 		Vector2(-length, -width_half),
 		Vector2(-head_length, -width_half),
 	]
-	draw_polygon(points, [color])
-	
+	canvas.draw_colored_polygon(points, color)

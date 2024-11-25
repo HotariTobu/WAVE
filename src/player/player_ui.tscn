@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3 uid="uid://do35ab20g2g1"]
+
+[ext_resource type="Texture2D" uid="uid://bwi4jubes4ypq" path="res://assets/play.svg" id="1_hw2lp"]
+[ext_resource type="Script" path="res://src/player/player_ui.gd" id="1_jkg8e"]
+[ext_resource type="Texture2D" uid="uid://qs8il8ds20cw" path="res://assets/pause.svg" id="2_306rd"]
+
+[sub_resource type="InputEventAction" id="InputEventAction_1ck36"]
+action = &"ui_accept"
+
+[sub_resource type="Shortcut" id="Shortcut_23otv"]
+events = [SubResource("InputEventAction_1ck36")]
+
+[node name="PlayerUi" type="CanvasLayer"]
+script = ExtResource("1_jkg8e")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -42.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="PlayPauseButton" type="TextureButton" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+shortcut = SubResource("Shortcut_23otv")
+texture_normal = ExtResource("1_hw2lp")
+texture_pressed = ExtResource("2_306rd")
+
+[node name="SeekBar" type="HSlider" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+step = 0.01
+
+[node name="TimeLabel" type="Label" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[connection signal="toggled" from="MarginContainer/HBoxContainer/PlayPauseButton" to="." method="_on_play_pause_button_toggled"]

@@ -1,10 +1,12 @@
 {
 	"cSpell.words": [
+		"animatable",
 		"autofree",
 		"isinstance",
 		"roundi",
 		"targetable",
 		"targetables",
-		"wavenetwork"
+		"wavenetwork",
+		"wavesimulation"
 	]
 }

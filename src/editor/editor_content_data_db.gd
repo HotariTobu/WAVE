@@ -4,16 +4,12 @@ var groups: Array[Group]:
 	get:
 		return Array(_group_dict.values(), TYPE_OBJECT, &"RefCounted", Group)
 
-var group_names: Array[StringName]:
-	get:
-		return Array(_group_dict.keys(), TYPE_STRING_NAME, &"", null)
-
 var _group_dict: Dictionary
 var _group_name_dict: Dictionary
 
 
-func _init(group_name_list: Array[StringName]):
-	for group_name in group_name_list:
+func _init():
+	for group_name in NetworkData.group_names:
 		_group_dict[group_name] = Group.new(group_name, _group_name_dict)
 
 	_group_dict.make_read_only()
@@ -53,11 +49,8 @@ func data_of(content_id: StringName) -> ContentData:
 
 
 class Group:
-	signal contents_renewing(contents: Array[ContentData])
 	signal contents_renewed(contents: Array[ContentData])
-	signal content_adding(content: ContentData)
 	signal content_added(content: ContentData)
-	signal content_removing(content: ContentData)
 	signal content_removed(content: ContentData)
 
 	var name: StringName:
@@ -69,9 +62,6 @@ class Group:
 			return _content_dict.values()
 
 		set(new_contents):
-			var typed_array = Array(new_contents, TYPE_OBJECT, &"RefCounted", ContentData)
-			contents_renewing.emit(typed_array)
-			
 			for content_id in _content_dict:
 				_group_name_dict.erase(content_id)
 
@@ -81,6 +71,7 @@ class Group:
 				_content_dict[content.id] = content
 				_group_name_dict[content.id] = _name
 
+			var typed_array = Array(new_contents, TYPE_OBJECT, &"RefCounted", ContentData)
 			contents_renewed.emit(typed_array)
 
 	var _name: StringName
@@ -94,14 +85,12 @@ class Group:
 
 	func add(content: ContentData) -> void:
 		assert(not _content_dict.has(content.id))
-		content_adding.emit(content)
 		_content_dict[content.id] = content
 		_group_name_dict[content.id] = _name
 		content_added.emit(content)
 
 	func remove(content: ContentData) -> void:
 		assert(_content_dict.has(content.id))
-		content_removing.emit(content)
 		_content_dict.erase(content.id)
 		_group_name_dict.erase(content.id)
 		content_removed.emit(content)
