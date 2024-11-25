@@ -32,6 +32,8 @@ func _iterate_vehicle_entry_point(step: int):
 
 
 func _iterate_lanes(step: int):
+	var loop_tail_buffer_dict: Dictionary
+
 	for lane in ordered_lanes:
 		if should_exit.call():
 			return
@@ -81,7 +83,22 @@ func _iterate_lanes(step: int):
 
 			var next_lane = lane.next_lane_chooser.next() as SimulatorLaneData
 
-			vehicle.move_to(next_lane, step)
-			next_lane.update_overflowing()
+			if lane.loop_next_lane_set.has(next_lane):
+				var buffered_vehicles = loop_tail_buffer_dict.get_or_add(next_lane, []) as Array
+				buffered_vehicles.append(vehicle)
+
+				vehicle.pos_history[-1] += next_lane.length
+				next_lane.update_overflowing_by(vehicle)
+
+			else:
+				vehicle.move_to(next_lane, step)
+				next_lane.update_overflowing()
 
 		lane.update_overflowing()
+
+	for next_lane in loop_tail_buffer_dict:
+		var buffered_vehicles = loop_tail_buffer_dict[next_lane]
+
+		for vehicle in buffered_vehicles:
+			vehicle.pos_history[-1] -= next_lane.length
+			vehicle.move_to(next_lane, step)

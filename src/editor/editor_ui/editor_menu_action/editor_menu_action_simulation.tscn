@@ -12,18 +12,27 @@ script = ExtResource("1_y8iws")
 [node name="SimulatorWindow" type="Window" parent="."]
 title = "Simulator"
 initial_position = 1
-size = Vector2i(1000, 800)
+size = Vector2i(1000, 600)
 visible = false
 force_native = true
 
-[node name="CenterContainer" type="CenterContainer" parent="SimulatorWindow"]
+[node name="ScrollContainer" type="ScrollContainer" parent="SimulatorWindow"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 0
 
-[node name="SimulatorRoot" parent="SimulatorWindow/CenterContainer" instance=ExtResource("2_1xbsh")]
+[node name="CenterContainer" type="CenterContainer" parent="SimulatorWindow/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="SimulatorWindow/ScrollContainer/CenterContainer"]
+layout_mode = 2
+
+[node name="SimulatorRoot" parent="SimulatorWindow/ScrollContainer/CenterContainer/MarginContainer" instance=ExtResource("2_1xbsh")]
 layout_mode = 2
 
 [node name="PlayerWindow" type="Window" parent="."]
@@ -34,6 +43,13 @@ visible = false
 force_native = true
 
 [node name="PlayerRoot" parent="PlayerWindow" instance=ExtResource("3_8vtpm")]
+
+[node name="PlayConfirmationDialog" type="ConfirmationDialog" parent="."]
+title = "Simulation Completed!"
+initial_position = 2
+size = Vector2i(300, 100)
+ok_button_text = "Play now!"
+cancel_button_text = "Not now..."
 
 [node name="SimulationOpenFileDialog" type="FileDialog" parent="."]
 title = "Open a File"
@@ -51,5 +67,7 @@ script = ExtResource("3_rev5p")
 script = ExtResource("5_kk0fv")
 
 [connection signal="close_requested" from="SimulatorWindow" to="." method="_on_simulator_window_close_requested"]
+[connection signal="completed" from="SimulatorWindow/ScrollContainer/CenterContainer/MarginContainer/SimulatorRoot" to="." method="_on_simulation_completed"]
 [connection signal="close_requested" from="PlayerWindow" to="." method="_on_player_window_close_requested"]
+[connection signal="confirmed" from="PlayConfirmationDialog" to="." method="_on_play_confirmation_dialog_confirmed"]
 [connection signal="file_selected" from="SimulationOpenFileDialog" to="." method="_on_simulation_open_file_dialog_file_selected"]

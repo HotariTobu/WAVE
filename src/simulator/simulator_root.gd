@@ -1,5 +1,7 @@
 extends Node
 
+signal completed(simulation: SimulationData)
+
 enum NetworkSource { MEMORY, FILE }
 
 const Status = SimulatorManager.Status
@@ -24,7 +26,7 @@ func _ready():
 	_data.bind(&"network_source").using(case.new(NetworkSource.FILE)).to(%NetworkPathPanel, &"enable")
 	_data.bind(&"network_file_path").to(%NetworkPathPanel, &"path", &"path_changed")
 
-	_data.bind(&"status").using(_status_hook).using(_get_status_label).to_label(%StatusLabel)
+	_data.bind(&"status").using(_get_status_label).to_label(%StatusLabel)
 	_data.bind(&"status").using(_status_to_start_disabled).to(%StartButton, &"disabled")
 	_data.bind(&"status").using(_status_to_cancel_disabled).to(%CancelButton, &"disabled")
 
@@ -37,22 +39,11 @@ func _ready():
 
 	_data.bind(&"simulation").using(case.new(Data.NULL_SIMULATION)).to(%SaveButton, &"disabled")
 
+	completed.connect($SimulationSaveFileDialog.show.unbind(1))
+
 
 func _exit_tree():
 	_on_cancel_button_pressed()
-
-
-func _status_hook(status: Status) -> Status:
-	if status == Status.RUNNING:
-		_data.progress_value = 0
-
-	elif status == Status.COMPLETED:
-		_data.progress_value = _data.max_progress_value
-		_data.simulation = _thread.wait_to_finish()
-		
-		$SimulationSaveFileDialog.show()
-
-	return status
 
 
 func _status_to_start_disabled(status: Status) -> bool:
@@ -83,7 +74,7 @@ func _run_simulation() -> SimulationData:
 			network = _read_network(network_file_path)
 
 	var simulator = SimulatorManager.new(parameter, network)
-	simulator.status_changed.connect(_on_simulator_status_changed)
+	simulator.status_changed.connect(_on_simulator_status_changed.call_deferred)
 
 	_mutex.lock()
 	_simulator = simulator
@@ -126,9 +117,18 @@ func _on_save_button_pressed():
 
 
 func _on_simulator_status_changed(new_status):
-	_mutex.lock()
-	_data.set_deferred(&"status", new_status)
-	_mutex.unlock()
+	_data.status = new_status
+
+	if new_status == Status.RUNNING:
+		_data.progress_value = 0
+
+	elif new_status == Status.COMPLETED:
+		var simulation = _thread.wait_to_finish()
+
+		_data.progress_value = _data.max_progress_value
+		_data.simulation = simulation
+
+		completed.emit(simulation)
 
 
 func _on_progress_bar_timer_timeout():

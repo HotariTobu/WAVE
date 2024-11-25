@@ -91,6 +91,7 @@ autostart = true
 
 [node name="SimulationSaveFileDialog" type="FileDialog" parent="."]
 auto_translate_mode = 1
+title = "Save a Simulation File"
 size = Vector2i(207, 175)
 access = 2
 filters = PackedStringArray("*.wavesimulation")

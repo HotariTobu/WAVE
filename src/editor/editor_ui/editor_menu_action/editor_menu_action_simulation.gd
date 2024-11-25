@@ -23,6 +23,15 @@ func _on_player_window_close_requested():
 	$PlayerWindow.hide()
 
 
+func _on_simulation_completed(simulation):
+	player_global.simulation = simulation
+	$PlayConfirmationDialog.show()
+
+
+func _on_play_confirmation_dialog_confirmed():
+	open_player_window()
+
+
 func _on_simulation_open_file_dialog_file_selected(path):
 	var result = CommonIO.read_data(path, SimulationData)
 	if not result.ok:

@@ -13,6 +13,8 @@ var prev_lanes: Array[SimulatorLaneData]
 
 var next_lane_chooser: SimulatorRandomWeightedArray = null
 
+var loop_next_lane_set = Set.new()
+
 var vehicles: Array[SimulatorVehicleData]
 
 var overflowed: float
@@ -49,8 +51,12 @@ func update_overflowing():
 		overflowing = overflowed - length
 	else:
 		var last_vehicle = vehicles[-1]
-		var last_pos = last_vehicle.pos_history[-1]
-		overflowing = last_pos + last_vehicle.length - length
+		update_overflowing_by(last_vehicle)
 
 	for prev_lane in prev_lanes:
 		prev_lane.update_overflowed()
+
+
+func update_overflowing_by(last_vehicle: SimulatorVehicleData):
+	var last_pos = last_vehicle.pos_history[-1]
+	overflowing = last_pos + last_vehicle.length - length

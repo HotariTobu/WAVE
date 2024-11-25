@@ -69,28 +69,31 @@ func _init_ordered_lanes():
 	var unvisited = func(lane): return not visited_lane_set.has(lane)
 
 	while not lanes.is_empty() and not should_exit.call():
-		var lane_queue: Array[SimulatorLaneData]
+		var lane_stack: Array[SimulatorLaneData]
 		var rest_lanes: Array[SimulatorLaneData]
 
 		for lane in lanes:
 			if lane.next_lanes.all(visited):
-				lane_queue.append(lane)
+				lane_stack.append(lane)
 			else:
 				rest_lanes.append(lane)
 
-		if lane_queue.is_empty():
+		if lane_stack.is_empty():
 			var lane = rest_lanes.pop_back() as SimulatorLaneData
-			lane_queue.append(lane)
+			lane_stack.append(lane)
 
-		while not lane_queue.is_empty() and not should_exit.call():
-			var lane = lane_queue.pop_back() as SimulatorLaneData
+			var loop_next_lanes = lane.next_lanes.filter(unvisited)
+			lane.loop_next_lane_set.add_all(loop_next_lanes)
+
+		while not lane_stack.is_empty() and not should_exit.call():
+			var lane = lane_stack.pop_back() as SimulatorLaneData
 
 			ordered_lanes.append(lane)
 			visited_lane_set.add(lane)
 
 			for prev_lane in lane.prev_lanes.filter(unvisited):
 				if prev_lane.next_lanes.all(visited):
-					lane_queue.append(prev_lane)
+					lane_stack.append(prev_lane)
 				else:
 					rest_lanes.append(prev_lane)
 

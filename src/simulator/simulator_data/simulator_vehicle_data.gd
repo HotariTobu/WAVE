@@ -10,6 +10,7 @@ var _rapid_speed_slope: float
 var _inverted_max_speed: float
 var _rest_distance: float
 
+
 func init_params():
 	_gradual_speed_slope = condition_speed / (condition_speed - relative_speed)
 	_rapid_speed_slope = (condition_speed + relative_speed) / condition_speed
@@ -50,6 +51,7 @@ func get_preferred_distance(speed_rate: float) -> float:
 
 
 func _enter(lane: SimulatorLaneData, step: int):
+	assert(len(pos_history) - 1 == step - spawn_step + 1)
 	lane_history[step - spawn_step + 1] = lane.id
 	lane.vehicles.append(self)
 
