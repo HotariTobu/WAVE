@@ -4,6 +4,10 @@ extends SimulatorPreparedData
 
 func iterate(step: int):
 	_iterate_vehicle_entry_point(step)
+
+	_iterate_block_sources(step)
+	_iterate_block_targets()
+
 	_iterate_lanes(step)
 
 
@@ -31,6 +35,21 @@ func _iterate_vehicle_entry_point(step: int):
 		entry_point.last_entry_step = step
 
 
+func _iterate_block_sources(step: int):
+	var time = parameter.step_delta * step
+
+	for block_source in block_sources:
+		block_source.update_is_blocking(time)
+
+
+func _iterate_block_targets():
+	for block_target in block_targets:
+		block_target.is_blocked = block_target.block_sources.any(_is_blocking)
+
+	for lane in closable_lanes:
+		lane.is_closed = lane.next_lanes.all(_is_blocked)
+
+
 func _iterate_lanes(step: int):
 	var loop_tail_buffer_dict: Dictionary
 
@@ -42,6 +61,9 @@ func _iterate_lanes(step: int):
 			continue
 
 		var rear_pos = lane.overflowed
+		if lane.is_closed and rear_pos < 0:
+			rear_pos = 0
+
 		var removed_count = 0
 
 		for vehicle in lane.vehicles:
@@ -116,3 +138,11 @@ func _iterate_lanes(step: int):
 		for vehicle in buffered_vehicles:
 			vehicle.pos_history[-1] -= next_lane.length
 			vehicle.move_to(next_lane, step)
+
+
+static func _is_blocking(content: SimulatorContentData) -> bool:
+	return content.is_blocking
+
+
+static func _is_blocked(content: SimulatorContentData) -> bool:
+	return content.is_blocked

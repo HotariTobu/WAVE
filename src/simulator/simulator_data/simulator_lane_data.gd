@@ -17,6 +17,10 @@ var loop_next_lane_set = Set.new()
 
 var vehicles: Array[SimulatorVehicleData]
 
+var is_blocking: bool
+var is_blocked: bool
+var is_closed: bool
+
 var overflowed: float
 var overflowing: float
 
@@ -36,6 +40,19 @@ func assign(content: ContentData, data_of: Callable) -> void:
 
 	overflowed = -INF
 	overflowing = -length
+
+
+func update_is_blocking(_time: float):
+	if vehicles.is_empty():
+		is_blocking = false
+		return
+
+	for next_lane in next_lanes:
+		if not next_lane.is_blocked:
+			is_blocking = true
+			return
+
+	is_blocking = false
 
 
 func update_overflowed():

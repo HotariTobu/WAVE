@@ -11,6 +11,10 @@ var ordered_lanes: Array[SimulatorLaneData]
 var vehicle_creator: SimulatorVehicleCreator
 var vehicle_entry_points: Array[VehicleEntryPoint]
 
+var block_sources: Array[SimulatorContentData]
+var block_targets: Array[SimulatorContentData]
+var closable_lanes: Array[SimulatorLaneData]
+
 var simulation = SimulationData.new()
 
 var _inverted_step_delta: float
@@ -32,6 +36,9 @@ func _init(should_exit_callable: Callable, parameter_data: ParameterData, networ
 	vehicle_creator = SimulatorVehicleCreator.new(rng, parameter)
 	_init_initial_vehicles()
 	_init_entry_lanes()
+
+	_init_block_sources()
+	_init_block_targets()
 
 	_inverted_step_delta = 1.0 / parameter.step_delta
 
@@ -168,6 +175,31 @@ func _init_entry_lanes():
 		vehicle_entry_points.append(entry_point)
 
 	vehicle_entry_points.make_read_only()
+
+
+func _init_block_sources():
+	block_sources.append_array(network.splits.filter(_has_block_target))
+	block_sources.append_array(ordered_lanes.filter(_has_block_target))
+
+
+func _init_block_targets():
+	var block_target_lanes = ordered_lanes.filter(_has_block_source)
+	block_targets.append_array(block_target_lanes)
+
+	var closable_lane_set = Set.new()
+
+	for lane in block_target_lanes:
+		closable_lane_set.add_all(lane.prev_lanes)
+
+	closable_lanes.assign(closable_lane_set.to_array())
+
+
+static func _has_block_target(content: SimulatorContentData):
+	return not content.block_targets.is_empty()
+
+
+static func _has_block_source(content: SimulatorContentData):
+	return not content.block_sources.is_empty()
 
 
 class VehicleEntryPoint:
