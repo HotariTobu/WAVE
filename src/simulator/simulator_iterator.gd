@@ -73,20 +73,20 @@ func _iterate_lanes(step: int):
 
 			if next_pos < 0:
 				removed_count += 1
-				
-			printt(
-				"[%02d]" % (vehicle.spawn_step),
-				"%.2f m" % (last_displacement),
-				"%.2f km/h" % (last_speed * 3.6),
-				"%.2f" % (last_speed_rate),
-				"%.2f m" % (actual_distance),
-				"%.2f m" % (preferred_distance),
-				"%.2f km/h" % (preferred_speed * 3.6),
-				"%.2f" % (preferred_speed_rate),
-				"%.2f" % (acceleration),
-				"%.2f km/h" % (accelerated_speed * 3.6),
-				"%.2f km/h" % (speed * 3.6),
-			)
+
+			#printt(
+			#	"[%02d]" % (vehicle.spawn_step),
+			#	"%.2f m" % (last_displacement),
+			#	"%.2f km/h" % (last_speed * 3.6),
+			#	"%.2f" % (last_speed_rate),
+			#	"%.2f m" % (actual_distance),
+			#	"%.2f m" % (preferred_distance),
+			#	"%.2f km/h" % (preferred_speed * 3.6),
+			#	"%.2f" % (preferred_speed_rate),
+			#	"%.2f" % (acceleration),
+			#	"%.2f km/h" % (accelerated_speed * 3.6),
+			#	"%.2f km/h" % (speed * 3.6),
+			#)
 
 		for _i in range(removed_count):
 			var vehicle = lane.vehicles.pop_front() as SimulatorVehicleData
