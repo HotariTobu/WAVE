@@ -115,7 +115,6 @@ class SplitCellCreator:
 
 	var _label_count: int
 
-
 	func _init(stoplight_source: EditorBindingSource):
 		_stoplight_source = stoplight_source
 
@@ -216,5 +215,6 @@ class DurationBox:
 	func _init():
 		super()
 
+		suffix = " s"
 		min_value = 0
 		select_all_on_focus = true
