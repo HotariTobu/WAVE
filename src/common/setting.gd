@@ -67,17 +67,15 @@ var default_vehicle_length_options = [
 	{&"value": 12.0, &"weight": 20},
 ]
 
-var default_vehicle_max_acceleration_range = {&"begin": 1, &"end": 6}
+var default_vehicle_max_acceleration_range = {&"begin": 1, &"end": 9}
 var default_vehicle_max_acceleration_mean = 3
 
-var default_vehicle_condition_speed_range = {&"begin": 8, &"end": 12}
-var default_vehicle_condition_speed_mean = 10
-var default_vehicle_relative_speed_range = {&"begin": -30, &"end": 30}
-var default_vehicle_relative_speed_mean = 10
+var default_vehicle_base_speed_range = {&"begin": 70, &"end": 130}
+var default_vehicle_base_speed_mean = 100
 var default_vehicle_max_speed_range = {&"begin": 80, &"end": 150}
 var default_vehicle_max_speed_mean = 110
 
-var default_vehicle_min_following_distance_range = {&"begin": 1, &"end": 5}
-var default_vehicle_min_following_distance_mean = 2
-var default_vehicle_max_following_distance_range = {&"begin": 10, &"end": 100}
-var default_vehicle_max_following_distance_mean = 60
+var default_vehicle_low_speed_distance_range = {&"begin": 1, &"end": 5}
+var default_vehicle_low_speed_distance_mean = 2
+var default_vehicle_high_speed_distance_range = {&"begin": 10, &"end": 100}
+var default_vehicle_high_speed_distance_mean = 60

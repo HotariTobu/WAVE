@@ -44,18 +44,16 @@ func _ready():
 
 	_source.bind(&"vehicle_max_acceleration_range").to(%VehicleMaxAccelerationRangePanel, &"range_value", &"range_value_changed")
 	_source.bind(&"vehicle_max_acceleration_mean").to(%VehicleMaxAccelerationMeanBox, &"value", &"value_changed")
-	
-	_source.bind(&"vehicle_condition_speed_range").to(%VehicleConditionSpeedRangePanel, &"range_value", &"range_value_changed")
-	_source.bind(&"vehicle_condition_speed_mean").to(%VehicleConditionSpeedMeanBox, &"value", &"value_changed")
-	_source.bind(&"vehicle_relative_speed_range").to(%VehicleRelativeSpeedRangePanel, &"range_value", &"range_value_changed")
-	_source.bind(&"vehicle_relative_speed_mean").to(%VehicleRelativeSpeedMeanBox, &"value", &"value_changed")
+
+	_source.bind(&"vehicle_base_speed_range").to(%VehicleBaseSpeedRangePanel, &"range_value", &"range_value_changed")
+	_source.bind(&"vehicle_base_speed_mean").to(%VehicleBaseSpeedMeanBox, &"value", &"value_changed")
 	_source.bind(&"vehicle_max_speed_range").to(%VehicleMaxSpeedRangePanel, &"range_value", &"range_value_changed")
 	_source.bind(&"vehicle_max_speed_mean").to(%VehicleMaxSpeedMeanBox, &"value", &"value_changed")
-	
-	_source.bind(&"vehicle_min_following_distance_range").to(%VehicleMinFollowingDistanceRangePanel, &"range_value", &"range_value_changed")
-	_source.bind(&"vehicle_min_following_distance_mean").to(%VehicleMinFollowingDistanceMeanBox, &"value", &"value_changed")
-	_source.bind(&"vehicle_max_following_distance_range").to(%VehicleMaxFollowingDistanceRangePanel, &"range_value", &"range_value_changed")
-	_source.bind(&"vehicle_max_following_distance_mean").to(%VehicleMaxFollowingDistanceMeanBox, &"value", &"value_changed")
+
+	_source.bind(&"vehicle_low_speed_distance_range").to(%VehicleLowSpeedDistanceRangePanel, &"range_value", &"range_value_changed")
+	_source.bind(&"vehicle_low_speed_distance_mean").to(%VehicleLowSpeedDistanceMeanBox, &"value", &"value_changed")
+	_source.bind(&"vehicle_high_speed_distance_range").to(%VehicleHighSpeedDistanceRangePanel, &"range_value", &"range_value_changed")
+	_source.bind(&"vehicle_high_speed_distance_mean").to(%VehicleHighSpeedDistanceMeanBox, &"value", &"value_changed")
 
 	for child in $GridContainer.get_children():
 		child.size_flags_horizontal = SIZE_EXPAND_FILL

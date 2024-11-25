@@ -55,7 +55,7 @@ func _iterate_lanes(step: int):
 			var preferred_distance = vehicle.get_preferred_distance(last_speed_rate)
 			var possible_displacement = maxf(0.0, actual_distance - preferred_distance)
 
-			var preferred_speed = vehicle.preferred_speed_getter.call(lane.speed_limit)
+			var preferred_speed = vehicle.get_preferred_speed(lane.speed_limit)
 			var preferred_speed_rate = vehicle.get_speed_rate(preferred_speed)
 			var acceleration = vehicle.max_acceleration * preferred_speed_rate
 			var accelerated_speed = last_speed + acceleration * parameter.step_delta
@@ -73,6 +73,20 @@ func _iterate_lanes(step: int):
 
 			if next_pos < 0:
 				removed_count += 1
+				
+			printt(
+				"[%02d]" % (vehicle.spawn_step),
+				"%.2f m" % (last_displacement),
+				"%.2f km/h" % (last_speed * 3.6),
+				"%.2f" % (last_speed_rate),
+				"%.2f m" % (actual_distance),
+				"%.2f m" % (preferred_distance),
+				"%.2f km/h" % (preferred_speed * 3.6),
+				"%.2f" % (preferred_speed_rate),
+				"%.2f" % (acceleration),
+				"%.2f km/h" % (accelerated_speed * 3.6),
+				"%.2f km/h" % (speed * 3.6),
+			)
 
 		for _i in range(removed_count):
 			var vehicle = lane.vehicles.pop_front() as SimulatorVehicleData

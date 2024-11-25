@@ -112,34 +112,11 @@ suffix = " m/s^2"
 min_value = 1.0
 max_value = 10.0
 
-[node name="Label18" type="Label" parent="GridContainer"]
-layout_mode = 2
-text = "Condition speed range"
-
-[node name="VehicleConditionSpeedRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
-unique_name_in_owner = true
-layout_mode = 2
-suffix = " km/h"
-min_value = 1.0
-max_value = 30.0
-
-[node name="Label19" type="Label" parent="GridContainer"]
-layout_mode = 2
-text = "Condition speed mean"
-
-[node name="VehicleConditionSpeedMeanBox" type="LineEdit" parent="GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-script = ExtResource("1_nvq3g")
-suffix = " km/h"
-min_value = 1.0
-max_value = 30.0
-
 [node name="Label16" type="Label" parent="GridContainer"]
 layout_mode = 2
-text = "Relative speed range"
+text = "Base speed range"
 
-[node name="VehicleRelativeSpeedRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
+[node name="VehicleBaseSpeedRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
 unique_name_in_owner = true
 layout_mode = 2
 suffix = " km/h"
@@ -148,9 +125,9 @@ max_value = 100.0
 
 [node name="Label8" type="Label" parent="GridContainer"]
 layout_mode = 2
-text = "Relative speed mean"
+text = "Base speed mean"
 
-[node name="VehicleRelativeSpeedMeanBox" type="LineEdit" parent="GridContainer"]
+[node name="VehicleBaseSpeedMeanBox" type="LineEdit" parent="GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("1_nvq3g")
@@ -183,9 +160,9 @@ max_value = 200.0
 
 [node name="Label11" type="Label" parent="GridContainer"]
 layout_mode = 2
-text = "Min following distance range"
+text = "Low speed distance range"
 
-[node name="VehicleMinFollowingDistanceRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
+[node name="VehicleLowSpeedDistanceRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
 unique_name_in_owner = true
 layout_mode = 2
 suffix = " m"
@@ -194,9 +171,9 @@ max_value = 100.0
 
 [node name="Label12" type="Label" parent="GridContainer"]
 layout_mode = 2
-text = "Min following distance mean"
+text = "Low speed distance mean"
 
-[node name="VehicleMinFollowingDistanceMeanBox" type="LineEdit" parent="GridContainer"]
+[node name="VehicleLowSpeedDistanceMeanBox" type="LineEdit" parent="GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("1_nvq3g")
@@ -206,9 +183,9 @@ max_value = 100.0
 
 [node name="Label13" type="Label" parent="GridContainer"]
 layout_mode = 2
-text = "Max following distance range"
+text = "High speed distance range"
 
-[node name="VehicleMaxFollowingDistanceRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
+[node name="VehicleHighSpeedDistanceRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
 unique_name_in_owner = true
 layout_mode = 2
 suffix = " m"
@@ -217,9 +194,9 @@ max_value = 100.0
 
 [node name="Label14" type="Label" parent="GridContainer"]
 layout_mode = 2
-text = "Max following distance mean"
+text = "High speed distance mean"
 
-[node name="VehicleMaxFollowingDistanceMeanBox" type="LineEdit" parent="GridContainer"]
+[node name="VehicleHighSpeedDistanceMeanBox" type="LineEdit" parent="GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("1_nvq3g")
