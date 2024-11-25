@@ -47,23 +47,23 @@ func _iterate_lanes(step: int):
 		for vehicle in lane.vehicles:
 			var pos = vehicle.pos_history[-1]
 
-			var preferred_speed = vehicle.preferred_speed_getter.call(lane.speed_limit)
-			var speed_rate = vehicle.get_speed_rate(preferred_speed)
-
-			var actual_distance = pos - rear_pos
-			var preferred_distance = vehicle.get_preferred_distance(speed_rate)
-			var possible_displacement = maxf(actual_distance - preferred_distance, 0.0)
-
 			var last_displacement = vehicle.over_last_pos - pos
 			var last_speed = last_displacement * _inverted_step_delta
+			var last_speed_rate = vehicle.get_speed_rate(last_speed)
 
-			var acceleration = vehicle.max_acceleration * speed_rate
+			var actual_distance = pos - rear_pos
+			var preferred_distance = vehicle.get_preferred_distance(last_speed_rate)
+			var possible_displacement = maxf(actual_distance - preferred_distance, 0.0)
+
+			var preferred_speed = vehicle.preferred_speed_getter.call(lane.speed_limit)
+			var preferred_speed_rate = vehicle.get_speed_rate(preferred_speed)
+			var acceleration = vehicle.max_acceleration * preferred_speed_rate
 			var accelerated_speed = last_speed + acceleration * parameter.step_delta
 
 			var speed = minf(preferred_speed, accelerated_speed)
 			var preferred_displacement = speed * parameter.step_delta
 
-			var next_displacement = min(possible_displacement, preferred_displacement)
+			var next_displacement = minf(possible_displacement, preferred_displacement)
 			var next_pos = pos - next_displacement
 
 			vehicle.over_last_pos = pos

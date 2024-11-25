@@ -42,8 +42,8 @@ func die(step: int):
 	die_step = step + 1
 
 
-func get_speed_rate(preferred_speed: float) -> float:
-	return preferred_speed * _inverted_max_speed
+func get_speed_rate(speed: float) -> float:
+	return speed * _inverted_max_speed
 
 
 func get_preferred_distance(speed_rate: float) -> float:
