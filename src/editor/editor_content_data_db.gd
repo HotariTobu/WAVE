@@ -12,8 +12,8 @@ var _group_dict: Dictionary
 var _group_name_dict: Dictionary
 
 
-func _init(group_name_list: Array[StringName]):
-	for group_name in group_name_list:
+func _init():
+	for group_name in NetworkData.group_names:
 		_group_dict[group_name] = Group.new(group_name, _group_name_dict)
 
 	_group_dict.make_read_only()

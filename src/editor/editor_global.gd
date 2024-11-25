@@ -9,7 +9,7 @@ var camera: PanZoomCamera
 
 var network_file_path: String
 
-var content_db = EditorContentDataDB.new(NetworkData.group_names)
+var content_db = EditorContentDataDB.new()
 
 @onready var _content_owner = get_tree().root
 
