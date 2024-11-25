@@ -1,4 +1,4 @@
-class_name Agent
+class_name AgentHelper
 
 
 static func draw_to(canvas: CanvasItem, head_length: float, length: float, color: Color, width: float) -> void:

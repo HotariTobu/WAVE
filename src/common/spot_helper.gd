@@ -1,4 +1,4 @@
-class_name Spot
+class_name SpotHelper
 
 enum Shape {CIRCLE, TRIANGLE, SQUARE}
 

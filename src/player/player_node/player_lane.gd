@@ -10,4 +10,4 @@ func _init(lane: LaneData):
 
 
 func _draw():
-	Lane.draw_to(self, _points, setting.lane_color, setting.lane_width)
+	LaneHelper.draw_to(self, _points, setting.lane_color, setting.lane_width)

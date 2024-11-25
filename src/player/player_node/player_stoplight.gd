@@ -2,21 +2,21 @@ class_name PlayerStoplight
 extends PlayerAnimatable
 
 var _durations: PackedFloat32Array
-var _split_helper: Stoplight.Split
+var _split_helper: StoplightHelper.Split
 
 var _sector_index: int
 var _sector_weight: float
 
-var _sector_helpers: Array[Stoplight.Sector]
+var _sector_helpers: Array[StoplightHelper.Sector]
 var _width: float
 
 
 func _init(stoplight: StoplightData):
 	var player_stoplight = player_global.content_db.player_data_of(stoplight.id) as PlayerStoplightData
 	_durations = player_stoplight.durations
-	_split_helper = Stoplight.Split.new(stoplight.offset, _durations)
+	_split_helper = StoplightHelper.Split.new(stoplight.offset, _durations)
 
-	_sector_helpers = Stoplight.get_sector_helpers(stoplight.offset, _durations)
+	_sector_helpers = StoplightHelper.get_sector_helpers(stoplight.offset, _durations)
 	_width = setting.selection_radius
 
 	var radius = setting.selection_radius * 2

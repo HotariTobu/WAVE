@@ -37,7 +37,7 @@ func _exit_tree():
 
 
 func _draw():
-	Spot.draw_to(self, setting.stoplight_color, setting.stoplight_radius, setting.stoplight_shape)
+	SpotHelper.draw_to(self, setting.stoplight_color, setting.stoplight_radius, setting.stoplight_shape)
 
 	var color: Color
 	if selecting:
@@ -99,7 +99,7 @@ func _update_sectors():
 		var split = sector.data as SplitData
 		durations.append(split.duration)
 
-	var sector_helpers = Stoplight.get_sector_helpers(data.offset, durations)
+	var sector_helpers = StoplightHelper.get_sector_helpers(data.offset, durations)
 
 	for index in range(len(sectors)):
 		var sector = sectors[index]

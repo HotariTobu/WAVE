@@ -1,4 +1,4 @@
-class_name Lane
+class_name LaneHelper
 
 
 static func draw_to(canvas: CanvasItem, points: PackedVector2Array, color: Color, width: float) -> void:

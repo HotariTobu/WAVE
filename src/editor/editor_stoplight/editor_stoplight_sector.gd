@@ -1,7 +1,7 @@
 class_name EditorStoplightSector
 extends EditorContent
 
-var _sector_helper: Stoplight.Sector
+var _sector_helper: StoplightHelper.Sector
 
 var _selecting_color: Color
 var _selected_color: Color
@@ -52,7 +52,7 @@ func _update_process():
 	set_process(is_processing() or is_visible_in_tree())
 
 
-func update(sector_helper: Stoplight.Sector):
+func update(sector_helper: StoplightHelper.Sector):
 	_sector_helper = sector_helper
 
 	_selecting_color = Color(sector_helper.color, 0.5)

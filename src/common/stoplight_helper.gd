@@ -1,4 +1,4 @@
-class_name Stoplight
+class_name StoplightHelper
 
 const HALF_PI = PI / 2
 

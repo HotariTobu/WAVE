@@ -6,7 +6,7 @@ var lane_width = 1.5
 
 var stoplight_color = Color("#fffdd4")
 var stoplight_radius = 4.0
-var stoplight_shape = Spot.Shape.CIRCLE
+var stoplight_shape = SpotHelper.Shape.CIRCLE
 
 var vehicle_head_length = 2.0
 var vehicle_color = Color("#fcba03")

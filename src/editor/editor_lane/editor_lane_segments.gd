@@ -36,7 +36,7 @@ func _draw():
 	if len(points) < 2:
 		return
 
-	Lane.draw_to(self, points, setting.lane_color, setting.lane_width)
+	LaneHelper.draw_to(self, points, setting.lane_color, setting.lane_width)
 
 	var color: Color
 	if block_targeting:

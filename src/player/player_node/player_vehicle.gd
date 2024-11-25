@@ -71,4 +71,4 @@ func _process(_delta):
 
 
 func _draw():
-	Agent.draw_to(self, setting.vehicle_head_length, _length, setting.vehicle_color, setting.vehicle_width)
+	AgentHelper.draw_to(self, setting.vehicle_head_length, _length, setting.vehicle_color, setting.vehicle_width)
