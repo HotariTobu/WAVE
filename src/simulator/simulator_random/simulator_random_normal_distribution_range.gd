@@ -16,7 +16,7 @@ func _init(rng: RandomNumberGenerator, range_value: ParameterData.IntRange, mean
 	_max_value = range_value.end
 
 	_mean = mean
-	_deviation = minf(abs(_min_value - mean), abs(_max_value - mean))
+	_deviation = minf(abs(_min_value - mean), abs(_max_value - mean)) / 2
 
 
 func next() -> float:
