@@ -62,8 +62,6 @@ class Group:
 			return _content_dict.values()
 
 		set(new_contents):
-			var typed_array = Array(new_contents, TYPE_OBJECT, &"RefCounted", ContentData)
-			
 			for content_id in _content_dict:
 				_group_name_dict.erase(content_id)
 
@@ -73,6 +71,7 @@ class Group:
 				_content_dict[content.id] = content
 				_group_name_dict[content.id] = _name
 
+			var typed_array = Array(new_contents, TYPE_OBJECT, &"RefCounted", ContentData)
 			contents_renewed.emit(typed_array)
 
 	var _name: StringName
