@@ -19,6 +19,8 @@ var simulation = SimulationData.new()
 
 var _inverted_step_delta: float
 
+var _instances: Array
+
 
 func _init(should_exit_callable: Callable, parameter_data: ParameterData, network_data: NetworkData):
 	should_exit = should_exit_callable
@@ -55,7 +57,13 @@ func _init_lanes():
 		if should_exit.call():
 			return
 
-		if lane.next_lanes.is_empty():
+		var next_lane_count = len(lane.next_lanes)
+		if next_lane_count == 0:
+			continue
+
+		if next_lane_count == 1:
+			var next_lane = lane.next_lanes.front()
+			lane.next_lane_chooser = func(): return next_lane
 			continue
 
 		var random_options: Array[ParameterData.RandomOption]
@@ -65,7 +73,10 @@ func _init_lanes():
 			var random_option = ParameterData.RandomOption.new(next_lane, next_option.weight)
 			random_options.append(random_option)
 
-		lane.next_lane_chooser = SimulatorRandomWeightedArray.new(rng, random_options)
+		var next_lane_rng = SimulatorRandomWeightedArray.new(rng, random_options)
+		_instances.append(next_lane_rng)
+
+		lane.next_lane_chooser = next_lane_rng.next
 
 
 func _init_ordered_lanes():

@@ -123,7 +123,7 @@ func _iterate_lanes(step: int):
 				vehicle.die(step)
 				continue
 
-			var next_lane = lane.next_lane_chooser.next() as SimulatorLaneData
+			var next_lane = lane.next_lane_chooser.call() as SimulatorLaneData
 
 			if lane.loop_next_lane_set.has(next_lane):
 				var buffered_vehicles = loop_tail_buffer_dict.get_or_add(next_lane, []) as Array

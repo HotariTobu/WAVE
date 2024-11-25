@@ -11,7 +11,7 @@ var next_option_dict: Dictionary
 var next_lanes: Array[SimulatorLaneData]
 var prev_lanes: Array[SimulatorLaneData]
 
-var next_lane_chooser: SimulatorRandomWeightedArray = null
+var next_lane_chooser = null
 
 var loop_next_lane_set = Set.new()
 
