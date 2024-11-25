@@ -4,10 +4,8 @@ extends SimulatorContentData
 var duration: float
 var block_targets: Array[SimulatorContentData]
 
-var stoplight: SimulatorStoplightData
-
-
 var is_blocking: bool
+
 
 func assign(content: ContentData, data_of: Callable) -> void:
 	super(content, data_of)
@@ -17,6 +15,3 @@ func assign(content: ContentData, data_of: Callable) -> void:
 
 	for block_target in block_targets:
 		block_target.block_sources.append(self)
-
-func update_is_blocking(time: float):
-	pass

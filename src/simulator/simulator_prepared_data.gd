@@ -192,7 +192,7 @@ func _init_block_sources():
 	if should_exit.call():
 		return
 
-	block_sources.append_array(network.splits.filter(_has_block_target))
+	block_sources.append_array(network.stoplights.filter(_has_split))
 	block_sources.append_array(ordered_lanes.filter(_has_block_target))
 
 
@@ -212,6 +212,10 @@ func _init_block_targets():
 		closable_lane_set.add_all(lane.prev_lanes)
 
 	closable_lanes.assign(closable_lane_set.to_array())
+
+
+static func _has_split(stoplight: SimulatorStoplightData):
+	return not stoplight.splits.is_empty()
 
 
 static func _has_block_target(content: SimulatorContentData):

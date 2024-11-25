@@ -7,7 +7,7 @@ var durations: PackedFloat32Array
 var cumulative_times: PackedFloat32Array
 
 
-func _init(stoplight_offset: float, splits: Array[SplitData]):
+func _init(stoplight_offset: float, splits: Array):
 	offset = stoplight_offset
 
 	for split in splits:
