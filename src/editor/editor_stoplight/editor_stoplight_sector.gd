@@ -33,14 +33,14 @@ func _draw():
 
 	var color: Color
 	if selecting:
-		color = _selecting_color
+		_sector_helper.color = _selecting_color
 	elif selected:
-		color = _selected_color
+		_sector_helper.color = _selected_color
 	else:
-		color = setting.stoplight_sector_color
+		_sector_helper.color = setting.stoplight_sector_inactive_color
 
 	var width = setting.selection_radius / zoom_factor
-	_sector_helper.draw_to(self, color, width)
+	_sector_helper.draw_to(self, width)
 
 
 func get_local_center() -> Vector2:
@@ -55,8 +55,8 @@ func _update_process():
 func update(sector_helper: Stoplight.Sector):
 	_sector_helper = sector_helper
 
-	_selecting_color = Color(sector_helper.base_color, 0.5)
-	_selected_color = sector_helper.base_color
+	_selecting_color = Color(sector_helper.color, 0.5)
+	_selected_color = sector_helper.color
 
 	var center_angle = (sector_helper.start_angle + sector_helper.end_angle) / 2
 	_center = Vector2.from_angle(center_angle) * sector_helper.radius

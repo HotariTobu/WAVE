@@ -1,73 +1,60 @@
 extends Node
 
-signal simulation_changed(new_simulation: SimulationData)
+var source = EditorBindingSource.new(self)
 
-var simulation: SimulationData:
-	get:
-		return simulation
-	set(value):
-		simulation = value
-		_reset()
-		simulation_changed.emit(value)
+var simulation: SimulationData
 
 var content_db: PlayerContentDataDB
 
-var exact_step: float:
-	get:
-		return exact_step
-	set(value):
-		exact_step = value
-		step_frac = fmod(value, 1.0)
-		prev_step = floori(value)
-		next_step = ceili(value)
-		if prev_step == next_step:
-			next_step += 1
+var time: float
+var max_time: float
 
+var exact_step: float
 var step_frac: float
 var prev_step: int
 var next_step: int
 
-var data = BindingSource.new(Data.new())
+var playing: bool = true:
+	get:
+		return playing
+	set(value):
+		playing = value
+		_update_process()
 
 
 func _ready():
-	data.bind(&"time").using(_get_step).to(self, &"exact_step")
+	source.add_callback(&"simulation", _reset)
+	source.add_callback(&"time", _update_step)
 
 
 func _process(delta):
-	data.time += delta
+	source.time = time + delta
 
-	if data.time > data.max_time:
-		data.set_deferred(&"time", data.max_time)
-		data.set_deferred(&"playing", false)
+	if time > max_time:
+		source.set_deferred(&"time", max_time)
+		source.set_deferred(&"playing", false)
 
 
 func _reset():
 	content_db = PlayerContentDataDB.new(simulation.network)
 
-	data.time = 0.0
-	data.max_time = simulation.parameter.max_step * simulation.parameter.step_delta
-	data.playing = false
+	source.time = 0.0
+	source.max_time = simulation.parameter.max_step * simulation.parameter.step_delta
+	source.playing = false
 
 
-func _get_step(time: float) -> float:
+func _update_step():
 	if simulation == null:
-		return NAN
+		return
 
-	return time / simulation.parameter.step_delta
+	exact_step = time / simulation.parameter.step_delta
+	step_frac = fmod(exact_step, 1.0)
+	prev_step = floori(exact_step)
+	next_step = ceili(exact_step)
+	if prev_step == next_step:
+		next_step += 1
 
 
-class Data:
-	var time: float
-	var max_time: float
-
-	var playing: bool = true:
-		get:
-			return playing
-		set(value):
-			playing = value
-			_update_process()
-
-	func _update_process():
-		player_global.set_process(playing)
-		#player_global.get_tree().call_group(NodeGroup.ANIMATABLE, &"set_process", playing)
+func _update_process():
+	set_process(playing)
+	#get_tree().call_group(NodeGroup.ANIMATABLE, &"set_process", playing)

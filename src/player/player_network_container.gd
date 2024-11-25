@@ -21,10 +21,10 @@ static func _static_init():
 
 
 func _ready():
-	player_global.simulation_changed.connect(_on_simulation_changed)
+	player_global.source.add_callback(&"simulation", _renew_children)
 
 
-func _on_simulation_changed(simulation: SimulationData):
+func _renew_children():
 	for child in _content_container.get_children():
 		child.queue_free()
 
@@ -36,7 +36,7 @@ func _on_simulation_changed(simulation: SimulationData):
 		if script == null:
 			continue
 
-		var contents = simulation.network[group_name] as Array
+		var contents = player_global.simulation.network[group_name] as Array
 
 		for content in contents:
 			var node = script.new(content)
@@ -44,7 +44,7 @@ func _on_simulation_changed(simulation: SimulationData):
 
 	for group_name in agent_node_script_dict:
 		var script = agent_node_script_dict[group_name] as GDScript
-		var agents = simulation[group_name] as Array
+		var agents = player_global.simulation[group_name] as Array
 
 		for agent in agents:
 			var node = script.new(agent)

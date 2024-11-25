@@ -24,7 +24,7 @@ func _on_player_window_close_requested():
 
 
 func _on_simulation_completed(simulation):
-	player_global.simulation = simulation
+	player_global.source.simulation = simulation
 	$PlayConfirmationDialog.show()
 
 
@@ -43,5 +43,5 @@ func _on_simulation_open_file_dialog_file_selected(path):
 		$ErrorDialog.show_error("Opened invalid simulation file")
 		return
 
-	player_global.simulation = simulation
+	player_global.source.simulation = simulation
 	$ActionQueue.push(open_player_window)
