@@ -22,6 +22,7 @@ func _init(stoplight: StoplightData):
 
 func _enter_tree():
 	_source.bind(&"pos").to(self, &"position")
+	_source.add_callback(&"offset", _update_sectors)
 	_source.bind(&"split_ids").using(_get_sectors_of).to(self, &"_sectors")
 
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
@@ -30,6 +31,7 @@ func _enter_tree():
 
 func _exit_tree():
 	_source.unbind(&"pos").from(self, &"position")
+	_source.remove_callback(&"offset", _update_sectors)
 	_source.unbind(&"split_ids").from(self, &"_sectors")
 
 	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
