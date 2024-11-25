@@ -1,10 +1,8 @@
 class_name EditorStoplightSector
 extends EditorContent
 
-var _radius: float
-var _start_angle: float
-var _end_angle: float
-var _point_count: int
+var _sector_helper: Stoplight.Sector
+
 var _selecting_color: Color
 var _selected_color: Color
 
@@ -30,7 +28,7 @@ func _init(split: SplitData):
 
 
 func _draw():
-	if _point_count < 2:
+	if _sector_helper.point_count < 2:
 		return
 
 	var color: Color
@@ -42,7 +40,7 @@ func _draw():
 		color = setting.stoplight_sector_color
 
 	var width = setting.selection_radius / zoom_factor
-	draw_arc(Vector2.ZERO, _radius, _start_angle, _end_angle, _point_count, color, width)
+	_sector_helper.draw_to(self, color, width)
 
 
 func get_local_center() -> Vector2:
@@ -54,34 +52,29 @@ func _update_process():
 	set_process(is_processing() or is_visible_in_tree())
 
 
-func update(radius: float, start_angle: float, end_angle: float):
-	_radius = radius
-	_start_angle = start_angle
-	_end_angle = end_angle
+func update(sector_helper: Stoplight.Sector):
+	_sector_helper = sector_helper
 
-	var angle_difference = end_angle - start_angle
+	_selecting_color = Color(sector_helper.base_color, 0.5)
+	_selected_color = sector_helper.base_color
 
-	_point_count = floori(angle_difference * setting.stoplight_sector_delta_angle_inv)
+	var center_angle = (sector_helper.start_angle + sector_helper.end_angle) / 2
+	_center = Vector2.from_angle(center_angle) * sector_helper.radius
+
 	var points: PackedVector2Array
-	points.resize(_point_count)
-	for point_index in range(_point_count):
-		var weight = float(point_index) / (_point_count - 1)
-		var angle = lerpf(start_angle, end_angle, weight)
+	points.resize(sector_helper.point_count)
 
-		var point = Vector2.from_angle(angle) * radius
+	for point_index in range(sector_helper.point_count):
+		var weight = float(point_index) / (sector_helper.point_count - 1)
+		var angle = lerpf(sector_helper.start_angle, sector_helper.end_angle, weight)
+
+		var point = Vector2.from_angle(angle) * sector_helper.radius
 		points[point_index] = point
 
-	var hue = start_angle / TAU
-	_selecting_color = Color.from_hsv(hue, setting.stoplight_sector_saturation, 1.0, 0.5)
-	_selected_color = Color.from_hsv(hue, setting.stoplight_sector_saturation, 1.0, 1.0)
-
-	var center_angle = angle_difference / 2
-	_center = Vector2.from_angle(center_angle) * radius
-
 	var segments: Array[CollisionShape2D]
-	segments.resize(_point_count - 1)
+	segments.resize(sector_helper.point_count - 1)
 
-	for index in range(_point_count - 1):
+	for index in range(sector_helper.point_count - 1):
 		var segment = create_segment()
 		segment.shape.a = points[index]
 		segment.shape.b = points[index + 1]

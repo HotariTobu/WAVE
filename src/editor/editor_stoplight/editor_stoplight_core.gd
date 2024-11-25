@@ -99,9 +99,9 @@ func _update_sectors():
 		var split = sector.data as SplitData
 		durations.append(split.duration)
 
-	var sector_info = Stoplight.calc_sector_info(durations)
+	var sector_helpers = Stoplight.get_sector_helpers(durations)
 
 	for index in range(len(sectors)):
 		var sector = sectors[index]
-		var angle = sector_info.angles[index]
-		sector.update(sector_info.radius, angle.start, angle.end)
+		var sector_helper = sector_helpers[index]
+		sector.update(sector_helper)
