@@ -105,7 +105,7 @@ func _update_target_id_set():
 	var target_id_set = block_target_id_sets.pop_back() as Set
 
 	for block_target_id_set in block_target_id_sets:
-		target_id_set = target_id_set.intersection(block_target_id_set)
+		target_id_set.intersect(block_target_id_set)
 
 	_target_id_set = target_id_set
 
