@@ -1,56 +1,43 @@
 class_name EditorConstraintManager
+extends ActionQueue
 
-signal action_requested(action: Callable)
+var _editor_global = editor_global
 
 var _content_group: EditorContentDataDB.Group
 var _content_constraint_script: GDScript
-var _content_id_constraint_dict: Dictionary
-var _constrained_content_id_set = Set.new()
+var _constraints: Array[EditorContentConstraint]
 
 
-func _init(content_group: EditorContentDataDB.Group, content_constraint_script: GDScript, content_id_constraint_dict: Dictionary):
+func _init(content_group: EditorContentDataDB.Group, content_constraint_script: GDScript):
 	_content_group = content_group
 	_content_constraint_script = content_constraint_script
-	_content_id_constraint_dict = content_id_constraint_dict
 
 	content_group.contents_renewed.connect(_renew_content_constraints)
 	content_group.content_added.connect(_add_content_constraint)
 
 
-func _constraint_of(content_id: StringName):
-	return _content_id_constraint_dict[content_id]
-
-
 func _renew_content_constraints(contents: Array[ContentData]):
-	for content_id in _constrained_content_id_set.to_array():
-		_content_id_constraint_dict.erase(content_id)
+	for constraint in _constraints:
+		_editor_global.constraint_db.remove(constraint)
 
-	_constrained_content_id_set.clear()
+	_constraints.clear()
 
 	for content in contents:
 		_add_content_constraint(content)
 
 
 func _add_content_constraint(content: ContentData):
-	if _content_id_constraint_dict.has(content.id):
+	if _editor_global.constraint_db.has_of(content.id):
 		return
 
-	var constraint = _content_constraint_script.new(content, _constraint_of, action_requested) as EditorContentConstraint
-	_content_id_constraint_dict[content.id] = constraint
-	_constrained_content_id_set.add(content.id)
+	var constraint = _content_constraint_script.new(content) as EditorContentConstraint
+	_editor_global.constraint_db.add(constraint)
+	_constraints.append(constraint)
 
-	constraint.died.connect(_emit_remove_request.bind(content))
-	constraint.revived.connect(_emit_add_request.bind(content))
+	constraint.action_requested.connect(push)
 
-
-func _emit_add_request(content: ContentData):
-	var add = _add_content.bind(content)
-	action_requested.emit(add)
-
-
-func _emit_remove_request(content: ContentData):
-	var remove = _remove_content.bind(content)
-	action_requested.emit(remove)
+	constraint.died.connect(push.bind(_remove_content.bind(content)))
+	constraint.revived.connect(push.bind(_add_content.bind(content)))
 
 
 func _add_content(content: ContentData):

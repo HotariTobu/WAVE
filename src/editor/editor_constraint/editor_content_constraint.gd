@@ -3,6 +3,8 @@ class_name EditorContentConstraint
 signal died
 signal revived
 
+signal action_requested(action: Callable)
+
 var dead: bool = false:
 	get:
 		return dead
@@ -18,22 +20,20 @@ var dead: bool = false:
 		else:
 			revived.emit()
 
+var data: ContentData:
+	get:
+		return _data
+
 var _data: ContentData
 var _data_source: EditorBindingSource
-
-var _constraint_of: Callable
-var _action_signal: Signal
 
 var _targets: Array
 var _snapshots: Array
 
 
-func _init(content: ContentData, constraint_of: Callable, action_signal: Signal):
+func _init(content: ContentData):
 	_data = content
 	_data_source = editor_global.source_db.get_or_add(content)
-
-	_constraint_of = constraint_of
-	_action_signal = action_signal
 
 	_constrain.call_deferred()
 
@@ -81,7 +81,7 @@ func unlink_dict_on_died(content_set: Set, content_property: StringName):
 
 
 func _add_self_data_to_constraint_of(content_id: StringName, constraint_property: StringName):
-	var constraint = _constraint_of.call(content_id)
+	var constraint = editor_global.constraint_db.of(content_id)
 
 	assert(constraint[constraint_property] is Set)
 
@@ -89,7 +89,7 @@ func _add_self_data_to_constraint_of(content_id: StringName, constraint_property
 
 
 func _erase_self_data_from_constraint_of(content_id: StringName, constraint_property: StringName):
-	var constraint = _constraint_of.call(content_id)
+	var constraint = editor_global.constraint_db.of(content_id)
 
 	assert(constraint[constraint_property] is Set)
 
@@ -126,7 +126,7 @@ func _take_unlink_array_snapshot(content_set: Set, content_property: StringName,
 
 		var source = editor_global.source_db.get_or_add(content)
 		var action = func(): source[content_property] = new_array
-		_action_signal.emit(action)
+		action_requested.emit(action)
 
 	_snapshots[snapshot_index] = content_dead_index_dict
 
@@ -144,7 +144,7 @@ func _restore_unlink_array_snapshot(content_property: StringName, snapshot_index
 
 		var source = editor_global.source_db.get_or_add(content)
 		var action = func(): source[content_property] = new_array
-		_action_signal.emit(action)
+		action_requested.emit(action)
 
 	_snapshots[snapshot_index] = null
 
@@ -163,7 +163,7 @@ func _take_unlink_dict_snapshot(content_set: Set, content_property: StringName, 
 
 		var source = editor_global.source_db.get_or_add(content)
 		var action = func(): source[content_property] = new_dict
-		_action_signal.emit(action)
+		action_requested.emit(action)
 
 	_snapshots[snapshot_index] = content_removed_value_dict
 
@@ -181,7 +181,7 @@ func _restore_unlink_dict_snapshot(content_property: StringName, snapshot_index:
 
 		var source = editor_global.source_db.get_or_add(content)
 		var action = func(): source[content_property] = new_dict
-		_action_signal.emit(action)
+		action_requested.emit(action)
 
 	_snapshots[snapshot_index] = null
 
