@@ -35,7 +35,7 @@ func _add_content_constraint(content: ContentData):
 	if _content_id_constraint_dict.has(content.id):
 		return
 
-	var constraint = _content_constraint_script.new(content, _constraint_of, action_requested) as EditorConstraint
+	var constraint = _content_constraint_script.new(content, _constraint_of, action_requested) as EditorContentConstraint
 	_content_id_constraint_dict[content.id] = constraint
 	_constrained_content_id_set.add(content.id)
 
