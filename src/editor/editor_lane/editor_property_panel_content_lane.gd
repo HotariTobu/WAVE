@@ -94,7 +94,7 @@ class OptionCellCreator:
 
 	func _create_option_cell(option: LaneData.OptionData, lane_id: StringName) -> Array[Control]:
 		var option_source = _editor_global.source_db.get_or_add(option)
-		var lane_segments_node = _editor_global.get_content_node(lane_id) as EditorLaneSegments
+		var lane_segments_node = _editor_global.content_node_of(lane_id) as EditorLaneSegments
 
 		_label_count += 1
 

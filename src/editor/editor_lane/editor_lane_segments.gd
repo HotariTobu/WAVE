@@ -62,7 +62,7 @@ func get_local_center() -> Vector2:
 
 
 func get_movable_nodes():
-	return _data.vertex_ids.map(_editor_global.get_content_node)
+	return _data.vertex_ids.map(_editor_global.content_node_of)
 
 
 func _get_vertices_of(vertex_ids: Array[StringName]) -> Array[VertexData]:

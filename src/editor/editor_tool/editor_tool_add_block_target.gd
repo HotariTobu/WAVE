@@ -123,7 +123,7 @@ func _update_targets_visibility(source_node: EditorSelectable, are_targets_visib
 
 
 func _get_block_targetables(block_target_ids: Array) -> Array[EditorBlockTargetable]:
-	var block_targetables = block_target_ids.map(_editor_global.get_content_node)
+	var block_targetables = block_target_ids.map(_editor_global.content_node_of)
 	return Array(block_targetables, TYPE_OBJECT, &"Area2D", EditorBlockTargetable)
 
 
