@@ -1,10 +1,12 @@
 class_name EditorLaneVertexConstraint
-extends EditorConstraint
+extends EditorVertexConstraint
 
 var lane_set = ObservableSet.new()
 
 
 func _constrain():
+	super()
+
 	unlink_array_on_died(lane_set, &"vertex_ids")
 
 	died.connect(_on_dead)
