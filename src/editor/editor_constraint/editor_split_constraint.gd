@@ -1,4 +1,4 @@
-class_name EditorConstraintSplit
+class_name EditorSplitConstraint
 extends EditorConstraint
 
 var stoplight_set = ObservableSet.new()

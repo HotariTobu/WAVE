@@ -1,4 +1,4 @@
-class_name EditorConstraintLaneVertex
+class_name EditorLaneVertexConstraint
 extends EditorConstraint
 
 var lane_set = ObservableSet.new()

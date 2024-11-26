@@ -1,4 +1,4 @@
-class_name EditorConstraintLane
+class_name EditorLaneConstraint
 extends EditorConstraint
 
 var block_source_set = Set.new()

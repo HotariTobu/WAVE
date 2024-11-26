@@ -1,10 +1,10 @@
 extends Node
 
 var constraint_script_dict = {
-	&"lane_vertices": EditorConstraintLaneVertex,
-	&"lanes": EditorConstraintLane,
-	&"splits": EditorConstraintSplit,
-	&"stoplights": EditorConstraintStoplight,
+	&"lane_vertices": EditorLaneVertexConstraint,
+	&"lanes": EditorLaneConstraint,
+	&"splits": EditorSplitConstraint,
+	&"stoplights": EditorStoplightConstraint,
 }
 
 var _editor_global = editor_global

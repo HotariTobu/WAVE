@@ -1,4 +1,4 @@
-class_name EditorConstraintStoplight
+class_name EditorStoplightConstraint
 extends EditorConstraint
 
 
