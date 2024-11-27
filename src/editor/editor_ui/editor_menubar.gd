@@ -14,7 +14,7 @@ var _editor_global = editor_global
 		EditorMenuItem.new('Cut', _cut_selection, &'ui_cut'),
 		EditorMenuItem.new('Copy', $CopyPaste.copy_selection, &'ui_copy'),
 		EditorMenuItem.new('Paste', $CopyPaste.paste.bind(false), &'ui_paste'),
-		EditorMenuItem.new('Paste selected only', $CopyPaste.paste.bind(true), &'ui_plain_paste'),
+		#EditorMenuItem.new('Paste selected only', $CopyPaste.paste.bind(true), &'ui_plain_paste'),
 		EditorMenuItem.new('Delete', $Delete.delete_selection, &'ui_text_delete'),
 	]),
 	EditorMenuButton.new('Simulation', [
