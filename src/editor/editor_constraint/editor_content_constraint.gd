@@ -24,11 +24,22 @@ var data: ContentData:
 	get:
 		return _data
 
+var copy_dependency_id_set: Set:
+	get:
+		var id_set = Set.new()
+
+		for copy_dependency_getter in _copy_dependency_getters:
+			id_set.merge(copy_dependency_getter.call())
+
+		return id_set
+
 var _data: ContentData
 var _data_source: EditorBindingSource
 
 var _targets: Array
 var _snapshots: Array
+
+var _copy_dependency_getters: Array[Callable]
 
 
 func _init(content: ContentData):
@@ -78,6 +89,29 @@ func unlink_dict_on_died(content_set: Set, content_property: StringName):
 	var snapshot_index = _get_next_snapshot_index()
 	died.connect(func(): _take_unlink_dict_snapshot(content_set, content_property, snapshot_index))
 	revived.connect(func(): _restore_unlink_dict_snapshot(content_property, snapshot_index))
+
+
+func _include_array_on_copy(content_property: StringName):
+	assert(content_property in _data)
+	assert(_data[content_property] is Array)
+
+	var copy_dependency_getter = func(): return Set.from_array(_data[content_property])
+	_copy_dependency_getters.append(copy_dependency_getter)
+
+
+func _include_dict_on_copy(content_property: StringName):
+	assert(content_property in _data)
+	assert(_data[content_property] is Dictionary)
+
+	var copy_dependency_getter = func(): return Set.from_array(_data[content_property].keys())
+	_copy_dependency_getters.append(copy_dependency_getter)
+
+
+func _include_set_on_copy(constraint_property: StringName):
+	assert(constraint_property in self)
+	assert(self[constraint_property] is Set)
+
+	_copy_dependency_getters.append(_get_set_copy_dependency.bind(constraint_property))
 
 
 func _add_self_data_to_constraint_of(content_id: StringName, constraint_property: StringName):
@@ -184,6 +218,18 @@ func _restore_unlink_dict_snapshot(content_property: StringName, snapshot_index:
 		action_requested.emit(action)
 
 	_snapshots[snapshot_index] = null
+
+
+func _get_set_copy_dependency(constraint_property: StringName):
+	var sub_copy_dependency_id_set = Set.new()
+
+	for content in self[constraint_property].to_array():
+		sub_copy_dependency_id_set.add(content.id)
+
+		var constraint = editor_global.constraint_db.of(content.id)
+		sub_copy_dependency_id_set.merge(constraint.copy_dependency_id_set)
+
+	return sub_copy_dependency_id_set
 
 
 class ArrayTarget:

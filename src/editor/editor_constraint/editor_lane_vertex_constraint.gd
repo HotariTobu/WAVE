@@ -9,14 +9,12 @@ func _constrain():
 
 	unlink_array_on_died(lane_set, &"vertex_ids")
 
-	died.connect(_on_dead)
+	died.connect(lane_set.clear)
 
 	lane_set.value_added.connect(_on_lane_set_changed.unbind(1))
 	lane_set.value_removed.connect(_on_lane_set_changed.unbind(1))
 
-
-func _on_dead():
-	lane_set.clear()
+	_include_set_on_copy(&"lane_set")
 
 
 func _on_lane_set_changed():
