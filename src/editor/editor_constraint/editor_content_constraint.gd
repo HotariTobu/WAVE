@@ -31,6 +31,7 @@ var _targets: Array
 var _snapshots: Array
 
 var _copy_dependency_id_set_mergers: Array[Callable]
+var _movable_id_set_mergers: Array[Callable]
 
 
 func _init(content: ContentData):
@@ -43,6 +44,11 @@ func _init(content: ContentData):
 func merge_copy_dependency_id_set_to(copy_dependency_id_set: Set) -> void:
 	for copy_dependency_id_set_merger in _copy_dependency_id_set_mergers:
 		copy_dependency_id_set_merger.call(copy_dependency_id_set)
+
+
+func merge_movable_id_set_to(movable_id_set: Set) -> void:
+	for movable_id_set_merger in _movable_id_set_mergers:
+		movable_id_set_merger.call(movable_id_set)
 
 
 func _constrain():
@@ -115,6 +121,25 @@ func _include_set_on_copy(constraint_property: StringName, deep: bool):
 		_copy_dependency_id_set_mergers.append(_merge_set_deep_copy_dependency_to.bind(constraint_property))
 	else:
 		_copy_dependency_id_set_mergers.append(_merge_set_shallow_copy_dependency_to.bind(constraint_property))
+
+
+func _include_self_on_move():
+	_movable_id_set_mergers.append(_merge_self_movable_to)
+
+
+func _include_array_on_move(content_property: StringName):
+	assert(content_property in _data and _data[content_property] is Array)
+	_movable_id_set_mergers.append(_merge_array_movable_to.bind(content_property))
+
+
+func _include_dict_on_move(content_property: StringName):
+	assert(content_property in _data and _data[content_property] is Dictionary)
+	_movable_id_set_mergers.append(_merge_dict_movable_to.bind(content_property))
+
+
+func _include_set_on_move(constraint_property: StringName):
+	assert(constraint_property in self and self[constraint_property] is Set)
+	_movable_id_set_mergers.append(_merge_set_movable_to.bind(constraint_property))
 
 
 func _add_self_data_to_constraint_of(content_id: StringName, constraint_property: StringName):
@@ -267,6 +292,23 @@ func _merge_set_deep_copy_dependency_to(copy_dependency_id_set: Set, constraint_
 
 		var constraint = editor_global.constraint_db.of(content.id)
 		constraint.merge_copy_dependency_id_set_to(copy_dependency_id_set)
+
+
+func _merge_self_movable_to(movable_id_set: Set):
+	movable_id_set.add(_data.id)
+
+
+func _merge_array_movable_to(movable_id_set: Set, content_property: StringName):
+	movable_id_set.add_all(_data[content_property])
+
+
+func _merge_dict_movable_to(movable_id_set: Set, content_property: StringName):
+	movable_id_set.add_all(_data[content_property].keys())
+
+
+func _merge_set_movable_to(movable_id_set: Set, constraint_property: StringName):
+	var sub_movables = self[constraint_property].to_array()
+	movable_id_set.add_all(sub_movables.map(ContentData.id_of))
 
 
 class ArrayTarget:

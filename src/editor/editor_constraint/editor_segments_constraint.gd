@@ -10,6 +10,7 @@ func _constrain():
 	_data_source.add_callback(&"vertex_ids", _on_vertex_ids_changed)
 
 	_include_array_on_copy(&"vertex_ids", false)
+	_include_array_on_move(&"vertex_ids")
 
 
 func _on_vertex_ids_changed():

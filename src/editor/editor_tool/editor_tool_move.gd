@@ -69,18 +69,27 @@ func _end_move():
 	if _base_pos == Vector2.INF:
 		return
 
-	var items = _tree.get_nodes_in_group(NodeGroup.SELECTION)
-	var movable_node_set = _get_movable_node_set(items)
-	if movable_node_set.is_empty():
+	var movable_id_set = Set.new()
+
+	for content in _editor_global.data.selected_contents:
+		var constraint = _editor_global.constraint_db.of(content.id)
+		constraint.merge_movable_id_set_to(movable_id_set)
+
+	if movable_id_set.is_empty():
+		_dispose()
 		return
 
 	var offset = _current_pos - _base_pos
 
 	_editor_global.undo_redo.create_action("Move")
 
-	for movable_node in movable_node_set.to_array():
-		_editor_global.undo_redo.add_do_method(movable_node.move_by.bind(offset))
-		_editor_global.undo_redo.add_undo_method(movable_node.move_by.bind(-offset))
+	for content_id in movable_id_set.to_array():
+		var group_name = _editor_global.content_db.group_name_of(content_id)
+		var helper_script = EditorScriptDict.helper[group_name]
+		var content = _editor_global.content_db.data_of(content_id)
+		var source = _editor_global.source_db.get_or_add(content)
+		_editor_global.undo_redo.add_do_method(helper_script.move_by.bind(source, offset))
+		_editor_global.undo_redo.add_undo_method(helper_script.move_by.bind(source, -offset))
 
 	_editor_global.undo_redo.commit_action()
 
@@ -95,15 +104,3 @@ func _cancel():
 func _dispose():
 	_base_pos = Vector2.INF
 	_tree.call_group(NodeGroup.SELECTION, &"reparent", _content_container, false)
-
-
-static func _get_movable_node_set(items: Array):
-	var movable_node_set = Set.new()
-
-	for item in items:
-		if &"move_by" in item:
-			movable_node_set.add(item)
-		elif &"get_movable_nodes" in item:
-			movable_node_set.add_all(item.get_movable_nodes())
-
-	return movable_node_set

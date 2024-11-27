@@ -40,10 +40,6 @@ func _draw():
 	draw_circle(Vector2.ZERO, radius, color)
 
 
-func move_by(offset: Vector2):
-	_source.pos += offset
-
-
 func _update_z_index():
 	super()
 	z_index += 10
