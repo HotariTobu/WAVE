@@ -10,6 +10,8 @@ var _sector_weight: float
 
 
 func _init(stoplight: StoplightData):
+	position = stoplight.pos
+
 	var player_stoplight = player_global.content_db.player_data_of(stoplight.id) as PlayerStoplightData
 	_stoplight_helper = StoplightHelper.new(stoplight.offset, player_stoplight.splits)
 	_sector_helpers = SectorHelper.get_sector_helpers(stoplight.offset, _stoplight_helper.durations)
