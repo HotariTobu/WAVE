@@ -13,4 +13,4 @@ func _constrain():
 
 	died.connect(block_source_set.clear)
 
-	_include_array_on_copy(&"block_target_ids")
+	_include_array_on_copy(&"block_target_ids", true)

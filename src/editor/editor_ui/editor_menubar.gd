@@ -11,6 +11,10 @@ var _editor_global = editor_global
 	EditorMenuButton.new('Edit', [
 		EditorMenuItem.new('Undo', _editor_global.undo_redo.undo, &'ui_undo'),
 		EditorMenuItem.new('Redo', _editor_global.undo_redo.redo, &'ui_redo'),
+		EditorMenuItem.new('Cut', _cut_selection, &'ui_cut'),
+		EditorMenuItem.new('Copy', $CopyPaste.copy_selection, &'ui_copy'),
+		EditorMenuItem.new('Paste', $CopyPaste.paste.bind(false), &'ui_paste'),
+		EditorMenuItem.new('Paste selected only', $CopyPaste.paste.bind(true), &'ui_plain_paste'),
 		EditorMenuItem.new('Delete', $Delete.delete_selection, &'ui_text_delete'),
 	]),
 	EditorMenuButton.new('Simulation', [
@@ -48,6 +52,10 @@ func _on_menu_item_pressed(_id: int):
 func _reset_input_filter():
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_just_closed = false
+
+func _cut_selection():
+	$CopyPaste.copy_selection()
+	$Delete.delete_selection()
 
 class EditorMenuButton extends MenuButton:
 	var items: Array[EditorMenuItem]

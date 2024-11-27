@@ -14,7 +14,7 @@ func _constrain():
 	lane_set.value_added.connect(_on_lane_set_changed.unbind(1))
 	lane_set.value_removed.connect(_on_lane_set_changed.unbind(1))
 
-	_include_set_on_copy(&"lane_set")
+	_include_set_on_copy(&"lane_set", true)
 
 
 func _on_lane_set_changed():
