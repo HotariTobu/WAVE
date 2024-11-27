@@ -4,6 +4,8 @@ const PASTE_OFFSET = 10
 
 var _editor_global = editor_global
 
+var _last_paste_offset: Vector2
+
 
 func copy_selection():
 	var sub_network_dict: Dictionary
@@ -78,17 +80,17 @@ func paste(selected_only: bool):
 		group_name_contents_dict[group_name] = contents
 
 	#if selected_only:
-		#var selected_id_set = Set.from_array(selected_ids)
-		#var selected_only_new_id_dict: Dictionary
+	#var selected_id_set = Set.from_array(selected_ids)
+	#var selected_only_new_id_dict: Dictionary
 #
-		#for old_id in new_id_dict:
-			#if not selected_id_set.has(old_id):
-				#continue
+	#for old_id in new_id_dict:
+	#if not selected_id_set.has(old_id):
+	#continue
 #
-			#var new_id = new_id_dict[old_id]
-			#selected_only_new_id_dict[old_id] = new_id
+	#var new_id = new_id_dict[old_id]
+	#selected_only_new_id_dict[old_id] = new_id
 #
-		#new_id_dict = selected_only_new_id_dict
+	#new_id_dict = selected_only_new_id_dict
 
 	new_id_dict.make_read_only()
 
