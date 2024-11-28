@@ -61,18 +61,23 @@ func hash() -> int:
 
 
 func intersect(another: Set) -> void:
-	for value in another._data:
-		if _data.has(value):
+	var removed_values: Array
+
+	for value in _data:
+		if another._data.has(value):
 			continue
 
+		removed_values.append(value)
+
+	for value in removed_values:
 		_data.erase(value)
 
 
 func intersected(another: Set) -> Set:
 	var new_set = Set.new()
 
-	for value in another._data:
-		if not _data.has(value):
+	for value in _data:
+		if not another._data.has(value):
 			continue
 
 		new_set._data[value] = null

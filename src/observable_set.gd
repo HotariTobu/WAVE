@@ -46,10 +46,15 @@ func erase(value: Variant) -> bool:
 
 
 func intersect(another: Set) -> void:
-	for value in another._data:
-		if _data.has(value):
+	var removed_values: Array
+
+	for value in _data:
+		if another._data.has(value):
 			continue
 
+		removed_values.append(value)
+
+	for value in removed_values:
 		_data.erase(value)
 		value_removed.emit(value)
 
