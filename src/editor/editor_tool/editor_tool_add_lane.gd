@@ -1,9 +1,9 @@
-extends EditorTool
+extends "res://src/editor/editor_tool/editor_tool_base_pointer.gd"
 
 const TOOL_DISPLAY_NAME = "Add Lane tool"
 const TOOL_STATUS_HINT = "Left click: add a point, Right click: commit the lane"
 
-enum Phase {EMPTY, LACK, ENOUGH}
+enum Phase { EMPTY, LACK, ENOUGH }
 
 var _editor_global = editor_global
 
@@ -81,10 +81,6 @@ var _current_vertex: VertexData:
 @onready var _lane_db = _editor_global.content_db.get_group(&"lanes")
 
 
-func _ready():
-	set_process_unhandled_input(false)
-
-
 func _draw():
 	if len(_vertices) < 2:
 		return
@@ -94,8 +90,9 @@ func _draw():
 
 
 func _unhandled_input(event: InputEvent):
+	super(event)
+
 	if event is InputEventMouseMotion:
-		_pointer_area.position = get_local_mouse_position()
 		_update_end_point()
 
 	elif event is InputEventMouseButton:
@@ -120,27 +117,17 @@ func get_status_hint() -> String:
 	return TOOL_STATUS_HINT
 
 
-func activate() -> void:
-	set_process_unhandled_input(true)
-
-	_pointer_area.collision_mask = EditorPhysicsLayer.LANE
-
-	_pointer_area.area_entered.connect(_on_pointer_area_area_entered)
-	_pointer_area.area_exited.connect(_on_pointer_area_area_exited)
-
-
 func deactivate() -> void:
-	set_process_unhandled_input(false)
-
-	_pointer_area.collision_mask = 0
-
-	_pointer_area.area_entered.disconnect(_on_pointer_area_area_entered)
-	_pointer_area.area_exited.disconnect(_on_pointer_area_area_exited)
+	super()
 
 	_cancel()
 	_hovered_lane_vertex_nodes.clear()
 	_hovered_lane_segments_nodes.clear()
 	_unselect()
+
+
+func _get_mask() -> int:
+	return EditorPhysicsLayer.LANE
 
 
 func _on_pointer_area_area_entered(area):
@@ -225,7 +212,6 @@ func _commit_lane():
 
 	if not setting.force_default_lane_speed_limit:
 		new_lane.speed_limit = _calc_initial_speed_limit()
-
 
 	_editor_global.undo_redo.create_action("Add lane")
 

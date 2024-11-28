@@ -7,7 +7,7 @@ const TOOL_STATUS_HINT = "Left click: add a stoplight"
 
 var _editor_global = editor_global
 
-@onready var _dialog = Dialog.instantiate()
+var _dialog = Dialog.instantiate()
 
 @onready var _split_db = _editor_global.content_db.get_group(&"splits")
 @onready var _stoplight_db = _editor_global.content_db.get_group(&"stoplights")

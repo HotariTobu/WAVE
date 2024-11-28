@@ -1,15 +1,7 @@
 class_name EditorTool
 extends Node2D
 
-const PointerArea = preload("res://src/editor/editor_tool/pointer_area.tscn")
-
-var _pointer_area = PointerArea.instantiate()
-
 @export var shortcut = Shortcut.new()
-
-
-func _init():
-	add_child(_pointer_area)
 
 
 func get_id() -> StringName:
