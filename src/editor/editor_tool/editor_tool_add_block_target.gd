@@ -73,11 +73,13 @@ func _get_mask() -> int:
 	return EditorPhysicsLayer.BRIDGE_SEGMENTS | EditorPhysicsLayer.LANE_SEGMENTS | EditorPhysicsLayer.STOPLIGHT
 
 
-func _on_selecting(item: EditorSelectable):
+func _selecting(item: EditorSelectable):
+	super(item)
 	_update_targets_visibility(item, _are_targets_visible)
 
 
-func _on_deselecting(item: EditorSelectable):
+func _deselecting(item: EditorSelectable):
+	super(item)
 	_update_targets_visibility(item, false)
 
 

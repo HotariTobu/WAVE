@@ -23,25 +23,21 @@ func _unhandled_input(event):
 				_end_drag()
 
 
-func _on_pointer_area_area_entered(area):
+func _selecting(item: EditorSelectable):
 	if _dragging:
-		var item = area as EditorSelectable
-		_hovered_items.append(item)
-
 		item.selecting = true
 		_selecting_item_set.add(item)
 
 	else:
-		super(area)
+		super(item)
 
 
-func _on_pointer_area_area_exited(area):
+func _deselecting(item: EditorSelectable):
 	if _dragging:
-		var item = area as EditorSelectable
-		_hovered_items.erase(item)
+		pass
 
 	else:
-		super(area)
+		super(item)
 
 
 func _replace_selection():
@@ -58,14 +54,10 @@ func _start_drag():
 	_dragging = true
 	_last_mouse_pos = _current_mouse_pos
 
-	var item = _last_hovered_item
-	if item == null:
+	if _last_hovered_item == null:
 		return
 
-	_last_hovered_item = null
-
-	item.selecting = true
-	_selecting_item_set.add(item)
+	_selecting_item_set.add(_last_hovered_item)
 
 
 func _end_drag():
@@ -114,8 +106,3 @@ func _dispose():
 		item.selecting = false
 
 	_selecting_item_set.clear()
-
-	if _hovered_items.is_empty():
-		return
-
-	_last_hovered_item = _hovered_items.back()

@@ -9,12 +9,10 @@ var _last_hovered_item: EditorSelectable:
 		var prev = _last_hovered_item
 
 		if prev != null:
-			prev.selecting = false
-			_on_deselecting(prev)
+			_deselecting(prev)
 
 		if next != null:
-			next.selecting = true
-			_on_selecting(next)
+			_selecting(next)
 
 		_last_hovered_item = next
 
@@ -54,12 +52,12 @@ func _on_pointer_area_area_exited(area):
 		_last_hovered_item = _hovered_items.back()
 
 
-func _on_selecting(_item: EditorSelectable):
-	pass
+func _selecting(item: EditorSelectable):
+	item.selecting = true
 
 
-func _on_deselecting(_item: EditorSelectable):
-	pass
+func _deselecting(item: EditorSelectable):
+	item.selecting = false
 
 
 func _replace_selection():
