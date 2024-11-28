@@ -88,7 +88,7 @@ func _on_deselecting(_item: EditorSelectable):
 
 
 func _replace_selection():
-	_cancel()
+	_editor_global.data.clear_selected.call()
 	_toggle_selection()
 
 

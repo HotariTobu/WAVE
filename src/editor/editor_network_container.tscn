@@ -21,7 +21,7 @@ script = ExtResource("2_3of67")
 
 [node name="ToolContainer" type="Node" parent="."]
 
-[node name="SelectTool" type="Node2D" parent="ToolContainer"]
+[node name="DragSelectTool" type="Node2D" parent="ToolContainer"]
 script = ExtResource("2_k5srv")
 shortcut = ExtResource("4_44g6h")
 
