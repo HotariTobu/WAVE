@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/editor/editor_network_container.gd" id="1_6l2nm"]
 [ext_resource type="Script" path="res://src/common/camera.gd" id="2_3of67"]
-[ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_select.gd" id="2_k5srv"]
+[ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_drag_select.gd" id="2_k5srv"]
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_add_lane.gd" id="2_yb53e"]
 [ext_resource type="Shortcut" uid="uid://3jpsypc51i23" path="res://src/editor/editor_tool/select_tool_shortcut.tres" id="4_44g6h"]
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_add_stoplight.gd" id="5_j0wfg"]
@@ -21,7 +21,7 @@ script = ExtResource("2_3of67")
 
 [node name="ToolContainer" type="Node" parent="."]
 
-[node name="SelectTool" type="Node2D" parent="ToolContainer"]
+[node name="DragSelectTool" type="Node2D" parent="ToolContainer"]
 script = ExtResource("2_k5srv")
 shortcut = ExtResource("4_44g6h")
 
