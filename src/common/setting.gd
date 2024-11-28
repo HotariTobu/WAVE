@@ -12,6 +12,8 @@ var vehicle_head_length = 2.0
 var vehicle_color = Color("#fcba03")
 var vehicle_width = 3.0
 
+var pointer_area_radius = 10.0
+
 var selected_color = Color("#1987e0")
 var selecting_color = Color(selected_color, 0.5)
 var selection_radius = 10.0

@@ -5,8 +5,6 @@ const TOOL_STATUS_HINT = "Left click: add a point, Right click: commit the lane"
 
 enum Phase { EMPTY, LACK, ENOUGH }
 
-var _editor_global = editor_global
-
 var _vertices: Array[VertexData]
 
 var _hovered_lane_vertex_nodes: Array[EditorLaneVertex]
