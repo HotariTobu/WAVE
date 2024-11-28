@@ -72,8 +72,6 @@ func _end_drag():
 	if not _dragging:
 		return
 
-	_dragging = false
-
 	if _last_mouse_pos.is_equal_approx(_current_mouse_pos) and len(_selecting_items) < 2:
 		_dispose()
 		return
@@ -103,11 +101,15 @@ func _remove_selection():
 
 
 func _cancel():
-	_dispose()
-	super()
+	if _dragging:
+		_dispose()
+	else:
+		super()
 
 
 func _dispose():
+	_dragging = false
+
 	for item in _selecting_items:
 		item.selecting = false
 
