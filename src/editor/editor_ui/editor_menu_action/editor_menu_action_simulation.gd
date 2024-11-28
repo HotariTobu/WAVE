@@ -29,7 +29,7 @@ func _on_simulation_completed(simulation):
 
 
 func _on_play_confirmation_dialog_confirmed():
-	open_player_window()
+	$ActionQueue.push(open_player_window)
 
 
 func _on_simulation_open_file_dialog_file_selected(path):

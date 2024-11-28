@@ -61,10 +61,6 @@ func get_local_center() -> Vector2:
 	return _center
 
 
-func get_movable_nodes():
-	return _data.vertex_ids.map(_editor_global.get_content_node)
-
-
 func _get_vertices_of(vertex_ids: Array[StringName]) -> Array[VertexData]:
 	var vertices = vertex_ids.map(_lane_vertex_db.data_of)
 	return Array(vertices, TYPE_OBJECT, &"RefCounted", VertexData)

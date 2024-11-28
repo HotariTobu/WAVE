@@ -3,7 +3,7 @@ extends EditorTool
 const TOOL_DISPLAY_NAME = "Add Lane tool"
 const TOOL_STATUS_HINT = "Left click: add a point, Right click: commit the lane"
 
-enum Phase { EMPTY, LACK, ENOUGH }
+enum Phase {EMPTY, LACK, ENOUGH}
 
 var _editor_global = editor_global
 
@@ -100,7 +100,10 @@ func _unhandled_input(event: InputEvent):
 
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
-			_add_new_point()
+			if event.alt_pressed:
+				_commit_lane()
+			else:
+				_add_new_point()
 
 		elif event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed:
 			_commit_lane()
@@ -216,13 +219,13 @@ func _commit_lane():
 	var new_lane = LaneData.from_dict({})
 	new_lane.vertex_ids = vertex_ids
 	new_lane.next_option_dict = next_option_dict
-	
+
 	if not setting.force_default_lane_traffic:
 		new_lane.traffic = _calc_initial_traffic()
-		
+
 	if not setting.force_default_lane_speed_limit:
 		new_lane.speed_limit = _calc_initial_speed_limit()
-	
+
 
 	_editor_global.undo_redo.create_action("Add lane")
 

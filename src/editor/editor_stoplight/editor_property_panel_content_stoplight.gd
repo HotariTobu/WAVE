@@ -139,7 +139,7 @@ class SplitCellCreator:
 
 	func _create_split_cell(split: SplitData) -> Array[Control]:
 		var split_source = _editor_global.source_db.get_or_add(split)
-		var stoplight_sector_node = _editor_global.get_content_node(split.id) as EditorStoplightSector
+		var stoplight_sector_node = _editor_global.content_node_of(split.id) as EditorStoplightSector
 
 		_label_count += 1
 

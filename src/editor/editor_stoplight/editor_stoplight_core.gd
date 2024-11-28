@@ -53,12 +53,8 @@ func _draw():
 	draw_circle(Vector2.ZERO, radius, color)
 
 
-func move_by(offset: Vector2):
-	_source.pos += offset
-
-
 func _get_sectors_of(split_ids: Array) -> Array[EditorStoplightSector]:
-	var sectors = split_ids.map(_editor_global.get_content_node)
+	var sectors = split_ids.map(_editor_global.content_node_of)
 	return Array(sectors, TYPE_OBJECT, &"Area2D", EditorStoplightSector)
 
 

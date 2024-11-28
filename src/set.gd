@@ -60,11 +60,19 @@ func hash() -> int:
 	return _data.hash()
 
 
-func intersection(another: Set) -> Set:
+func intersect(another: Set) -> void:
+	for value in another._data:
+		if _data.has(value):
+			continue
+
+		_data.erase(value)
+
+
+func intersected(another: Set) -> Set:
 	var new_set = Set.new()
 
-	for value in _data:
-		if value not in another._data:
+	for value in another._data:
+		if not _data.has(value):
 			continue
 
 		new_set._data[value] = null

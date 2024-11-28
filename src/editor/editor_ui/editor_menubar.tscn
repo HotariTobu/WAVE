@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cv5wxc1x2ms55"]
+[gd_scene load_steps=6 format=3 uid="uid://cv5wxc1x2ms55"]
 
 [ext_resource type="Script" path="res://src/editor/editor_ui/editor_menubar.gd" id="1_38xr3"]
 [ext_resource type="PackedScene" uid="uid://1v7tjweb231n" path="res://src/editor/editor_ui/editor_menu_action/editor_menu_action_read_write.tscn" id="2_cwu1u"]
+[ext_resource type="Script" path="res://src/editor/editor_ui/editor_menu_action/editor_menu_action_copy_paste.gd" id="3_a1fec"]
 [ext_resource type="Script" path="res://src/editor/editor_ui/editor_menu_action/editor_menu_action_delete.gd" id="3_dck1o"]
 [ext_resource type="PackedScene" uid="uid://s2ceebgwvycn" path="res://src/editor/editor_ui/editor_menu_action/editor_menu_action_simulation.tscn" id="4_a4fnm"]
 
@@ -22,6 +23,9 @@ anchor_right = 1.0
 grow_horizontal = 2
 
 [node name="ReadWrite" parent="." instance=ExtResource("2_cwu1u")]
+
+[node name="CopyPaste" type="Node" parent="."]
+script = ExtResource("3_a1fec")
 
 [node name="Delete" type="Node" parent="."]
 script = ExtResource("3_dck1o")

@@ -1,7 +1,9 @@
-class_name EditorConstraint
+class_name EditorContentConstraint
 
 signal died
 signal revived
+
+signal action_requested(action: Callable)
 
 var dead: bool = false:
 	get:
@@ -18,31 +20,42 @@ var dead: bool = false:
 		else:
 			revived.emit()
 
+var data: ContentData:
+	get:
+		return _data
+
 var _data: ContentData
 var _data_source: EditorBindingSource
-
-var _constraint_of: Callable
-var _action_signal: Signal
 
 var _targets: Array
 var _snapshots: Array
 
+var _copy_dependency_id_set_mergers: Array[Callable]
+var _movable_id_set_mergers: Array[Callable]
 
-func _init(content: ContentData, constraint_of: Callable, action_signal: Signal):
+
+func _init(content: ContentData):
 	_data = content
 	_data_source = editor_global.source_db.get_or_add(content)
 
-	_constraint_of = constraint_of
-	_action_signal = action_signal
-
 	_constrain.call_deferred()
+
+
+func merge_copy_dependency_id_set_to(copy_dependency_id_set: Set) -> void:
+	for copy_dependency_id_set_merger in _copy_dependency_id_set_mergers:
+		copy_dependency_id_set_merger.call(copy_dependency_id_set)
+
+
+func merge_movable_id_set_to(movable_id_set: Set) -> void:
+	for movable_id_set_merger in _movable_id_set_mergers:
+		movable_id_set_merger.call(movable_id_set)
 
 
 func _constrain():
 	pass
 
 
-func bind_array(self_content_property: StringName, constraint_property: StringName):
+func _bind_array(self_content_property: StringName, constraint_property: StringName):
 	assert(_data[self_content_property] is Array)
 
 	var target = ArrayTarget.new()
@@ -55,7 +68,7 @@ func bind_array(self_content_property: StringName, constraint_property: StringNa
 	revived.connect(func(): _add_all_self_data_to_constraint_of(_data[self_content_property], constraint_property))
 
 
-func bind_dict(self_content_property: StringName, constraint_property: StringName):
+func _bind_dict(self_content_property: StringName, constraint_property: StringName):
 	assert(_data[self_content_property] is Dictionary)
 
 	var target = DictionaryTarget.new()
@@ -68,20 +81,69 @@ func bind_dict(self_content_property: StringName, constraint_property: StringNam
 	revived.connect(func(): _add_all_self_data_to_constraint_of(_data[self_content_property].keys(), constraint_property))
 
 
-func unlink_array_on_died(content_set: Set, content_property: StringName):
+func _unlink_array_on_died(content_set: Set, content_property: StringName):
 	var snapshot_index = _get_next_snapshot_index()
 	died.connect(func(): _take_unlink_array_snapshot(content_set, content_property, snapshot_index))
 	revived.connect(func(): _restore_unlink_array_snapshot(content_property, snapshot_index))
 
 
-func unlink_dict_on_died(content_set: Set, content_property: StringName):
+func _unlink_dict_on_died(content_set: Set, content_property: StringName):
 	var snapshot_index = _get_next_snapshot_index()
 	died.connect(func(): _take_unlink_dict_snapshot(content_set, content_property, snapshot_index))
 	revived.connect(func(): _restore_unlink_dict_snapshot(content_property, snapshot_index))
 
 
+func _include_array_on_copy(content_property: StringName, deep: bool):
+	assert(content_property in _data)
+	assert(_data[content_property] is Array)
+
+	if deep:
+		_copy_dependency_id_set_mergers.append(_merge_array_deep_copy_dependency_to.bind(content_property))
+	else:
+		_copy_dependency_id_set_mergers.append(_merge_array_shallow_copy_dependency_to.bind(content_property))
+
+
+func _include_dict_on_copy(content_property: StringName, deep: bool):
+	assert(content_property in _data)
+	assert(_data[content_property] is Dictionary)
+
+	if deep:
+		_copy_dependency_id_set_mergers.append(_merge_dict_deep_copy_dependency_to.bind(content_property))
+	else:
+		_copy_dependency_id_set_mergers.append(_merge_dict_shallow_copy_dependency_to.bind(content_property))
+
+
+func _include_set_on_copy(constraint_property: StringName, deep: bool):
+	assert(constraint_property in self)
+	assert(self[constraint_property] is Set)
+
+	if deep:
+		_copy_dependency_id_set_mergers.append(_merge_set_deep_copy_dependency_to.bind(constraint_property))
+	else:
+		_copy_dependency_id_set_mergers.append(_merge_set_shallow_copy_dependency_to.bind(constraint_property))
+
+
+func _include_self_on_move():
+	_movable_id_set_mergers.append(_merge_self_movable_to)
+
+
+func _include_array_on_move(content_property: StringName):
+	assert(content_property in _data and _data[content_property] is Array)
+	_movable_id_set_mergers.append(_merge_array_movable_to.bind(content_property))
+
+
+func _include_dict_on_move(content_property: StringName):
+	assert(content_property in _data and _data[content_property] is Dictionary)
+	_movable_id_set_mergers.append(_merge_dict_movable_to.bind(content_property))
+
+
+func _include_set_on_move(constraint_property: StringName):
+	assert(constraint_property in self and self[constraint_property] is Set)
+	_movable_id_set_mergers.append(_merge_set_movable_to.bind(constraint_property))
+
+
 func _add_self_data_to_constraint_of(content_id: StringName, constraint_property: StringName):
-	var constraint = _constraint_of.call(content_id)
+	var constraint = editor_global.constraint_db.of(content_id)
 
 	assert(constraint[constraint_property] is Set)
 
@@ -89,7 +151,7 @@ func _add_self_data_to_constraint_of(content_id: StringName, constraint_property
 
 
 func _erase_self_data_from_constraint_of(content_id: StringName, constraint_property: StringName):
-	var constraint = _constraint_of.call(content_id)
+	var constraint = editor_global.constraint_db.of(content_id)
 
 	assert(constraint[constraint_property] is Set)
 
@@ -126,7 +188,7 @@ func _take_unlink_array_snapshot(content_set: Set, content_property: StringName,
 
 		var source = editor_global.source_db.get_or_add(content)
 		var action = func(): source[content_property] = new_array
-		_action_signal.emit(action)
+		action_requested.emit(action)
 
 	_snapshots[snapshot_index] = content_dead_index_dict
 
@@ -144,7 +206,7 @@ func _restore_unlink_array_snapshot(content_property: StringName, snapshot_index
 
 		var source = editor_global.source_db.get_or_add(content)
 		var action = func(): source[content_property] = new_array
-		_action_signal.emit(action)
+		action_requested.emit(action)
 
 	_snapshots[snapshot_index] = null
 
@@ -163,7 +225,7 @@ func _take_unlink_dict_snapshot(content_set: Set, content_property: StringName, 
 
 		var source = editor_global.source_db.get_or_add(content)
 		var action = func(): source[content_property] = new_dict
-		_action_signal.emit(action)
+		action_requested.emit(action)
 
 	_snapshots[snapshot_index] = content_removed_value_dict
 
@@ -181,9 +243,72 @@ func _restore_unlink_dict_snapshot(content_property: StringName, snapshot_index:
 
 		var source = editor_global.source_db.get_or_add(content)
 		var action = func(): source[content_property] = new_dict
-		_action_signal.emit(action)
+		action_requested.emit(action)
 
 	_snapshots[snapshot_index] = null
+
+
+func _merge_array_shallow_copy_dependency_to(copy_dependency_id_set: Set, content_property: StringName):
+	copy_dependency_id_set.add_all(_data[content_property])
+
+
+func _merge_array_deep_copy_dependency_to(copy_dependency_id_set: Set, content_property: StringName):
+	for content_id in _data[content_property]:
+		if copy_dependency_id_set.has(content_id):
+			continue
+
+		copy_dependency_id_set.add(content_id)
+
+		var constraint = editor_global.constraint_db.of(content_id)
+		constraint.merge_copy_dependency_id_set_to(copy_dependency_id_set)
+
+
+func _merge_dict_shallow_copy_dependency_to(copy_dependency_id_set: Set, content_property: StringName):
+	copy_dependency_id_set.add_all(_data[content_property].keys())
+
+
+func _merge_dict_deep_copy_dependency_to(copy_dependency_id_set: Set, content_property: StringName):
+	for content_id in _data[content_property]:
+		if copy_dependency_id_set.has(content_id):
+			continue
+
+		copy_dependency_id_set.add(content_id)
+
+		var constraint = editor_global.constraint_db.of(content_id)
+		constraint.merge_copy_dependency_id_set_to(copy_dependency_id_set)
+
+
+func _merge_set_shallow_copy_dependency_to(copy_dependency_id_set: Set, constraint_property: StringName):
+	var sub_copy_dependencies = self[constraint_property].to_array()
+	copy_dependency_id_set.add_all(sub_copy_dependencies.map(ContentData.id_of))
+
+
+func _merge_set_deep_copy_dependency_to(copy_dependency_id_set: Set, constraint_property: StringName):
+	for content in self[constraint_property].to_array():
+		if copy_dependency_id_set.has(content.id):
+			continue
+
+		copy_dependency_id_set.add(content.id)
+
+		var constraint = editor_global.constraint_db.of(content.id)
+		constraint.merge_copy_dependency_id_set_to(copy_dependency_id_set)
+
+
+func _merge_self_movable_to(movable_id_set: Set):
+	movable_id_set.add(_data.id)
+
+
+func _merge_array_movable_to(movable_id_set: Set, content_property: StringName):
+	movable_id_set.add_all(_data[content_property])
+
+
+func _merge_dict_movable_to(movable_id_set: Set, content_property: StringName):
+	movable_id_set.add_all(_data[content_property].keys())
+
+
+func _merge_set_movable_to(movable_id_set: Set, constraint_property: StringName):
+	var sub_movables = self[constraint_property].to_array()
+	movable_id_set.add_all(sub_movables.map(ContentData.id_of))
 
 
 class ArrayTarget:

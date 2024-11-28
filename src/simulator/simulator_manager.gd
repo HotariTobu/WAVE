@@ -73,8 +73,6 @@ func start() -> SimulationData:
 
 	var simulation = _iterator.simulation
 
-	breakpoint
-
 	_status = Status.COMPLETED
 	return simulation
 

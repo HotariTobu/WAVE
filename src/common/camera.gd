@@ -41,6 +41,9 @@ const NORMAL_DIRECTION_MAP = {
 @export_range(1, 2) var zoom_factor = 1.1
 @export_range(0, 1000) var pan_factor = 30
 
+@export_range(0.1, 1) var magnify_zoom_factor = 0.1
+@export_range(1, 10) var pan_gesture_factor = 3
+
 var offset_value: Vector2:
 	get:
 		return offset
@@ -86,6 +89,12 @@ func _unhandled_input(event):
 			if event.pressed:
 				_handle_mouse_wheel(event)
 
+	elif event is InputEventPanGesture:
+		offset_value += event.delta * pan_gesture_factor / zoom_value
+
+	elif event is InputEventMagnifyGesture:
+		_handle_magnify_gesture(event)
+
 
 func _handle_mouse_wheel(event: InputEventMouseButton):
 	var amount = event.factor if event.factor else 1.0
@@ -99,6 +108,13 @@ func _handle_mouse_wheel(event: InputEventMouseButton):
 	else:
 		var direction = NORMAL_DIRECTION_MAP[event.button_index]
 		_pan(amount, direction)
+
+
+func _handle_magnify_gesture(event: InputEventMagnifyGesture):
+	var zoom_in = event.factor > 1.0
+	var amount = event.factor if zoom_in else 1.0 / event.factor
+	amount *= magnify_zoom_factor
+	_zoom(amount, zoom_in, event.position)
 
 
 func _zoom(amount: float, zoom_in: bool, mouse_pos: Vector2):

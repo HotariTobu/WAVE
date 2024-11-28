@@ -10,6 +10,7 @@ var camera: PanZoomCamera
 var network_file_path: String
 
 var content_db = EditorContentDataDB.new()
+var constraint_db = EditorConstraintDB.new()
 
 @onready var _content_owner = get_tree().root
 
@@ -34,7 +35,7 @@ func set_content_node_owner(content_node: EditorContent):
 	content_node.owner = _content_owner
 
 
-func get_content_node(content_id: StringName) -> EditorContent:
+func content_node_of(content_id: StringName) -> EditorContent:
 	var node = _content_owner.get_node("%" + content_id)
 
 	assert(node != null)
