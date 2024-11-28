@@ -3,7 +3,7 @@ extends "res://src/editor/editor_tool/editor_tool_base_select.gd"
 var _dragging: bool
 var _shift: bool
 
-var _selecting_items: Array[EditorSelectable]
+var _selecting_item_set = Set.new()
 
 var _last_mouse_pos: Vector2
 var _current_mouse_pos: Vector2:
@@ -29,7 +29,7 @@ func _on_pointer_area_area_entered(area):
 		_hovered_items.append(item)
 
 		item.selecting = true
-		_selecting_items.append(item)
+		_selecting_item_set.add(item)
 
 	else:
 		super(area)
@@ -45,7 +45,7 @@ func _on_pointer_area_area_exited(area):
 
 
 func _replace_selection():
-	if not _last_mouse_pos.is_equal_approx(_current_mouse_pos) or len(_selecting_items) >= 2:
+	if not _last_mouse_pos.is_equal_approx(_current_mouse_pos) or _selecting_item_set.size() >= 2:
 		return
 
 	super()
@@ -65,14 +65,14 @@ func _start_drag():
 	_last_hovered_item = null
 
 	item.selecting = true
-	_selecting_items.append(item)
+	_selecting_item_set.add(item)
 
 
 func _end_drag():
 	if not _dragging:
 		return
 
-	if _last_mouse_pos.is_equal_approx(_current_mouse_pos) and len(_selecting_items) < 2:
+	if _last_mouse_pos.is_equal_approx(_current_mouse_pos) and _selecting_item_set.size() < 2:
 		_dispose()
 		return
 
@@ -85,7 +85,7 @@ func _end_drag():
 
 
 func _add_selection():
-	for item in _selecting_items:
+	for item in _selecting_item_set.to_array():
 		if item.selected:
 			continue
 
@@ -93,7 +93,7 @@ func _add_selection():
 
 
 func _remove_selection():
-	for item in _selecting_items:
+	for item in _selecting_item_set.to_array():
 		if not item.selected:
 			continue
 
@@ -110,10 +110,10 @@ func _cancel():
 func _dispose():
 	_dragging = false
 
-	for item in _selecting_items:
+	for item in _selecting_item_set.to_array():
 		item.selecting = false
 
-	_selecting_items.clear()
+	_selecting_item_set.clear()
 
 	if _hovered_items.is_empty():
 		return

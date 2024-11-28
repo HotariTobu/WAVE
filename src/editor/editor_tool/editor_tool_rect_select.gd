@@ -11,6 +11,7 @@ func _init():
 
 	_rect_area.collision_mask = _get_mask()
 	_rect_area.area_entered.connect(_on_selection_area_area_entered)
+	_rect_area.area_exited.connect(_on_selection_area_area_exited)
 	add_child(_rect_area)
 
 
@@ -36,7 +37,17 @@ func _on_selection_area_area_entered(area):
 	var item = area as EditorSelectable
 
 	item.selecting = true
-	_selecting_items.append(item)
+	_selecting_item_set.add(item)
+
+
+func _on_selection_area_area_exited(area):
+	if not _dragging:
+		return
+
+	var item = area as EditorSelectable
+
+	item.selecting = false
+	_selecting_item_set.erase(item)
 
 
 func _update_selection_area():
