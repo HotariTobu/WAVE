@@ -14,6 +14,7 @@ func _init():
 
 
 func _ready():
+	set_process(false)
 	set_process_unhandled_input(false)
 
 
@@ -31,6 +32,7 @@ func activate() -> void:
 	_pointer_area.area_entered.connect(_on_pointer_area_area_entered)
 	_pointer_area.area_exited.connect(_on_pointer_area_area_exited)
 
+	set_process(true)
 	set_process_unhandled_input(true)
 
 
@@ -39,6 +41,7 @@ func deactivate() -> void:
 	_pointer_area.area_entered.disconnect(_on_pointer_area_area_entered)
 	_pointer_area.area_exited.disconnect(_on_pointer_area_area_exited)
 
+	set_process(false)
 	set_process_unhandled_input(false)
 
 	_hovered_items.clear()
