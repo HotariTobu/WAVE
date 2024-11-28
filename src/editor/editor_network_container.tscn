@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://d2m22hrl2t0gd"]
+[gd_scene load_steps=12 format=3 uid="uid://d2m22hrl2t0gd"]
 
 [ext_resource type="Script" path="res://src/editor/editor_network_container.gd" id="1_6l2nm"]
 [ext_resource type="Script" path="res://src/common/camera.gd" id="2_3of67"]
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_drag_select.gd" id="2_k5srv"]
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_add_lane.gd" id="2_yb53e"]
 [ext_resource type="Shortcut" uid="uid://3jpsypc51i23" path="res://src/editor/editor_tool/select_tool_shortcut.tres" id="4_44g6h"]
+[ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_rect_select.gd" id="5_fop64"]
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_add_stoplight.gd" id="5_j0wfg"]
 [ext_resource type="Shortcut" uid="uid://blwmukco2nndw" path="res://src/editor/editor_tool/add_tool_shortcut.tres" id="6_satsf"]
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_add_block_target.gd" id="8_3e1ww"]
@@ -23,6 +24,10 @@ script = ExtResource("2_3of67")
 
 [node name="DragSelectTool" type="Node2D" parent="ToolContainer"]
 script = ExtResource("2_k5srv")
+shortcut = ExtResource("4_44g6h")
+
+[node name="RectSelectTool" type="Node2D" parent="ToolContainer"]
+script = ExtResource("5_fop64")
 shortcut = ExtResource("4_44g6h")
 
 [node name="AddLaneTool" type="Node2D" parent="ToolContainer"]
