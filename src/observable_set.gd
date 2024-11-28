@@ -45,6 +45,15 @@ func erase(value: Variant) -> bool:
 	return false
 
 
+func intersect(another: Set) -> void:
+	for value in another._data:
+		if _data.has(value):
+			continue
+
+		_data.erase(value)
+		value_removed.emit(value)
+
+
 func make_read_only() -> void:
 	super()
 	made_read_only.emit()
@@ -52,7 +61,7 @@ func make_read_only() -> void:
 
 func merge(another: Set) -> void:
 	for value in another._data:
-		if value in _data:
+		if _data.has(value):
 			continue
 
 		_data[value] = null
