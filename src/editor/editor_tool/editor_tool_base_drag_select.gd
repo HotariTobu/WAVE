@@ -5,6 +5,11 @@ var _shift: bool
 
 var _selecting_items: Array[EditorSelectable]
 
+var _last_mouse_pos: Vector2
+var _current_mouse_pos: Vector2:
+	get:
+		return get_local_mouse_position()
+
 
 func _unhandled_input(event):
 	super(event)
@@ -39,11 +44,19 @@ func _on_pointer_area_area_exited(area):
 		super(area)
 
 
+func _replace_selection():
+	if not _last_mouse_pos.is_equal_approx(_current_mouse_pos) or len(_selecting_items) >= 2:
+		return
+
+	super()
+
+
 func _start_drag():
 	if _dragging:
 		return
 
 	_dragging = true
+	_last_mouse_pos = _current_mouse_pos
 
 	var item = _last_hovered_item
 	if item == null:
@@ -61,7 +74,7 @@ func _end_drag():
 
 	_dragging = false
 
-	if len(_selecting_items) < 2:
+	if _last_mouse_pos.is_equal_approx(_current_mouse_pos) and len(_selecting_items) < 2:
 		_dispose()
 		return
 
