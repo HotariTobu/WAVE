@@ -5,7 +5,7 @@ extends EditorContentConstraint
 func _constrain():
 	super()
 
-	bind_array(&"vertex_ids", &"lane_set")
+	_bind_array(&"vertex_ids", &"lane_set")
 
 	_data_source.add_callback(&"vertex_ids", _on_vertex_ids_changed)
 

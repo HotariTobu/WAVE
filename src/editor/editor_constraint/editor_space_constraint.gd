@@ -7,9 +7,9 @@ var block_source_set = Set.new()
 func _constrain():
 	super()
 
-	bind_array(&"block_target_ids", &"block_source_set")
+	_bind_array(&"block_target_ids", &"block_source_set")
 
-	unlink_array_on_died(block_source_set, &"block_target_ids")
+	_unlink_array_on_died(block_source_set, &"block_target_ids")
 
 	died.connect(block_source_set.clear)
 

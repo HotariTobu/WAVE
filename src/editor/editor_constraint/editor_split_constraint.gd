@@ -7,9 +7,9 @@ var stoplight_set = ObservableSet.new()
 func _constrain():
 	super()
 
-	bind_array(&"block_target_ids", &"block_source_set")
+	_bind_array(&"block_target_ids", &"block_source_set")
 
-	unlink_array_on_died(stoplight_set, &"split_ids")
+	_unlink_array_on_died(stoplight_set, &"split_ids")
 
 	died.connect(stoplight_set.clear)
 

@@ -55,7 +55,7 @@ func _constrain():
 	pass
 
 
-func bind_array(self_content_property: StringName, constraint_property: StringName):
+func _bind_array(self_content_property: StringName, constraint_property: StringName):
 	assert(_data[self_content_property] is Array)
 
 	var target = ArrayTarget.new()
@@ -68,7 +68,7 @@ func bind_array(self_content_property: StringName, constraint_property: StringNa
 	revived.connect(func(): _add_all_self_data_to_constraint_of(_data[self_content_property], constraint_property))
 
 
-func bind_dict(self_content_property: StringName, constraint_property: StringName):
+func _bind_dict(self_content_property: StringName, constraint_property: StringName):
 	assert(_data[self_content_property] is Dictionary)
 
 	var target = DictionaryTarget.new()
@@ -81,13 +81,13 @@ func bind_dict(self_content_property: StringName, constraint_property: StringNam
 	revived.connect(func(): _add_all_self_data_to_constraint_of(_data[self_content_property].keys(), constraint_property))
 
 
-func unlink_array_on_died(content_set: Set, content_property: StringName):
+func _unlink_array_on_died(content_set: Set, content_property: StringName):
 	var snapshot_index = _get_next_snapshot_index()
 	died.connect(func(): _take_unlink_array_snapshot(content_set, content_property, snapshot_index))
 	revived.connect(func(): _restore_unlink_array_snapshot(content_property, snapshot_index))
 
 
-func unlink_dict_on_died(content_set: Set, content_property: StringName):
+func _unlink_dict_on_died(content_set: Set, content_property: StringName):
 	var snapshot_index = _get_next_snapshot_index()
 	died.connect(func(): _take_unlink_dict_snapshot(content_set, content_property, snapshot_index))
 	revived.connect(func(): _restore_unlink_dict_snapshot(content_property, snapshot_index))
