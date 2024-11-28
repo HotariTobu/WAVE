@@ -12,11 +12,14 @@ var _editor_global = editor_global
 @onready var _split_db = _editor_global.content_db.get_group(&"splits")
 @onready var _stoplight_db = _editor_global.content_db.get_group(&"stoplights")
 
-func _ready():
-	set_process_unhandled_input(false)
 
+func _init():
 	add_child(_dialog)
 	_dialog.canceled.connect(_on_canceled)
+
+
+func _ready():
+	set_process_unhandled_input(false)
 
 
 func _unhandled_input(event: InputEvent):
