@@ -31,6 +31,9 @@ func _ready():
 	var tools: Array[EditorTool] = []
 	for child in _tool_container.get_children():
 		var tool = child as EditorTool
+		if not tool.visible:
+			continue
+
 		tools.append(tool)
 
 	_editor_global.data.tools = tools
