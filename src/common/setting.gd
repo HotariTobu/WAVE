@@ -36,7 +36,7 @@ var lane_end_point_selecting_color = Color("#cc2944", 0.5)
 
 var stoplight_sector_min_arc = 100.0
 var stoplight_sector_max_radius = 100.0
-var stoplight_sector_delta_angle_inv = 40 / TAU
+var stoplight_sector_delta_angle_inv = 90 / TAU
 
 var stoplight_sector_inactive_color = Color("#bdbdbd", 0.5)
 var stoplight_sector_saturation = 0.5
