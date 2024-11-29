@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://rtx3pb63rwgf"]
+[gd_scene load_steps=7 format=3 uid="uid://rtx3pb63rwgf"]
 
 [ext_resource type="PackedScene" uid="uid://cv5wxc1x2ms55" path="res://src/editor/editor_ui/editor_menubar.tscn" id="1_1to68"]
 [ext_resource type="Script" path="res://src/editor/editor_ui/editor_tool_list.gd" id="2_q0ff7"]
 [ext_resource type="PackedScene" uid="uid://dvmptx0s6dcw7" path="res://src/editor/editor_ui/editor_property_panel.tscn" id="2_sbgxe"]
 [ext_resource type="PackedScene" uid="uid://lucuu1ls7qgb" path="res://src/editor/editor_ui/editor_statusbar.tscn" id="3_5n7qe"]
 [ext_resource type="Script" path="res://src/editor/shortcut_manager.gd" id="3_chobj"]
+[ext_resource type="Script" path="res://src/common/common_ui/scale_bar.gd" id="4_fihst"]
 
 [node name="EditorUI" type="CanvasLayer"]
 
@@ -27,6 +28,25 @@ offset_top = 40.0
 offset_right = -10.0
 offset_bottom = -40.0
 
-[node name="Statusbar" parent="." instance=ExtResource("3_5n7qe")]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -27.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ScaleBar" type="Control" parent="VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(600, 30)
+layout_mode = 2
+size_flags_horizontal = 0
+script = ExtResource("4_fihst")
+
+[node name="Statusbar" parent="VBoxContainer" instance=ExtResource("3_5n7qe")]
+layout_mode = 2
 
 [node name="EditorMenubar" parent="." instance=ExtResource("1_1to68")]
