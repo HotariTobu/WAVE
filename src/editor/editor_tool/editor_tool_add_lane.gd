@@ -5,23 +5,52 @@ const TOOL_STATUS_HINT = "Left click: add a point, Right click: commit the lane"
 
 enum Phase { EMPTY, LACK, ENOUGH }
 
-var _vertices: Array[VertexData]
-
-var _hovered_lane_vertex_nodes: Array[EditorLaneVertex]
-var _hovered_lane_segments_nodes: Array[EditorLaneSegments]
+var _points: PackedVector2Array
 
 var _prev_lanes: Array[LaneData]
 var _next_lanes: Array[LaneData]
 
 var _phase: Phase:
 	get:
-		var vertex_count = len(_vertices)
-		if vertex_count < 2:
-			return Phase.EMPTY
-		elif vertex_count < 3:
-			return Phase.LACK
-		else:
-			return Phase.ENOUGH
+		match len(_points):
+			0, 1:
+				return Phase.EMPTY
+			2:
+				return Phase.LACK
+			_:
+				return Phase.ENOUGH
+
+var _selecting_start_vertex_node: EditorLaneVertex:
+	get:
+		return _selecting_start_vertex_node
+	set(next):
+		var prev = _selecting_start_vertex_node
+
+		if prev != null:
+			prev.selecting = false
+			prev.type = EditorLaneVertex.DEFAULT_TYPE
+
+		if next != null:
+			next.selecting = true
+			next.type = EditorLaneVertex.Type.START
+
+		_selecting_start_vertex_node = next
+
+var _selecting_end_vertex_node: EditorLaneVertex:
+	get:
+		return _selecting_end_vertex_node
+	set(next):
+		var prev = _selecting_end_vertex_node
+
+		if prev != null:
+			prev.selecting = false
+			prev.type = EditorLaneVertex.DEFAULT_TYPE
+
+		if next != null:
+			next.selecting = true
+			next.type = EditorLaneVertex.Type.END
+
+		_selecting_end_vertex_node = next
 
 var _selecting_prev_segments_nodes: Array[EditorLaneSegments]:
 	get:
@@ -51,40 +80,23 @@ var _selecting_next_segments_nodes: Array[EditorLaneSegments]:
 
 		_selecting_next_segments_nodes = next
 
-var _selecting_vertex_node: EditorLaneVertex:
+var _current_pos: Vector2:
 	get:
-		return _selecting_vertex_node
-	set(next):
-		var prev = _selecting_vertex_node
-
-		if prev != null:
-			prev.selecting = false
-			prev.type = EditorLaneVertex.DEFAULT_TYPE
-
-		if next != null:
-			next.selecting = true
-
-		_selecting_vertex_node = next
-
-var _current_vertex: VertexData:
-	get:
-		if _selecting_vertex_node == null:
-			var vertex = VertexData.new()
-			vertex.pos = get_local_mouse_position()
-			return vertex
+		if _selecting_end_vertex_node == null:
+			return get_local_mouse_position()
 		else:
-			return _selecting_vertex_node.data
+			return _selecting_end_vertex_node.data.pos
 
 @onready var _lane_vertex_db = _editor_global.content_db.get_group(&"lane_vertices")
 @onready var _lane_db = _editor_global.content_db.get_group(&"lanes")
 
 
 func _draw():
-	if len(_vertices) < 2:
+	if len(_points) < 2:
 		return
 
-	var points = _vertices.map(VertexData.pos_of)
-	draw_polyline(points, setting.preview_lane_color)
+	var color = Color(setting.lane_color, 0.5)
+	LaneHelper.draw_to(self, _points, color, setting.lane_width)
 
 
 func _unhandled_input(event: InputEvent):
@@ -119,34 +131,20 @@ func deactivate() -> void:
 	super()
 
 	_cancel()
-	_hovered_lane_vertex_nodes.clear()
-	_hovered_lane_segments_nodes.clear()
 	_unselect()
 
 
 func _get_mask() -> int:
-	return EditorPhysicsLayer.LANE
+	return EditorPhysicsLayer.LANE_VERTEX
 
 
 func _on_pointer_area_area_entered(area):
-	if area is EditorLaneVertex:
-		_hovered_lane_vertex_nodes.append(area)
-	elif area is EditorLaneSegments:
-		_hovered_lane_segments_nodes.append(area)
-	else:
-		return
-
+	super(area)
 	_update_selecting_nodes()
 
 
 func _on_pointer_area_area_exited(area):
-	if area is EditorLaneVertex:
-		_hovered_lane_vertex_nodes.erase(area)
-	elif area is EditorLaneSegments:
-		_hovered_lane_segments_nodes.erase(area)
-	else:
-		return
-
+	super(area)
 	_update_selecting_nodes()
 
 
@@ -154,26 +152,81 @@ func _update_end_point():
 	if _phase == Phase.EMPTY:
 		return
 
-	_vertices[-1] = _current_vertex
+	_points[-1] = _current_pos
 	queue_redraw()
 
 
-func _add_new_point():
-	var empty = _phase == Phase.EMPTY
-	if empty:
-		_vertices.append(_current_vertex)
+func _update_selecting_nodes():
+	var phase = _phase
 
-	_vertices.append(_current_vertex)
+	if _hovered_items.is_empty():
+		if phase == Phase.EMPTY:
+			_prev_lanes = []
+			_selecting_start_vertex_node = null
+			_selecting_prev_segments_nodes = []
+		else:
+			_next_lanes = []
+			_selecting_end_vertex_node = null
+			_selecting_next_segments_nodes = []
 
-	if _selecting_vertex_node == null:
 		return
 
-	if empty:
-		_prev_lanes = _get_lanes(_selecting_prev_segments_nodes)
-		_unselect()
+	var vertex_node = _hovered_items.back() as EditorLaneVertex
+	var vertex_id = vertex_node.data.id
+	var constraint = _editor_global.constraint_db.of(vertex_id) as EditorLaneVertexConstraint
+	var related_lanes = constraint.lane_set.to_array()
+
+	if _phase == Phase.EMPTY:
+		var prev_segments_nodes: Array[EditorLaneSegments]
+
+		for lane in related_lanes:
+			if lane.vertex_ids.back() == vertex_id:
+				var segments_node = _editor_global.content_node_of(lane.id)
+				prev_segments_nodes.append(segments_node)
+
+		if prev_segments_nodes.is_empty():
+			_prev_lanes = []
+			_selecting_start_vertex_node = null
+			_selecting_prev_segments_nodes = []
+		else:
+			_prev_lanes.assign(prev_segments_nodes.map(EditorContent.data_of))
+			_selecting_start_vertex_node = vertex_node
+			_selecting_prev_segments_nodes = prev_segments_nodes
+
 	else:
-		_next_lanes = _get_lanes(_selecting_next_segments_nodes)
-		_commit_lane()
+		var next_segments_nodes: Array[EditorLaneSegments]
+
+		for lane in related_lanes:
+			if lane.vertex_ids.front() == vertex_id:
+				var segments_node = _editor_global.content_node_of(lane.id)
+				next_segments_nodes.append(segments_node)
+
+		if next_segments_nodes.is_empty():
+			_next_lanes = []
+			_selecting_end_vertex_node = null
+			_selecting_next_segments_nodes = []
+		else:
+			_next_lanes.assign(next_segments_nodes.map(EditorContent.data_of))
+			_selecting_end_vertex_node = vertex_node
+			_selecting_next_segments_nodes = next_segments_nodes
+
+
+func _add_new_point():
+	var current_pos = _current_pos
+
+	var empty = _phase == Phase.EMPTY
+	if empty:
+		if _selecting_start_vertex_node != null:
+			current_pos = _selecting_start_vertex_node.data.pos
+
+		_points.append(current_pos)
+
+	_points.append(current_pos)
+
+	if _selecting_end_vertex_node == null:
+		return
+
+	_commit_lane()
 
 
 func _commit_lane():
@@ -181,19 +234,25 @@ func _commit_lane():
 		_cancel()
 		return
 
-	_vertices.pop_back()
+	var point_count = len(_points) - 1
+	_points.remove_at(point_count)
 
 	var vertex_ids: Array[StringName]
 	var new_vertices: Array[VertexData]
 
-	for vertex in _vertices:
-		var vertex_id = vertex.id
-		vertex_ids.append(vertex_id)
-
-		if _lane_vertex_db.has_of(vertex_id):
-			continue
-
+	for point in _points:
+		var vertex = VertexData.from_dict({})
+		vertex.pos = point
+		vertex_ids.append(vertex.id)
 		new_vertices.append(vertex)
+
+	if _selecting_start_vertex_node != null:
+		vertex_ids[0] = _selecting_start_vertex_node.data.id
+		new_vertices.pop_front()
+
+	if _selecting_end_vertex_node != null:
+		vertex_ids[-1] = _selecting_end_vertex_node.data.id
+		new_vertices.pop_back()
 
 	var next_option_dict: Dictionary
 
@@ -240,81 +299,19 @@ func _commit_lane():
 
 
 func _cancel():
-	_vertices.clear()
+	_points.clear()
 	queue_redraw()
-
-	_prev_lanes.clear()
-	_next_lanes.clear()
-
-	if _selecting_vertex_node == null:
-		return
-
-	if _selecting_vertex_node.type == EditorLaneVertex.Type.END:
-		return
-
-	_unselect()
-
-
-func _update_selecting_nodes():
-	var vertex_id_vertex_node_dict: Dictionary
-	for lane_vertex_node in _hovered_lane_vertex_nodes:
-		var vertex_id = lane_vertex_node.data.id
-		vertex_id_vertex_node_dict[vertex_id] = lane_vertex_node
-
-	var vertex_ids_segments_node_dict: Dictionary
-	for lane_segments_node in _hovered_lane_segments_nodes:
-		var vertex_ids = lane_segments_node.data.vertex_ids
-		vertex_ids_segments_node_dict[vertex_ids] = lane_segments_node
-
-	if _phase == Phase.EMPTY:
-		for vertex_id in vertex_id_vertex_node_dict:
-			var prev_segments_nodes: Array[EditorLaneSegments]
-
-			for vertex_ids in vertex_ids_segments_node_dict:
-				if vertex_id == vertex_ids.back():
-					var segments_node = vertex_ids_segments_node_dict[vertex_ids]
-					prev_segments_nodes.append(segments_node)
-
-			if prev_segments_nodes.is_empty():
-				continue
-
-			_selecting_prev_segments_nodes = prev_segments_nodes
-			_selecting_next_segments_nodes = []
-
-			var vertex_node = vertex_id_vertex_node_dict[vertex_id]
-			vertex_node.type = EditorLaneVertex.Type.START
-			_selecting_vertex_node = vertex_node
-
-			return
-
-	else:
-		for vertex_id in vertex_id_vertex_node_dict:
-			var next_segments_nodes: Array[EditorLaneSegments]
-
-			for vertex_ids in vertex_ids_segments_node_dict:
-				if vertex_id == vertex_ids.front():
-					var segments_node = vertex_ids_segments_node_dict[vertex_ids]
-					next_segments_nodes.append(segments_node)
-
-			if next_segments_nodes.is_empty():
-				continue
-
-			_selecting_prev_segments_nodes = []
-			_selecting_next_segments_nodes = next_segments_nodes
-
-			var vertex_node = vertex_id_vertex_node_dict[vertex_id]
-			vertex_node.type = EditorLaneVertex.Type.END
-			_selecting_vertex_node = vertex_node
-
-			return
 
 	_unselect()
 
 
 func _unselect():
+	_prev_lanes.clear()
+	_next_lanes.clear()
 	_selecting_prev_segments_nodes = []
 	_selecting_next_segments_nodes = []
-	_selecting_vertex_node = null
+	_selecting_start_vertex_node = null
+	_selecting_end_vertex_node = null
 
 
 func _calc_initial_traffic() -> float:
