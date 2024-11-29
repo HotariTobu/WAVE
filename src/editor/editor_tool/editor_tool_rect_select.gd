@@ -89,6 +89,7 @@ class RectArea:
 
 		collision_layer = 0
 		monitorable = false
+		input_pickable = false
 		add_child(collision_shape)
 
 	func _draw():
