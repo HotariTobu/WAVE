@@ -23,6 +23,9 @@ var playing: bool = true:
 		playing = value
 		_update_process()
 
+		if value and time == max_time:
+			source.time = 0
+
 
 func _ready():
 	source.add_callback(&"simulation", _reset)
