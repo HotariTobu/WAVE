@@ -131,7 +131,6 @@ func deactivate() -> void:
 	super()
 
 	_cancel()
-	_unselect()
 
 
 func _get_mask() -> int:
@@ -295,7 +294,6 @@ func _commit_lane():
 	_editor_global.undo_redo.commit_action()
 
 	_cancel()
-	_unselect()
 
 
 func _cancel():
