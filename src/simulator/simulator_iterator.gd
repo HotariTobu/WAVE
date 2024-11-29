@@ -63,7 +63,7 @@ func _iterate_block_targets(step: int):
 
 func _iterate_lanes(step: int):
 	var loop_tail_buffer_dict: Dictionary
-
+	
 	for lane in ordered_lanes:
 		if should_exit.call():
 			return
