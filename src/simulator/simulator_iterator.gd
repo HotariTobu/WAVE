@@ -6,7 +6,7 @@ func iterate(step: int):
 	_iterate_vehicle_entry_point(step)
 
 	_iterate_block_sources(step)
-	_iterate_block_targets()
+	_iterate_block_targets(step)
 
 	_iterate_lanes(step)
 
@@ -45,12 +45,17 @@ func _iterate_block_sources(step: int):
 		block_source.update_is_blocking(time)
 
 
-func _iterate_block_targets():
+func _iterate_block_targets(step: int):
 	if should_exit.call():
 		return
 
 	for block_target in block_targets:
 		block_target.is_blocked = block_target.block_sources.any(_is_blocking)
+
+		if not block_target.is_blocked:
+			continue
+
+		simulation.block_history[block_target.id].append(step)
 
 	for lane in closable_lanes:
 		lane.is_closed = lane.next_lanes.all(_is_blocked)

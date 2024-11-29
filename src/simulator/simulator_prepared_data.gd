@@ -203,6 +203,9 @@ func _init_block_targets():
 	var block_target_lanes = ordered_lanes.filter(_has_block_source)
 	block_targets.append_array(block_target_lanes)
 
+	for block_target in block_targets:
+		simulation.block_history[block_target.id] = PackedInt32Array()
+
 	var closable_lane_set = Set.new()
 
 	for lane in block_target_lanes:
