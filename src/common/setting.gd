@@ -18,7 +18,7 @@ var selected_color = Color("#1987e0")
 var selecting_color = Color(selected_color, 0.5)
 var selection_radius = 10.0
 
-var force_default_lane_traffic = false
+var force_default_lane_traffic = true
 var force_default_lane_speed_limit = false
 
 var default_lane_traffic = 1.0
