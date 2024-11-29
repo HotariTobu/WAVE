@@ -73,7 +73,7 @@ func merge(another: Set) -> void:
 		value_added.emit(value)
 
 
-static func from_array(values: Array) -> Set:
+static func from_array(values: Array) -> ObservableSet:
 	var new_set = ObservableSet.new()
 	for value in values:
 		new_set._data[value] = null
