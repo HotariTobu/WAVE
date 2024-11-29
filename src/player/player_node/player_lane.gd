@@ -1,5 +1,5 @@
 class_name PlayerLane
-extends Node2D
+extends PlayerAnimatable
 
 var _points: PackedVector2Array
 
