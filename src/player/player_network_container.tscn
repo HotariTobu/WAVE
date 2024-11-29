@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b6ytdel3mu6qp"]
+[gd_scene load_steps=4 format=3 uid="uid://b6ytdel3mu6qp"]
 
 [ext_resource type="Script" path="res://src/player/player_network_container.gd" id="1_oedem"]
-[ext_resource type="Script" path="res://src/common/camera.gd" id="2_e0eh6"]
+[ext_resource type="Script" path="res://src/common/common_node/pan_zoom_camera.gd" id="2_e0eh6"]
+[ext_resource type="Script" path="res://src/player/player_select_tool.gd" id="3_220a3"]
 
 [node name="PlayerNetworkContainer" type="Node2D"]
 script = ExtResource("1_oedem")
@@ -12,3 +13,6 @@ script = ExtResource("2_e0eh6")
 [node name="ContentContainer" type="Node" parent="."]
 
 [node name="AgentContainer" type="Node" parent="."]
+
+[node name="SelectTool" type="Node2D" parent="."]
+script = ExtResource("3_220a3")

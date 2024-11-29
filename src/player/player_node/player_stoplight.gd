@@ -10,7 +10,10 @@ var _sector_weight: float
 
 
 func _init(stoplight: StoplightData):
+	super(StoplightData.to_dict(stoplight))
+
 	position = stoplight.pos
+	_collision_points = [Vector2.ZERO]
 
 	var player_stoplight = player_global.content_db.player_data_of(stoplight.id) as PlayerStoplightData
 	_stoplight_helper = StoplightHelper.new(stoplight.offset, player_stoplight.splits)
@@ -36,6 +39,14 @@ func _process(_delta):
 
 
 func _draw():
+	var color: Color
+	if selecting:
+		color = setting.selecting_color
+	elif selected:
+		color = setting.selected_color
+	else:
+		color = setting.stoplight_sector_inactive_color
+
 	var sector_helper = _sector_helpers[_sector_index]
-	draw_circle(Vector2.ZERO, sector_helper.radius, setting.stoplight_sector_inactive_color, false, _width)
+	draw_circle(Vector2.ZERO, sector_helper.radius, color, false, _width)
 	sector_helper.draw_to(self, _width, _sector_weight)

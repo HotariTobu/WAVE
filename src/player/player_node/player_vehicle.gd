@@ -16,6 +16,10 @@ var _last_duplicated_curve: Curve2D = null
 
 
 func _init(vehicle: VehicleData):
+	super(VehicleData.to_dict(vehicle))
+
+	_collision_points = [Vector2.ZERO, Vector2.LEFT * vehicle.length]
+
 	_length = vehicle.length
 
 	_spawn_step = vehicle.spawn_step
@@ -71,4 +75,12 @@ func _process(_delta):
 
 
 func _draw():
-	AgentHelper.draw_to(self, setting.vehicle_head_length, _length, setting.vehicle_color, setting.vehicle_width)
+	var color: Color
+	if selecting:
+		color = setting.selecting_color
+	elif selected:
+		color = setting.selected_color
+	else:
+		color = setting.vehicle_color
+
+	AgentHelper.draw_to(self, setting.vehicle_head_length, _length, color, setting.vehicle_width)

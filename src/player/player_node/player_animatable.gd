@@ -1,5 +1,5 @@
 class_name PlayerAnimatable
-extends Node2D
+extends PlayerSelectable
 
 
 func _ready():

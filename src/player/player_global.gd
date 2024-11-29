@@ -14,6 +14,8 @@ var step_frac: float
 var prev_step: int
 var next_step: int
 
+var property_dict: Dictionary
+
 var playing: bool = true:
 	get:
 		return playing
