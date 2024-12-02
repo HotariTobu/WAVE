@@ -63,7 +63,7 @@ func _iterate_block_targets(step: int):
 
 func _iterate_lanes(step: int):
 	var loop_tail_buffer_dict: Dictionary
-	
+
 	for lane in ordered_lanes:
 		if should_exit.call():
 			return
@@ -80,25 +80,28 @@ func _iterate_lanes(step: int):
 		for vehicle in lane.vehicles:
 			var pos = vehicle.pos_history[-1]
 
+			var actual_distance = pos - rear_pos
+			var possible_displacement = maxf(0.0, actual_distance - vehicle.zero_speed_distance)
+
 			var last_displacement = vehicle.over_last_pos - pos
 			var last_speed = last_displacement * _inverted_step_delta
-			var last_speed_rate = vehicle.get_speed_rate(last_speed)
 
-			var actual_distance = pos - rear_pos
-			var preferred_distance = vehicle.get_preferred_distance(last_speed_rate)
-			var possible_displacement = maxf(0.0, actual_distance - preferred_distance)
+			var preferred_distance = vehicle.get_preferred_distance(last_speed)
+			var preferred_displacement = actual_distance - preferred_distance
+			var relative_displacement = actual_distance - vehicle.last_distance
+			var affected_displacement = maxf(preferred_displacement, -relative_displacement)
+			var limited_displacement = maxf(0.0, (preferred_displacement + affected_displacement) / 2)
 
 			var preferred_speed = vehicle.get_preferred_speed(lane.speed_limit)
-			var preferred_speed_rate = vehicle.get_speed_rate(preferred_speed)
-			var acceleration = vehicle.max_acceleration * preferred_speed_rate
+			var acceleration = vehicle.get_acceleration(preferred_speed)
 			var accelerated_speed = last_speed + acceleration * parameter.step_delta
+			var speed = min(vehicle.max_speed, preferred_speed, accelerated_speed)
+			var accelerated_displacement = speed * parameter.step_delta
 
-			var speed = minf(preferred_speed, accelerated_speed)
-			var preferred_displacement = speed * parameter.step_delta
-
-			var next_displacement = minf(possible_displacement, preferred_displacement)
+			var next_displacement = min(possible_displacement, limited_displacement, accelerated_displacement)
 			var next_pos = pos - next_displacement
 
+			vehicle.last_distance = actual_distance
 			vehicle.over_last_pos = pos
 			vehicle.pos_history.append(next_pos)
 
@@ -108,14 +111,14 @@ func _iterate_lanes(step: int):
 				removed_count += 1
 
 			#printt(
-			#	"[%02d]" % (vehicle.spawn_step),
+			#	#"[%02d]" % (vehicle.spawn_step),
+			#	"[%02d]" % (vehicle.length),
 			#	"%.2f m" % (last_displacement),
 			#	"%.2f km/h" % (last_speed * 3.6),
-			#	"%.2f" % (last_speed_rate),
 			#	"%.2f m" % (actual_distance),
 			#	"%.2f m" % (preferred_distance),
+			#	"%.2f km/h" % (relative_speed * 3.6),
 			#	"%.2f km/h" % (preferred_speed * 3.6),
-			#	"%.2f" % (preferred_speed_rate),
 			#	"%.2f" % (acceleration),
 			#	"%.2f km/h" % (accelerated_speed * 3.6),
 			#	"%.2f km/h" % (speed * 3.6),

@@ -3,17 +3,18 @@ extends VehicleData
 
 const BASE_HIGH_SPEED = 100.0 * 1000.0 / 3600.0
 
+var last_distance: float
 var over_last_pos: float
 
-var _inverted_max_speed: float
-var _distance_slope: float
+var _distance_base: float
 var _speed_slope: float
+var _acceleration_slope: float
 
 
 func init_params():
-	_inverted_max_speed = 1.0 / max_speed
-	_distance_slope = (high_speed_distance - low_speed_distance) / BASE_HIGH_SPEED
-	_speed_slope = base_speed / BASE_HIGH_SPEED
+	_distance_base = pow(1.0 - zero_speed_distance + high_speed_distance, 1.0 / BASE_HIGH_SPEED)
+	_speed_slope = high_speed / BASE_HIGH_SPEED
+	_acceleration_slope = high_speed_acceleration / BASE_HIGH_SPEED
 
 
 func spawn_at(lane: SimulatorLaneData, pos: float, step: int):
@@ -34,16 +35,16 @@ func die(step: int):
 	die_step = step + 1
 
 
-func get_speed_rate(speed: float) -> float:
-	return speed * _inverted_max_speed
-
-
 func get_preferred_distance(speed: float) -> float:
-	return speed * _distance_slope + low_speed_distance
+	return pow(_distance_base, speed) + zero_speed_distance - 1.0
 
 
 func get_preferred_speed(speed_limit: float) -> float:
 	return speed_limit * _speed_slope
+
+
+func get_acceleration(preferred_speed: float) -> float:
+	return preferred_speed * _acceleration_slope
 
 
 func _enter(lane: SimulatorLaneData, step: int):

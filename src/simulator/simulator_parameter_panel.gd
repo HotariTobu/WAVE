@@ -42,16 +42,16 @@ func _ready():
 	_source.bind(&"vehicle_length_options").using(vehicle_length_option_cell_creator).to(self, &"_vehicle_length_cells")
 	vehicle_length_option_cell_creator.option_removed.connect(_on_vehicle_length_option_remove_button_pressed)
 
-	_source.bind(&"vehicle_max_acceleration_range").to(%VehicleMaxAccelerationRangePanel, &"range_value", &"range_value_changed")
-	_source.bind(&"vehicle_max_acceleration_mean").to(%VehicleMaxAccelerationMeanBox, &"value", &"value_changed")
+	_source.bind(&"vehicle_high_speed_acceleration_range").to(%VehicleHighSpeedAccelerationRangePanel, &"range_value", &"range_value_changed")
+	_source.bind(&"vehicle_high_speed_acceleration_mean").to(%VehicleHighSpeedAccelerationMeanBox, &"value", &"value_changed")
 
-	_source.bind(&"vehicle_base_speed_range").to(%VehicleBaseSpeedRangePanel, &"range_value", &"range_value_changed")
-	_source.bind(&"vehicle_base_speed_mean").to(%VehicleBaseSpeedMeanBox, &"value", &"value_changed")
+	_source.bind(&"vehicle_high_speed_range").to(%VehicleHighSpeedRangePanel, &"range_value", &"range_value_changed")
+	_source.bind(&"vehicle_high_speed_mean").to(%VehicleHighSpeedMeanBox, &"value", &"value_changed")
 	_source.bind(&"vehicle_max_speed_range").to(%VehicleMaxSpeedRangePanel, &"range_value", &"range_value_changed")
 	_source.bind(&"vehicle_max_speed_mean").to(%VehicleMaxSpeedMeanBox, &"value", &"value_changed")
 
-	_source.bind(&"vehicle_low_speed_distance_range").to(%VehicleLowSpeedDistanceRangePanel, &"range_value", &"range_value_changed")
-	_source.bind(&"vehicle_low_speed_distance_mean").to(%VehicleLowSpeedDistanceMeanBox, &"value", &"value_changed")
+	_source.bind(&"vehicle_zero_speed_distance_range").to(%VehicleZeroSpeedDistanceRangePanel, &"range_value", &"range_value_changed")
+	_source.bind(&"vehicle_zero_speed_distance_mean").to(%VehicleZeroSpeedDistanceMeanBox, &"value", &"value_changed")
 	_source.bind(&"vehicle_high_speed_distance_range").to(%VehicleHighSpeedDistanceRangePanel, &"range_value", &"range_value_changed")
 	_source.bind(&"vehicle_high_speed_distance_mean").to(%VehicleHighSpeedDistanceMeanBox, &"value", &"value_changed")
 

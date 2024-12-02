@@ -48,7 +48,7 @@ var default_step_delta = 1
 var default_max_step = 100
 var default_random_seed = 5
 
-var default_vehicle_spawn_before_start := true
+var default_vehicle_spawn_before_start = true
 var default_vehicle_spawn_after_start = true
 var default_vehicle_spawn_rate = 0.8
 
@@ -69,15 +69,15 @@ var default_vehicle_length_options = [
 	{&"value": 12.0, &"weight": 20},
 ]
 
-var default_vehicle_max_acceleration_range = {&"begin": 1, &"end": 9}
-var default_vehicle_max_acceleration_mean = 3
+var default_vehicle_high_speed_acceleration_range = {&"begin": 1, &"end": 9}
+var default_vehicle_high_speed_acceleration_mean = 3
 
-var default_vehicle_base_speed_range = {&"begin": 70, &"end": 130}
-var default_vehicle_base_speed_mean = 100
+var default_vehicle_high_speed_range = {&"begin": 70, &"end": 130}
+var default_vehicle_high_speed_mean = 100
 var default_vehicle_max_speed_range = {&"begin": 80, &"end": 150}
 var default_vehicle_max_speed_mean = 110
 
-var default_vehicle_low_speed_distance_range = {&"begin": 1, &"end": 5}
-var default_vehicle_low_speed_distance_mean = 2
+var default_vehicle_zero_speed_distance_range = {&"begin": 1, &"end": 5}
+var default_vehicle_zero_speed_distance_mean = 2
 var default_vehicle_high_speed_distance_range = {&"begin": 10, &"end": 100}
 var default_vehicle_high_speed_distance_mean = 60
