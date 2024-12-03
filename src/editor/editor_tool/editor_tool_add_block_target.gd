@@ -39,6 +39,10 @@ func _unhandled_input(event: InputEvent):
 	super(event)
 
 	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+			if event.alt_pressed:
+				_toggle_target()
+
 		if event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed:
 			_toggle_target()
 
@@ -81,6 +85,13 @@ func _selecting(item: EditorSelectable):
 func _deselecting(item: EditorSelectable):
 	super(item)
 	_update_targets_visibility(item, false)
+
+
+func _replace_selection():
+	if Input.is_key_pressed(KEY_ALT):
+		return
+
+	super()
 
 
 func _bind_source_sources(source_sources: Array[EditorBindingSource]):

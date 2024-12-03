@@ -53,11 +53,13 @@ func get_status_hint() -> String:
 func _get_mask() -> int:
 	return EditorPhysicsLayer.BRIDGE | EditorPhysicsLayer.LANE | EditorPhysicsLayer.STOPLIGHT_CORE
 
+
 func _replace_selection():
 	if _base_pos != Vector2.INF:
 		return
 
 	super()
+
 
 func _move_preview():
 	if _base_pos == Vector2.INF:
