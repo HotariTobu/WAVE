@@ -26,8 +26,15 @@ func _unhandled_input(event: InputEvent):
 
 	if event is InputEventMouseMotion:
 		_move_preview()
-#
+
 	elif event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				if event.alt_pressed:
+					_start_move()
+			else:
+				_end_move()
+
 		if event.button_index == MOUSE_BUTTON_RIGHT:
 			if event.pressed:
 				_start_move()
@@ -46,6 +53,11 @@ func get_status_hint() -> String:
 func _get_mask() -> int:
 	return EditorPhysicsLayer.BRIDGE | EditorPhysicsLayer.LANE | EditorPhysicsLayer.STOPLIGHT_CORE
 
+func _replace_selection():
+	if _base_pos != Vector2.INF:
+		return
+
+	super()
 
 func _move_preview():
 	if _base_pos == Vector2.INF:
