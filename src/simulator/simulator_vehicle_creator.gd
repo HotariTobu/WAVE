@@ -10,6 +10,7 @@ var _high_speed_rng: SimulatorRandomNormalDistributionRange
 var _max_speed_rng: SimulatorRandomNormalDistributionRange
 
 var _zero_speed_distance_rng: SimulatorRandomNormalDistributionRange
+var _half_speed_distance_rng: SimulatorRandomNormalDistributionRange
 var _high_speed_distance_rng: SimulatorRandomNormalDistributionRange
 
 
@@ -23,6 +24,9 @@ func _init(rng: RandomNumberGenerator, parameter: ParameterData):
 
 	_zero_speed_distance_rng = SimulatorRandomNormalDistributionRange.new(
 		rng, parameter.vehicle_zero_speed_distance_range, parameter.vehicle_zero_speed_distance_mean
+	)
+	_half_speed_distance_rng = SimulatorRandomNormalDistributionRange.new(
+		rng, parameter.vehicle_half_speed_distance_range, parameter.vehicle_half_speed_distance_mean
 	)
 	_high_speed_distance_rng = SimulatorRandomNormalDistributionRange.new(
 		rng, parameter.vehicle_high_speed_distance_range, parameter.vehicle_high_speed_distance_mean
@@ -39,7 +43,15 @@ func create() -> SimulatorVehicleData:
 	vehicle.high_speed = _high_speed_rng.next() * SPEED_FACTOR
 	vehicle.max_speed = _max_speed_rng.next() * SPEED_FACTOR
 
-	vehicle.zero_speed_distance = _zero_speed_distance_rng.next()
+	var zero_speed_distance = _zero_speed_distance_rng.next()
+	var half_speed_distance = _half_speed_distance_rng.next()
+	if zero_speed_distance < half_speed_distance:
+		vehicle.zero_speed_distance = zero_speed_distance
+		vehicle.half_speed_distance = half_speed_distance
+	else:
+		vehicle.zero_speed_distance = half_speed_distance
+		vehicle.half_speed_distance = zero_speed_distance
+
 	vehicle.high_speed_distance = _high_speed_distance_rng.next()
 
 	vehicle.init_params()

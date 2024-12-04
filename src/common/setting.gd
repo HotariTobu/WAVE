@@ -77,7 +77,9 @@ var default_vehicle_high_speed_mean = 100
 var default_vehicle_max_speed_range = {&"begin": 80, &"end": 150}
 var default_vehicle_max_speed_mean = 110
 
-var default_vehicle_zero_speed_distance_range = {&"begin": 1, &"end": 5}
-var default_vehicle_zero_speed_distance_mean = 2
+var default_vehicle_zero_speed_distance_range = {&"begin": 1, &"end": 10}
+var default_vehicle_zero_speed_distance_mean = 4
+var default_vehicle_half_speed_distance_range = {&"begin": 5, &"end": 15}
+var default_vehicle_half_speed_distance_mean = 8
 var default_vehicle_high_speed_distance_range = {&"begin": 10, &"end": 100}
 var default_vehicle_high_speed_distance_mean = 60

@@ -52,6 +52,8 @@ func _ready():
 
 	_source.bind(&"vehicle_zero_speed_distance_range").to(%VehicleZeroSpeedDistanceRangePanel, &"range_value", &"range_value_changed")
 	_source.bind(&"vehicle_zero_speed_distance_mean").to(%VehicleZeroSpeedDistanceMeanBox, &"value", &"value_changed")
+	_source.bind(&"vehicle_half_speed_distance_range").to(%VehicleHalfSpeedDistanceRangePanel, &"range_value", &"range_value_changed")
+	_source.bind(&"vehicle_half_speed_distance_mean").to(%VehicleHalfSpeedDistanceMeanBox, &"value", &"value_changed")
 	_source.bind(&"vehicle_high_speed_distance_range").to(%VehicleHighSpeedDistanceRangePanel, &"range_value", &"range_value_changed")
 	_source.bind(&"vehicle_high_speed_distance_mean").to(%VehicleHighSpeedDistanceMeanBox, &"value", &"value_changed")
 
