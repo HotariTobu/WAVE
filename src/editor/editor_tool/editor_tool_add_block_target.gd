@@ -63,13 +63,13 @@ func activate() -> void:
 	super()
 
 	var converter = ContentsToFilteredSourcesConverter.new(_is_block_source)
-	_editor_global.data.bind(&"selected_contents").using(converter).to(self, &"_source_sources")
+	_editor_global.source.bind(&"selected_contents").using(converter).to(self, &"_source_sources")
 
 
 func deactivate() -> void:
 	super()
 
-	_editor_global.data.unbind(&"selected_contents").from(self, &"_source_sources")
+	_editor_global.source.unbind(&"selected_contents").from(self, &"_source_sources")
 	_source_sources = []
 
 

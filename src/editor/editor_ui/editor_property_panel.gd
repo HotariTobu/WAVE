@@ -29,7 +29,7 @@ func _ready():
 		assert(type != null)
 		_property_content_dict[type] = content
 
-	_editor_global.data.bind(&"selected_contents").using(_determine_property_content).to(self, &"_property_content")
+	_editor_global.source.bind(&"selected_contents").using(_determine_property_content).to(self, &"_property_content")
 
 
 func _determine_property_content(contents: Array[ContentData]):

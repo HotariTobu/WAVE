@@ -17,7 +17,7 @@ var _last_hovered_item: EditorSelectable:
 
 func _unhandled_input(event: InputEvent):
 	super(event)
-	
+
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			if event.shift_pressed:
@@ -60,7 +60,7 @@ func _deselecting(item: EditorSelectable):
 
 
 func _replace_selection():
-	_editor_global.data.clear_selected.call()
+	_editor_global.clear_selected()
 	_toggle_selection()
 
 
@@ -70,10 +70,10 @@ func _toggle_selection():
 
 	var item = _hovered_items.back()
 	if item.selected:
-		_editor_global.data.remove_selected.call(item)
+		_editor_global.remove_selected(item)
 	else:
-		_editor_global.data.add_selected.call(item)
+		_editor_global.add_selected(item)
 
 
 func _cancel():
-	_editor_global.data.clear_selected.call()
+	_editor_global.clear_selected()

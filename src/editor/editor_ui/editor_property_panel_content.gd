@@ -34,12 +34,12 @@ func get_target_content_type() -> GDScript:
 func activate() -> void:
 	show()
 	var converter = ContentsToFilteredSourcesConverter.from_type(get_target_content_type())
-	_editor_global.data.bind(&"selected_contents").using(converter).to(self, &"sources")
+	_editor_global.source.bind(&"selected_contents").using(converter).to(self, &"sources")
 
 
 func deactivate() -> void:
 	hide()
-	_editor_global.data.unbind(&"selected_contents").from(self, &"sources")
+	_editor_global.source.unbind(&"selected_contents").from(self, &"sources")
 	sources = []
 
 

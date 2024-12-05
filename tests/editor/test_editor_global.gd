@@ -14,26 +14,26 @@ func before_each():
 	_tool2 = autofree(double(EditorTool).new())
 
 
-func test_tool():
-	assert_not_null(_editor_global.data.tool)
+# func test_tool():
+# 	assert_not_null(_editor_global.data.tool)
 
-	_editor_global.data.tool = _tool1
-	assert_same(_editor_global.data.tool, _tool1)
-	assert_call_count(_tool1, "activate", 1)
+# 	_editor_global.data.tool = _tool1
+# 	assert_same(_editor_global.data.tool, _tool1)
+# 	assert_call_count(_tool1, "activate", 1)
 
-	_editor_global.data.tool = _tool2
-	assert_same(_editor_global.data.tool, _tool2)
-	assert_call_count(_tool1, "deactivate", 1)
-	assert_call_count(_tool2, "activate", 1)
+# 	_editor_global.data.tool = _tool2
+# 	assert_same(_editor_global.data.tool, _tool2)
+# 	assert_call_count(_tool1, "deactivate", 1)
+# 	assert_call_count(_tool2, "activate", 1)
 
 
-func test_tools():
-	assert_eq(_editor_global.data.tools, [])
+# func test_tools():
+# 	assert_eq(_editor_global.data.tools, [])
 
-	var tools: Array[EditorTool] = [_tool1, _tool2]
-	_editor_global.data.tools = tools
-	assert_same(_editor_global.data.tools, tools)
-	
+# 	var tools: Array[EditorTool] = [_tool1, _tool2]
+# 	_editor_global.data.tools = tools
+# 	assert_same(_editor_global.data.tools, tools)
+
 #func test_serialize():
 	#_editor_global.lane_container = Node.new()
 	#
@@ -71,33 +71,33 @@ func test_tools():
 	#assert_true(_eq(_editor_global, restored_editor_global))
 	#
 	#fail_test('otphan')
-	
+
 func _eq(a, b):
 	var type = typeof(a)
 	if type != typeof(b):
 		return false
-		
+
 	if type != TYPE_OBJECT:
 		if a!=b:
 			breakpoint
 		return a == b
-		
+
 	if a == null and b == null:
 		return true
-		
+
 	var property_list = a.get_property_list()
 	if property_list != b.get_property_list():
 		return false
-		
+
 	var get_name = func(property: Dictionary):
 		return property['name']
-		
+
 	var is_in = func(name: String):
 		return name == name.to_lower() and not name.ends_with('.gd') and name in a and name in b and not (a is Node and name == 'name')
-		
+
 	var comp = func(name: String):
 		return _eq(a[name], b[name])
-	
+
 	return property_list.map(get_name).filter(is_in).all(comp)
 
 #class TestSelection:

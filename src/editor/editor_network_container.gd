@@ -36,8 +36,8 @@ func _ready():
 
 		tools.append(tool)
 
-	_editor_global.data.tools = tools
-	_editor_global.data.tool = tools[0]
+	_editor_global.source.tools = tools
+	_editor_global.source.tool = tools[0]
 
 
 func _renew_content_nodes(contents: Array[ContentData], node_dict: Dictionary, script: GDScript):

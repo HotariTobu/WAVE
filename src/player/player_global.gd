@@ -1,10 +1,10 @@
 extends Node
 
+var content_db: PlayerContentDataDB
+
 var source = EditorBindingSource.new(self)
 
 var simulation: SimulationData
-
-var content_db: PlayerContentDataDB
 
 var time: float
 var max_time: float

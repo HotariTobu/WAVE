@@ -81,7 +81,7 @@ func _add_selection():
 		if item.selected:
 			continue
 
-		_editor_global.data.add_selected.call(item)
+		_editor_global.add_selected(item)
 
 
 func _remove_selection():
@@ -89,7 +89,7 @@ func _remove_selection():
 		if not item.selected:
 			continue
 
-		_editor_global.data.remove_selected.call(item)
+		_editor_global.remove_selected(item)
 
 
 func _cancel():

@@ -14,7 +14,7 @@ func copy_selection():
 	var selected_ids: Array[StringName]
 	var copy_dependency_id_set = Set.new()
 
-	for content in _editor_global.data.selected_contents:
+	for content in _editor_global.selected_contents:
 		selected_ids.append(content.id)
 		copy_dependency_id_set.add(content.id)
 
@@ -173,8 +173,8 @@ func _get_paste_offset():
 func _select_pasted_content_nodes(content_ids: Array[StringName]):
 	var content_nodes: Array[EditorContent]
 	content_nodes.assign(content_ids.map(_editor_global.content_node_of))
-	_editor_global.data.clear_selected.call()
-	_editor_global.data.add_all_selected.call(content_nodes)
+	_editor_global.clear_selected()
+	_editor_global.add_all_selected(content_nodes)
 
 
 class CloneResult:

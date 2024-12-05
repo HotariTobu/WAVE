@@ -85,7 +85,7 @@ func _end_move():
 
 	var movable_id_set = Set.new()
 
-	for content in _editor_global.data.selected_contents:
+	for content in _editor_global.selected_contents:
 		var constraint = _editor_global.constraint_db.of(content.id)
 		constraint.merge_movable_id_set_to(movable_id_set)
 
