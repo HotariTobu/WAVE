@@ -1,5 +1,7 @@
 extends "res://src/editor/editor_tool/editor_tool_base_pointer.gd"
 
+var _editor_global = editor_global
+
 var _last_hovered_item: EditorSelectable:
 	get:
 		return _last_hovered_item

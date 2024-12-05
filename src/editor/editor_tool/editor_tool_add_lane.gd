@@ -5,6 +5,8 @@ const TOOL_STATUS_HINT = "Left click: add a point, Right click: commit the lane"
 
 enum Phase { EMPTY, LACK, ENOUGH }
 
+var _editor_global = editor_global
+
 var _points: PackedVector2Array
 
 var _prev_lanes: Array[LaneData]

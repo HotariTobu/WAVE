@@ -1,10 +1,10 @@
 extends EditorTool
 
-var _editor_global = editor_global
-
 var _pointer_area = PointerArea.new()
 
 var _hovered_items: Array[EditorSelectable]
+
+@onready var _camera = get_viewport().get_camera_2d() as PanZoomCamera
 
 
 func _init():
@@ -19,7 +19,7 @@ func _ready():
 
 
 func _process(_delta):
-	_pointer_area.radius = setting.pointer_area_radius / _editor_global.camera.zoom_value
+	_pointer_area.radius = setting.pointer_area_radius / _camera.zoom_value
 
 
 func _unhandled_input(event: InputEvent):

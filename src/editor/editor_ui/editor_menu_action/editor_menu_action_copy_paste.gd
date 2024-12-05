@@ -7,6 +7,8 @@ var _editor_global = editor_global
 var _last_paste_anchor_pos: Vector2
 var _last_paste_offset: float
 
+@onready var _camera = get_viewport().get_camera_2d() as PanZoomCamera
+
 
 func copy_selection():
 	var sub_network_dict: Dictionary
@@ -163,11 +165,11 @@ func _move(group_name_contents_dict: Dictionary, copy_anchor_pos: Vector2) -> vo
 
 
 func _get_anchor_pos():
-	return _editor_global.camera.get_screen_center_position()
+	return _camera.get_screen_center_position()
 
 
 func _get_paste_offset():
-	return PASTE_OFFSET / _editor_global.camera.zoom_value
+	return PASTE_OFFSET / _camera.zoom_value
 
 
 func _select_pasted_content_nodes(content_ids: Array[StringName]):

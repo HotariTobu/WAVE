@@ -9,7 +9,6 @@ var content_node_script_dict = {
 
 var _editor_global = editor_global
 
-@onready var _camera = $Camera
 @onready var _content_container = $ContentContainer
 @onready var _tool_container = $ToolContainer
 
@@ -19,8 +18,6 @@ func _init():
 
 
 func _ready():
-	_editor_global.camera = _camera
-
 	for group in _editor_global.content_db.groups:
 		var node_dict: Dictionary
 		var script = content_node_script_dict[group.name]
