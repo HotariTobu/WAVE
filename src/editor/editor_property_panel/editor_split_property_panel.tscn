@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://b1k72ryk006ag"]
+
+[ext_resource type="Script" path="res://src/editor/editor_property_panel/editor_split_property_panel.gd" id="1_3phcj"]
+[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="2_qqkk3"]
+
+[node name="EditorSplitPropertyPanel" type="GridContainer"]
+script = ExtResource("1_3phcj")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Split(s)"
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 2
+text = "Duration"
+
+[node name="DurationBox" type="LineEdit" parent="."]
+layout_mode = 2
+select_all_on_focus = true
+script = ExtResource("2_qqkk3")
+suffix = " s"
+min_value = 0.0
+
+[connection signal="value_changed" from="DurationBox" to="." method="_on_duration_box_value_changed"]

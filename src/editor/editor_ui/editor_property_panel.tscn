@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dvmptx0s6dcw7"]
+[gd_scene load_steps=6 format=3 uid="uid://dvmptx0s6dcw7"]
 
 [ext_resource type="Script" path="res://src/editor/editor_ui/editor_property_panel.gd" id="1_77no8"]
 [ext_resource type="PackedScene" uid="uid://bcug3d44uspg8" path="res://src/editor/editor_lane/editor_property_panel_content_lane.tscn" id="1_slyj1"]
 [ext_resource type="PackedScene" uid="uid://bmtl50s4f3xx6" path="res://src/editor/editor_stoplight/editor_property_panel_content_stoplight.tscn" id="3_akpxm"]
 [ext_resource type="PackedScene" uid="uid://dtyl06j6ouade" path="res://src/editor/editor_property_panel/editor_vertex_property_panel.tscn" id="4_hfket"]
+[ext_resource type="PackedScene" uid="uid://b1k72ryk006ag" path="res://src/editor/editor_property_panel/editor_split_property_panel.tscn" id="5_5f0y5"]
 
 [node name="EditorPropertyPanel" type="ScrollContainer"]
 anchors_preset = 11
@@ -45,4 +46,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="EditorPropertyPanelContentStoplight" parent="PanelContainer/VBoxContainer/MarginContainer2/ContentContainer" instance=ExtResource("3_akpxm")]
+layout_mode = 2
+
+[node name="EditorSplitPropertyPanel" parent="PanelContainer/VBoxContainer/MarginContainer2/ContentContainer" instance=ExtResource("5_5f0y5")]
 layout_mode = 2
