@@ -43,16 +43,16 @@ func create() -> SimulatorVehicleData:
 	vehicle.high_speed = _high_speed_rng.next() * SPEED_FACTOR
 	vehicle.max_speed = _max_speed_rng.next() * SPEED_FACTOR
 
-	var zero_speed_distance = _zero_speed_distance_rng.next()
-	var half_speed_distance = _half_speed_distance_rng.next()
-	if zero_speed_distance < half_speed_distance:
-		vehicle.zero_speed_distance = zero_speed_distance
-		vehicle.half_speed_distance = half_speed_distance
-	else:
-		vehicle.zero_speed_distance = half_speed_distance
-		vehicle.half_speed_distance = zero_speed_distance
+	var distances = [
+		_zero_speed_distance_rng.next(),
+		_half_speed_distance_rng.next(),
+		_high_speed_distance_rng.next(),
+	]
+	distances.sort()
 
-	vehicle.high_speed_distance = _high_speed_distance_rng.next()
+	vehicle.zero_speed_distance = distances[0]
+	vehicle.half_speed_distance = distances[1]
+	vehicle.high_speed_distance = distances[2]
 
 	vehicle.init_params()
 
