@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://bmtl50s4f3xx6"]
 
-[ext_resource type="Script" path="res://src/editor/editor_stoplight/editor_property_panel_content_stoplight.gd" id="1_xnxg7"]
-[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="2_gxjhw"]
+[ext_resource type="Script" path="res://src/editor/editor_property_panel/editor_stoplight_property_panel.gd" id="1_nw47u"]
+[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="2_b1n64"]
 
-[node name="EditorPropertyPanelContentStoplight" type="GridContainer"]
-script = ExtResource("1_xnxg7")
+[node name="EditorStoplightPropertyPanel" type="GridContainer"]
+script = ExtResource("1_nw47u")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
@@ -21,7 +21,7 @@ text = "Offset"
 [node name="OffsetBox" type="LineEdit" parent="."]
 layout_mode = 2
 select_all_on_focus = true
-script = ExtResource("2_gxjhw")
+script = ExtResource("2_b1n64")
 suffix = " s"
 min_value = 0.0
 

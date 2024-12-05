@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dhp8yu2tw8wfm"]
 
 [ext_resource type="Script" path="res://src/editor/editor_stoplight/editor_stoplight_dialog.gd" id="1_phqqh"]
-[ext_resource type="PackedScene" uid="uid://bmtl50s4f3xx6" path="res://src/editor/editor_stoplight/editor_property_panel_content_stoplight.tscn" id="1_xxfek"]
+[ext_resource type="PackedScene" uid="uid://bmtl50s4f3xx6" path="res://src/editor/editor_property_panel/editor_stoplight_property_panel.tscn" id="1_xxfek"]
 
 [node name="EditorStoplightDialog" type="ConfirmationDialog"]
 title = "Stoplight properties"

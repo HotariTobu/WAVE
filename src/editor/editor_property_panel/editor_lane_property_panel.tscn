@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://bcug3d44uspg8"]
 
-[ext_resource type="Script" path="res://src/editor/editor_lane/editor_property_panel_content_lane.gd" id="1_bo4xe"]
-[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="2_wp16w"]
+[ext_resource type="Script" path="res://src/editor/editor_property_panel/editor_lane_property_panel.gd" id="1_layun"]
+[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="2_2rnie"]
 
-[node name="EditorPropertyPanelContentLane" type="GridContainer"]
-script = ExtResource("1_bo4xe")
+[node name="EditorLanePropertyPanel" type="GridContainer"]
+script = ExtResource("1_layun")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
@@ -21,7 +21,7 @@ text = "Traffic"
 [node name="TrafficBox" type="LineEdit" parent="."]
 layout_mode = 2
 select_all_on_focus = true
-script = ExtResource("2_wp16w")
+script = ExtResource("2_2rnie")
 suffix = " /100m"
 min_value = 0.0
 max_value = 30.0
@@ -33,7 +33,7 @@ text = "Speed Limit"
 [node name="SpeedLimitBox" type="LineEdit" parent="."]
 layout_mode = 2
 select_all_on_focus = true
-script = ExtResource("2_wp16w")
+script = ExtResource("2_2rnie")
 suffix = " km/h"
 min_value = 1.0
 max_value = 120.0
