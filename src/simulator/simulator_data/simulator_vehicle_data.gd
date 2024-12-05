@@ -6,13 +6,15 @@ const BASE_HIGH_SPEED = 100.0 * 1000.0 / 3600.0
 var last_distance: float
 var over_last_pos: float
 
+var _distance_factor: float
 var _distance_base: float
 var _speed_slope: float
 var _acceleration_slope: float
 
 
 func init_params():
-	_distance_base = pow(1.0 - zero_speed_distance + high_speed_distance, 1.0 / BASE_HIGH_SPEED)
+	_distance_factor = ((half_speed_distance - zero_speed_distance) ** 2) / (high_speed_distance - 2 * half_speed_distance + zero_speed_distance)
+	_distance_base = ((high_speed_distance - half_speed_distance) / (half_speed_distance - zero_speed_distance)) ** (1.0 / (BASE_HIGH_SPEED / 2))
 	_speed_slope = high_speed / BASE_HIGH_SPEED
 	_acceleration_slope = high_speed_acceleration / BASE_HIGH_SPEED
 
@@ -36,7 +38,7 @@ func die(step: int):
 
 
 func get_preferred_distance(speed: float) -> float:
-	return pow(_distance_base, speed) + zero_speed_distance - 1.0
+	return _distance_factor * _distance_base ** speed + zero_speed_distance - _distance_factor
 
 
 func get_preferred_speed(speed_limit: float) -> float:

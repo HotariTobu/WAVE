@@ -183,6 +183,29 @@ max_value = 100.0
 
 [node name="Label13" type="Label" parent="GridContainer"]
 layout_mode = 2
+text = "Half speed distance range"
+
+[node name="VehicleHalfSpeedDistanceRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="Label14" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Half speed distance mean"
+
+[node name="VehicleHalfSpeedDistanceMeanBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="Label18" type="Label" parent="GridContainer"]
+layout_mode = 2
 text = "High speed distance range"
 
 [node name="VehicleHighSpeedDistanceRangePanel" parent="GridContainer" instance=ExtResource("4_133vl")]
@@ -192,7 +215,7 @@ suffix = " m"
 min_value = 1.0
 max_value = 100.0
 
-[node name="Label14" type="Label" parent="GridContainer"]
+[node name="Label19" type="Label" parent="GridContainer"]
 layout_mode = 2
 text = "High speed distance mean"
 

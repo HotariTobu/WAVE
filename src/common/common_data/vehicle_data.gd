@@ -8,6 +8,7 @@ var high_speed: float
 var max_speed: float
 
 var zero_speed_distance: float
+var half_speed_distance: float
 var high_speed_distance: float
 
 var spawn_step: int
@@ -24,6 +25,7 @@ static func to_dict(data: VehicleData) -> Dictionary:
 		&"high_speed": data.high_speed,
 		&"max_speed": data.max_speed,
 		&"zero_speed_distance": data.zero_speed_distance,
+		&"half_speed_distance": data.half_speed_distance,
 		&"high_speed_distance": data.high_speed_distance,
 		&"spawn_step": data.spawn_step,
 		&"die_step": data.die_step,
@@ -40,6 +42,7 @@ static func from_dict(dict: Dictionary, script: GDScript = VehicleData) -> Vehic
 	data.high_speed = dict.get(&"high_speed", NAN)
 	data.max_speed = dict.get(&"max_speed", NAN)
 	data.zero_speed_distance = dict.get(&"zero_speed_distance", NAN)
+	data.half_speed_distance = dict.get(&"half_speed_distance", NAN)
 	data.high_speed_distance = dict.get(&"high_speed_distance", NAN)
 	data.spawn_step = dict.get(&"spawn_step", NAN)
 	data.die_step = dict.get(&"die_step", NAN)

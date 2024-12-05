@@ -21,6 +21,8 @@ var vehicle_max_speed_mean: int
 
 var vehicle_zero_speed_distance_range: IntRange
 var vehicle_zero_speed_distance_mean: int
+var vehicle_half_speed_distance_range: IntRange
+var vehicle_half_speed_distance_mean: int
 var vehicle_high_speed_distance_range: IntRange
 var vehicle_high_speed_distance_mean: int
 
@@ -42,6 +44,8 @@ static func to_dict(data: ParameterData) -> Dictionary:
 		&"vehicle_max_speed_mean": data.vehicle_max_speed_mean,
 		&"vehicle_zero_speed_distance_range": IntRange.to_dict(data.vehicle_zero_speed_distance_range),
 		&"vehicle_zero_speed_distance_mean": data.vehicle_zero_speed_distance_mean,
+		&"vehicle_half_speed_distance_range": IntRange.to_dict(data.vehicle_half_speed_distance_range),
+		&"vehicle_half_speed_distance_mean": data.vehicle_half_speed_distance_mean,
 		&"vehicle_high_speed_distance_range": IntRange.to_dict(data.vehicle_high_speed_distance_range),
 		&"vehicle_high_speed_distance_mean": data.vehicle_high_speed_distance_mean,
 	}
@@ -64,6 +68,8 @@ static func from_dict(dict: Dictionary) -> ParameterData:
 	data.vehicle_max_speed_mean = dict.get(&"vehicle_max_speed_mean", setting.default_vehicle_max_speed_mean)
 	data.vehicle_zero_speed_distance_range = IntRange.from_dict(dict.get(&"vehicle_zero_speed_distance_range", setting.default_vehicle_zero_speed_distance_range))
 	data.vehicle_zero_speed_distance_mean = dict.get(&"vehicle_zero_speed_distance_mean", setting.default_vehicle_zero_speed_distance_mean)
+	data.vehicle_half_speed_distance_range = IntRange.from_dict(dict.get(&"vehicle_half_speed_distance_range", setting.default_vehicle_half_speed_distance_range))
+	data.vehicle_half_speed_distance_mean = dict.get(&"vehicle_half_speed_distance_mean", setting.default_vehicle_half_speed_distance_mean)
 	data.vehicle_high_speed_distance_range = IntRange.from_dict(dict.get(&"vehicle_high_speed_distance_range", setting.default_vehicle_high_speed_distance_range))
 	data.vehicle_high_speed_distance_mean = dict.get(&"vehicle_high_speed_distance_mean", setting.default_vehicle_high_speed_distance_mean)
 	return data
