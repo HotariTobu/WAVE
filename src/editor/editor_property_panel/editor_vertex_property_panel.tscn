@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://dtyl06j6ouade"]
+
+[ext_resource type="Script" path="res://src/editor/editor_property_panel/editor_vertex_property_panel.gd" id="1_g33cl"]
+[ext_resource type="PackedScene" uid="uid://rxqbforscflu" path="res://src/editor/editor_ui/vector_2_panel.tscn" id="2_3xvjn"]
+
+[node name="EditorVertexPropertyPanel" type="GridContainer"]
+script = ExtResource("1_g33cl")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Vertex/Vertices"
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 2
+text = "Pos"
+
+[node name="PosPanel" parent="." instance=ExtResource("2_3xvjn")]
+layout_mode = 2

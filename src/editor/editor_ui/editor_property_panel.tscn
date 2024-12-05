@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://src/editor/editor_ui/editor_property_panel.gd" id="1_77no8"]
 [ext_resource type="PackedScene" uid="uid://bcug3d44uspg8" path="res://src/editor/editor_lane/editor_property_panel_content_lane.tscn" id="1_slyj1"]
 [ext_resource type="PackedScene" uid="uid://bmtl50s4f3xx6" path="res://src/editor/editor_stoplight/editor_property_panel_content_stoplight.tscn" id="3_akpxm"]
-[ext_resource type="PackedScene" uid="uid://dtyl06j6ouade" path="res://src/editor/editor_lane/editor_property_panel_content_lane_vertex.tscn" id="4_hfket"]
+[ext_resource type="PackedScene" uid="uid://dtyl06j6ouade" path="res://src/editor/editor_property_panel/editor_vertex_property_panel.tscn" id="4_hfket"]
 
 [node name="EditorPropertyPanel" type="ScrollContainer"]
 anchors_preset = 11
@@ -31,14 +31,18 @@ layout_mode = 2
 layout_mode = 2
 text = "Property"
 
-[node name="ContentContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="EditorPropertyPanelContentLane" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("1_slyj1")]
+[node name="ContentContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/MarginContainer2"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="EditorPropertyPanelContentStoplight" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("3_akpxm")]
+[node name="EditorVertexPropertyPanel" parent="PanelContainer/VBoxContainer/MarginContainer2/ContentContainer" instance=ExtResource("4_hfket")]
 layout_mode = 2
 
-[node name="EditorPropertyPanelContentLaneVertex" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("4_hfket")]
+[node name="EditorPropertyPanelContentLane" parent="PanelContainer/VBoxContainer/MarginContainer2/ContentContainer" instance=ExtResource("1_slyj1")]
+layout_mode = 2
+
+[node name="EditorPropertyPanelContentStoplight" parent="PanelContainer/VBoxContainer/MarginContainer2/ContentContainer" instance=ExtResource("3_akpxm")]
 layout_mode = 2

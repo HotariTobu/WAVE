@@ -1,49 +1,62 @@
 extends ScrollContainer
 
-var content_container: Node:
-	get:
-		return $PanelContainer/VBoxContainer/ContentContainer
-
 var _editor_global = editor_global
 
-var _property_content_dict: Dictionary
-var _property_content: EditorPropertyPanelContent = null:
-	get:
-		return _property_content
-	set(next):
-		var prev = _property_content
-
-		if prev != null:
-			prev.deactivate.call_deferred()
-
-		if next != null:
-			next.activate.call_deferred()
-
-		_property_content = next
+var _property_contents: Array[EditorPropertyPanelContent]
+var _activated_property_content_set = ObservableSet.new()
 
 
 func _ready():
-	for child in content_container.get_children():
-		var content = child as EditorPropertyPanelContent
-		var type = content.get_target_content_type()
-		assert(type != null)
-		_property_content_dict[type] = content
+	_property_contents.assign(%ContentContainer.get_children())
+	_activated_property_content_set.value_added.connect(_on_active_property_content_added)
+	_activated_property_content_set.value_removed.connect(_on_active_property_content_removed)
 
-	_editor_global.source.bind(&"selected_contents").using(_determine_property_content).to(self, &"_property_content")
+	_editor_global.source.add_callback(&"selected_contents", _on_selected_contents_changed)
 
 
-func _determine_property_content(contents: Array[ContentData]):
-	var len_contents = len(contents)
-	if len_contents == 0:
-		return null
+func _on_selected_contents_changed():
+	var contents = _editor_global.selected_contents
+	if contents.is_empty():
+		_activated_property_content_set.clear()
+		return
 
-	var type_of = func(object: Object): return object.get_script()
-	var types = contents.map(type_of)
+	var first_content = contents.front() as ContentData
+	var first_type = first_content.get_script() as GDScript
 
-	var first_type = types.front()
-	var same_type = func(type): return type == first_type
+	for content in contents:
+		var type = content.get_script()
+		if first_type == type:
+			continue
 
-	if types.all(same_type):
-		return _property_content_dict.get(first_type)
+		_activated_property_content_set.clear()
+		return
 
-	return null
+	for property_content in _property_contents:
+		var type = property_content.get_target_content_type()
+
+		if _is_descendant_of(first_type, type):
+			_activated_property_content_set.add(property_content)
+
+		elif _activated_property_content_set.has(property_content):
+			_activated_property_content_set.erase(property_content)
+
+
+func _on_active_property_content_added(property_content: EditorPropertyPanelContent):
+	property_content.activate.call_deferred()
+
+
+func _on_active_property_content_removed(property_content: EditorPropertyPanelContent):
+	property_content.deactivate.call_deferred()
+
+
+static func _is_descendant_of(script: Script, ancestor_script: Script):
+	assert(ancestor_script != null)
+
+	if script == null:
+		return false
+
+	if script == ancestor_script:
+		return true
+
+	var base_script = script.get_base_script()
+	return _is_descendant_of(base_script, ancestor_script)
