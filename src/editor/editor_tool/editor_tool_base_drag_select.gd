@@ -25,19 +25,16 @@ func _unhandled_input(event):
 
 func _selecting(item: EditorSelectable):
 	if _dragging:
-		item.selecting = true
-		_selecting_item_set.add(item)
+		return
 
-	else:
-		super(item)
+	super(item)
 
 
 func _deselecting(item: EditorSelectable):
 	if _dragging:
-		pass
+		return
 
-	else:
-		super(item)
+	super(item)
 
 
 func _replace_selection():
