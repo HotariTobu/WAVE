@@ -16,6 +16,8 @@ var _major_interval: int
 
 
 func _ready():
+	mouse_filter = MOUSE_FILTER_IGNORE
+
 	intervals.sort()
 
 
