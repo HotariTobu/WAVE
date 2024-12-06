@@ -47,10 +47,6 @@ func _process(_delta):
 	queue_redraw()
 
 
-func get_local_center() -> Vector2:
-	return Vector2.ZERO
-
-
 func _on_property_updated():
 	_update_process()
 	_update_z_index()

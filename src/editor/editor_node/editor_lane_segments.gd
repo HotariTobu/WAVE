@@ -3,8 +3,6 @@ extends EditorBlockTargetable
 
 var _collision_shape_dict: Dictionary
 
-var _center: Vector2
-
 var _vertices: Array[VertexData]:
 	get:
 		return _vertices
@@ -14,7 +12,6 @@ var _vertices: Array[VertexData]:
 		_remove_segment_collision_shapes(prev)
 		_add_segment_collision_shapes(next)
 		queue_redraw()
-		_update_center()
 
 var _lane_vertex_db = _editor_global.content_db.get_group(&"lane_vertices")
 
@@ -55,10 +52,6 @@ func _draw():
 	draw_circle(points[0], radius, color)
 	draw_polyline(points, color, width)
 	draw_circle(points[-1], radius, color)
-
-
-func get_local_center() -> Vector2:
-	return _center
 
 
 func _get_vertices_of(vertex_ids: Array[StringName]) -> Array[VertexData]:
@@ -104,16 +97,3 @@ func _remove_segment_collision_shapes(vertices: Array[VertexData]):
 
 	for source in sources:
 		source.remove_callback(&"pos", queue_redraw)
-
-
-func _update_center():
-	var points = _vertices.map(VertexData.pos_of)
-	if len(points) < 2:
-		return
-
-	var curve = Curve2D.new()
-	for point in points:
-		curve.add_point(point)
-
-	var length = curve.get_baked_length()
-	_center = curve.sample_baked(length / 2)

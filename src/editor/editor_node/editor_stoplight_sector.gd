@@ -6,8 +6,6 @@ var _sector_helper: SectorHelper
 var _selecting_color: Color
 var _selected_color: Color
 
-var _center: Vector2
-
 var _segments: Array[CollisionShape2D]:
 	get:
 		return _segments
@@ -43,10 +41,6 @@ func _draw():
 	_sector_helper.draw_to(self, width)
 
 
-func get_local_center() -> Vector2:
-	return _center
-
-
 func _update_process():
 	super()
 	set_process(is_processing() or is_visible_in_tree())
@@ -57,9 +51,6 @@ func update(sector_helper: SectorHelper):
 
 	_selecting_color = Color(sector_helper.color, 0.5)
 	_selected_color = sector_helper.color
-
-	var center_angle = (sector_helper.start_angle + sector_helper.end_angle) / 2
-	_center = Vector2.from_angle(center_angle) * sector_helper.radius
 
 	var points: PackedVector2Array
 	points.resize(sector_helper.point_count)
