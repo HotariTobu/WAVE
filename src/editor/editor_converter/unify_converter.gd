@@ -2,10 +2,10 @@ class_name UnifyConverter
 extends BindingConverter
 
 var _base_value_getter: Callable
-var _fallback_value
+var _fallback_value: Variant
 
 
-func _init(base_value_getter: Callable, fallback_value = null):
+func _init(base_value_getter: Callable, fallback_value: Variant = null):
 	_base_value_getter = base_value_getter
 	_fallback_value = fallback_value
 
@@ -18,6 +18,6 @@ func source_to_target(source_value: Variant) -> Variant:
 	return _fallback_value
 
 
-static func from_property(object, property_name: StringName, fallback_value = null):
+static func from_property(object, property_name: StringName, fallback_value: Variant = null):
 	var base_value_getter = func(): return object[property_name]
 	return UnifyConverter.new(base_value_getter, fallback_value)
