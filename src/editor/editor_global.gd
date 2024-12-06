@@ -49,7 +49,7 @@ func get_network() -> NetworkData:
 	var network = NetworkData.new()
 
 	for group in content_db.groups:
-		network[group.name] = group.contents
+		network[group.name].assign(group.contents)
 
 	return network
 

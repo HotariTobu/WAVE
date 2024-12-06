@@ -1,13 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://1v7tjweb231n"]
+[gd_scene load_steps=3 format=3 uid="uid://1v7tjweb231n"]
 
 [ext_resource type="Script" path="res://src/editor/editor_ui/editor_menu_action/editor_menu_action_read_write.gd" id="1_473hu"]
+[ext_resource type="Script" path="res://src/common/common_ui/error_dialog.gd" id="2_mej4o"]
 
 [node name="EditorMenuActionReadWrite" type="Node"]
 script = ExtResource("1_473hu")
 
 [node name="NetworkOpenFileDialog" type="FileDialog" parent="."]
 auto_translate_mode = 1
-title = "Open a Network File"
+title = "Open a File"
 size = Vector2i(324, 190)
 ok_button_text = "Open"
 file_mode = 0
@@ -21,9 +22,8 @@ access = 2
 filters = PackedStringArray("*.wavenetwork")
 use_native_dialog = true
 
-[node name="ErrorAcceptDialog" type="AcceptDialog" parent="."]
-title = "Error!"
-initial_position = 1
+[node name="ErrorDialog" type="AcceptDialog" parent="."]
+script = ExtResource("2_mej4o")
 
 [connection signal="file_selected" from="NetworkOpenFileDialog" to="." method="_on_network_open_file_dialog_file_selected"]
 [connection signal="file_selected" from="NetworkSaveFileDialog" to="." method="_on_network_save_file_dialog_file_selected"]

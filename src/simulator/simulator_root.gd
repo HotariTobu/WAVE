@@ -59,7 +59,6 @@ func _run_simulation() -> SimulationData:
 	var parameter_dict = ParameterData.to_dict(_parameter)
 	var parameter = ParameterData.from_dict(parameter_dict)
 	var network_source = _data.network_source
-	var network_file_path = _data.network_file_path
 	_mutex.unlock()
 
 	var network: NetworkData
@@ -67,11 +66,18 @@ func _run_simulation() -> SimulationData:
 		NetworkSource.MEMORY:
 			_mutex.lock()
 			var network_dict = NetworkData.to_dict(editor_global.get_network())
-			network = NetworkData.from_dict(network_dict)
 			_mutex.unlock()
 
+			network = NetworkData.from_dict(network_dict)
+
 		NetworkSource.FILE:
+			_mutex.lock()
+			var network_file_path = _data.network_file_path
+			_mutex.unlock()
+
 			network = _read_network(network_file_path)
+			if network == null:
+				return Data.NULL_SIMULATION
 
 	var simulator = SimulatorManager.new(parameter, network)
 	simulator.status_changed.connect(_on_simulator_status_changed.call_deferred)
@@ -102,10 +108,7 @@ func _on_cancel_button_pressed():
 	if not _thread.is_started():
 		return
 
-	_mutex.lock()
-	_simulator.stop()
-	_mutex.unlock()
-
+	_call_locked(_simulator.stop)
 	_thread.wait_to_finish()
 
 
@@ -151,51 +154,28 @@ func _on_simulation_save_file_dialog_file_selected(path):
 
 
 func _read_network(path: String) -> NetworkData:
-	var file = FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		var error = FileAccess.get_open_error()
-		_show_error("Failed to open file", error)
+	var result = CommonIO.read_data(path, NetworkData)
+	if not result.ok:
+		_call_locked($ErrorDialog.show_error.bind("Failed to open file", result.error))
 		return null
 
-	var network_dict = file.get_var()
-	file.close()
-
-	if network_dict == null:
-		_show_error("Opened invalid format file")
-		return null
-
-	var network = NetworkData.from_dict(network_dict)
+	var network = result.data as NetworkData
 	if network == null:
-		_show_error("Opened invalid network file")
+		_call_locked($ErrorDialog.show_error.bind("Opened invalid network file"))
 		return null
 
 	return network
 
 
 func _write_simulation(path: String, simulation: SimulationData):
-	var simulation_dict = SimulationData.to_dict(simulation)
-
-	var file = FileAccess.open(path, FileAccess.WRITE)
-	if file == null:
-		var error = FileAccess.get_open_error()
-		_show_error("Failed to open file", error)
-		return
-
-	file.store_var(simulation_dict)
-	file.close()
+	var result = CommonIO.write_data(path, SimulationData, simulation)
+	if not result.ok:
+		_call_locked($ErrorDialog.show_error.bind("Failed to open file", result.error))
 
 
-func _show_error(message: String, error = null):
-	var text: String
-
-	if error == null:
-		text = message
-	else:
-		text = "%s: %s" % [message, error_string(error)]
-
+func _call_locked(callable: Callable):
 	_mutex.lock()
-	$ErrorAcceptDialog.dialog_text = text
-	$ErrorAcceptDialog.show()
+	callable.call()
 	_mutex.unlock()
 
 

@@ -29,22 +29,14 @@ func _on_network_save_file_dialog_file_selected(path):
 
 
 func _read_network(path: String):
-	var file = FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		var error = FileAccess.get_open_error()
-		_show_error("Failed to open file", error)
+	var result = CommonIO.read_data(path, NetworkData)
+	if not result.ok:
+		$ErrorDialog.show_error("Failed to open file", result.error)
 		return
 
-	var network_dict = file.get_var()
-	file.close()
-
-	if network_dict == null:
-		_show_error("Opened invalid format file")
-		return
-
-	var network = NetworkData.from_dict(network_dict)
+	var network = result.data as NetworkData
 	if network == null:
-		_show_error("Opened invalid network file")
+		$ErrorDialog.show_error("Opened invalid network file")
 		return
 
 	_editor_global.set_network(network)
@@ -53,27 +45,10 @@ func _read_network(path: String):
 
 func _write_network(path: String):
 	var network = _editor_global.get_network()
-	var network_dict = NetworkData.to_dict(network)
 
-	var file = FileAccess.open(path, FileAccess.WRITE)
-	if file == null:
-		var error = FileAccess.get_open_error()
-		_show_error("Failed to open file", error)
+	var result = CommonIO.write_data(path, NetworkData, network)
+	if not result.ok:
+		$ErrorDialog.show_error("Failed to open file", result.error)
 		return
 
-	file.store_var(network_dict)
-	file.close()
-
 	_editor_global.network_file_path = path
-
-
-func _show_error(message: String, error = null):
-	var text: String
-
-	if error == null:
-		text = message
-	else:
-		text = "%s: %s" % [message, error_string(error)]
-
-	$ErrorAcceptDialog.dialog_text = text
-	$ErrorAcceptDialog.show()
