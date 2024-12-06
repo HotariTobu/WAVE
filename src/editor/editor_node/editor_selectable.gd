@@ -38,11 +38,6 @@ func _on_selected_changed():
 	_update_z_index()
 	notified.emit(&"selected")
 
-	if selected:
-		add_to_group(NodeGroup.SELECTION)
-	else:
-		remove_from_group(NodeGroup.SELECTION)
-
 
 func _update_z_index():
 	if selecting:

@@ -32,10 +32,10 @@ var tool: EditorTool = EditorTool.new():
 
 var selected_contents: Array[ContentData]:
 	get:
-		var contents = _selected_item_set.to_array().map(EditorSelectable.data_of)
+		var contents = _selected_content_node_set.to_array().map(EditorSelectable.data_of)
 		return Array(contents, TYPE_OBJECT, &"RefCounted", ContentData)
 
-var _selected_item_set = Set.new()
+var _selected_content_node_set = ObservableSet.new()
 
 @onready var _content_owner = get_tree().root
 
@@ -56,60 +56,28 @@ func set_network(network: NetworkData):
 		group.contents = network[group.name]
 
 
-func add_selected(item: EditorSelectable):
-	_selected_item_set.add(item)
-	item.selected = true
-
-	if item.tree_entered.is_connected(add_selected):
-		item.tree_entered.disconnect(add_selected)
-
-	if not item.tree_exited.is_connected(remove_selected):
-		item.tree_exited.connect(remove_selected.bind(item))
-
+func add_selected(content_node: EditorSelectable):
+	_selected_content_node_set.add(content_node)
 	notified.emit(&"selected_contents")
 
 
-func add_all_selected(items: Array[EditorSelectable]):
-	for item in items:
-		_selected_item_set.add(item)
-		item.selected = true
-
-		if item.tree_entered.is_connected(add_selected):
-			item.tree_entered.disconnect(add_selected)
-
-		if not item.tree_exited.is_connected(remove_selected):
-			item.tree_exited.connect(remove_selected.bind(item))
-
+func add_all_selected(content_nodes: Array[EditorSelectable]):
+	_selected_content_node_set.add_all(content_nodes)
 	notified.emit(&"selected_contents")
 
 
-func remove_selected(item: EditorSelectable):
-	_selected_item_set.erase(item)
-	item.selected = false
-
-	if not item.tree_entered.is_connected(add_selected):
-		item.tree_entered.connect(add_selected.bind(item))
-
-	if item.tree_exited.is_connected(remove_selected):
-		item.tree_exited.disconnect(remove_selected)
-
+func remove_selected(content_node: EditorSelectable):
+	_selected_content_node_set.erase(content_node)
 	notified.emit(&"selected_contents")
 
 
 func clear_selected():
-	for item in _selected_item_set.to_array():
-		item.selected = false
-
-		if item.tree_exited.is_connected(remove_selected):
-			item.tree_exited.disconnect(remove_selected)
-
-	_selected_item_set.clear()
-
+	_selected_content_node_set.clear()
 	notified.emit(&"selected_contents")
 
 
-func has_selected(item: EditorSelectable):
-	return _selected_item_set.has(item)
+func has_selected(content_node: EditorSelectable):
+	return _selected_content_node_set.has(content_node)
 
 
 func set_content_node_owner(content_node: EditorSelectable):
@@ -120,3 +88,25 @@ func content_node_of(content_id: StringName) -> EditorSelectable:
 	var node = _content_owner.get_node("%" + content_id)
 	assert(node != null)
 	return node
+
+
+func _on_selected_content_node_inserted(content_node: EditorSelectable, _position):
+	content_node.selected = true
+	content_node.add_to_group(NodeGroup.SELECTION)
+
+	if content_node.tree_entered.is_connected(add_selected):
+		content_node.tree_entered.disconnect(add_selected)
+
+	if not content_node.tree_exited.is_connected(remove_selected):
+		content_node.tree_exited.connect(remove_selected.bind(content_node))
+
+
+func _on_selected_content_node_removed(content_node: EditorSelectable, _position):
+	content_node.selected = false
+	content_node.remove_from_group(NodeGroup.SELECTION)
+
+	if not content_node.tree_entered.is_connected(add_selected):
+		content_node.tree_entered.connect(add_selected.bind(content_node))
+
+	if content_node.tree_exited.is_connected(remove_selected):
+		content_node.tree_exited.disconnect(remove_selected)
