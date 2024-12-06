@@ -40,6 +40,11 @@ var _selected_content_node_set = ObservableSet.new()
 @onready var _content_owner = get_tree().root
 
 
+func _init():
+	_selected_content_node_set.value_added.connect(_on_selected_content_node_added)
+	_selected_content_node_set.value_removed.connect(_on_selected_content_node_removed)
+
+
 func get_network() -> NetworkData:
 	var network = NetworkData.new()
 
@@ -90,7 +95,7 @@ func content_node_of(content_id: StringName) -> EditorSelectable:
 	return node
 
 
-func _on_selected_content_node_inserted(content_node: EditorSelectable, _position):
+func _on_selected_content_node_added(content_node: EditorSelectable):
 	content_node.selected = true
 	content_node.add_to_group(NodeGroup.SELECTION)
 
@@ -101,7 +106,7 @@ func _on_selected_content_node_inserted(content_node: EditorSelectable, _positio
 		content_node.tree_exited.connect(remove_selected.bind(content_node))
 
 
-func _on_selected_content_node_removed(content_node: EditorSelectable, _position):
+func _on_selected_content_node_removed(content_node: EditorSelectable):
 	content_node.selected = false
 	content_node.remove_from_group(NodeGroup.SELECTION)
 
