@@ -63,22 +63,22 @@ func set_network(network: NetworkData):
 
 func add_selected(content_node: EditorSelectable):
 	_selected_content_node_set.add(content_node)
-	notified.emit(&"selected_contents")
+	notified.emit.call_deferred(&"selected_contents")
 
 
 func add_all_selected(content_nodes: Array[EditorSelectable]):
 	_selected_content_node_set.add_all(content_nodes)
-	notified.emit(&"selected_contents")
+	notified.emit.call_deferred(&"selected_contents")
 
 
 func remove_selected(content_node: EditorSelectable):
 	_selected_content_node_set.erase(content_node)
-	notified.emit(&"selected_contents")
+	notified.emit.call_deferred(&"selected_contents")
 
 
 func clear_selected():
 	_selected_content_node_set.clear()
-	notified.emit(&"selected_contents")
+	notified.emit.call_deferred(&"selected_contents")
 
 
 func has_selected(content_node: EditorSelectable):
