@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://src/editor/editor_ui/editor_menu_action/editor_menu_action_simulation.gd" id="1_y8iws"]
 [ext_resource type="PackedScene" uid="uid://b8b0o7kbfcpfo" path="res://src/simulator/simulator_root.tscn" id="2_1xbsh"]
 [ext_resource type="PackedScene" uid="uid://bfykb810ftpvk" path="res://src/player/player_root.tscn" id="3_8vtpm"]
-[ext_resource type="Script" path="res://src/common/common_ui/common_error_dialog.gd" id="3_rev5p"]
+[ext_resource type="Script" path="res://src/common/common_ui/error_dialog.gd" id="3_rev5p"]
 [ext_resource type="Script" path="res://src/editor/action_queue.gd" id="5_kk0fv"]
 
 [node name="EditorMenuActionSimulation" type="Node"]
