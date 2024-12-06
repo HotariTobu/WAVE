@@ -121,6 +121,10 @@ func front() -> Variant:
 	return _data.front()
 
 
+func get_at(position: int) -> Variant:
+	return _data[position]
+
+
 func get_typed_builtin() -> int:
 	return _data.get_typed_builtin()
 
@@ -255,6 +259,10 @@ func reverse() -> void:
 
 func rfind(what: Variant, from: int = -1) -> int:
 	return _data.rfind(what, from)
+
+
+func set_at(position: int, value: Variant) -> void:
+	_data[position] = value
 
 
 func shuffle() -> void:
