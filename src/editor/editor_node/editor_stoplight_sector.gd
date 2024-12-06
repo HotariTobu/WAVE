@@ -52,20 +52,23 @@ func update(sector_helper: SectorHelper):
 	_selecting_color = Color(sector_helper.color, 0.5)
 	_selected_color = sector_helper.color
 
-	var points: PackedVector2Array
-	points.resize(sector_helper.point_count)
+	var point_count = sector_helper.point_count
+	var segment_count = point_count - 1
 
-	for point_index in range(sector_helper.point_count):
-		var weight = float(point_index) / (sector_helper.point_count - 1)
+	var points: PackedVector2Array
+	points.resize(point_count)
+
+	for point_index in range(point_count):
+		var weight = float(point_index) / segment_count
 		var angle = lerpf(sector_helper.start_angle, sector_helper.end_angle, weight)
 
 		var point = Vector2.from_angle(angle) * sector_helper.radius
 		points[point_index] = point
 
 	var segments: Array[CollisionShape2D]
-	segments.resize(sector_helper.point_count - 1)
+	segments.resize(segment_count)
 
-	for index in range(sector_helper.point_count - 1):
+	for index in range(segment_count):
 		var segment = create_segment()
 		segment.shape.a = points[index]
 		segment.shape.b = points[index + 1]
