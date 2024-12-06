@@ -1,23 +1,32 @@
 class_name NetworkData
 
-var lane_vertices: Array
-var lanes: Array
-var splits: Array
-var stoplights: Array
+var lane_vertices: Array[VertexData]
+var lanes: Array[LaneData]
+var splits: Array[SplitData]
+var stoplights: Array[StoplightData]
 
-static var content_data_script_dict = {
-	&"lane_vertices": VertexData,
-	&"lanes": LaneData,
-	&"splits": SplitData,
-	&"stoplights": StoplightData,
-}
-
-static var group_names: Array[StringName]:
-	get:
-		return Array(content_data_script_dict.keys(), TYPE_STRING_NAME, &"", null)
-
+static var group_names: Array[StringName]
+static var content_data_script_dict: Dictionary
 
 static func _static_init():
+	var network = NetworkData.new()
+
+	var properties = network.get_property_list()
+	for property in properties:
+		var usage = property[&"usage"]
+		if (usage & PROPERTY_USAGE_SCRIPT_VARIABLE) == 0:
+			continue
+
+		var name = property[&"name"]
+		group_names.append(name)
+
+	group_names.make_read_only()
+
+	for group_name in group_names:
+		var contents = network[group_name] as Array
+		var script = contents.get_typed_script() as GDScript
+		content_data_script_dict[group_name] = script
+
 	content_data_script_dict.make_read_only()
 
 
@@ -41,7 +50,7 @@ static func from_dict(dict: Dictionary) -> NetworkData:
 		0:
 			for group_name in content_data_script_dict:
 				var script = content_data_script_dict[group_name]
-				data[group_name] = dict.get(group_name, []).map(script.from_dict)
+				data[group_name].assign(dict.get(group_name, []).map(script.from_dict))
 		_:
 			return null
 
