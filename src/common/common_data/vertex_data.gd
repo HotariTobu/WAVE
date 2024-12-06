@@ -1,8 +1,6 @@
 class_name VertexData
 extends ContentData
 
-const NAN_POS = Vector2(NAN, NAN)
-
 var pos: Vector2
 
 
