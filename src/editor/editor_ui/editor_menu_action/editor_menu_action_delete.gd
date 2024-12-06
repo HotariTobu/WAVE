@@ -1,22 +1,11 @@
 extends Node
 
-var constraint_script_dict = {
-	&"lane_vertices": EditorLaneVertexConstraint,
-	&"lanes": EditorLaneConstraint,
-	&"splits": EditorSplitConstraint,
-	&"stoplights": EditorStoplightConstraint,
-}
-
 var _editor_global = editor_global
-
-
-func _init():
-	constraint_script_dict.make_read_only()
 
 
 func _ready():
 	for group in _editor_global.content_db.groups:
-		var script = constraint_script_dict[group.name]
+		var script = EditorScriptDict.constraint[group.name]
 		var constraint_manager = EditorConstraintManager.new(group, script)
 		add_child(constraint_manager)
 

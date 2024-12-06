@@ -1,26 +1,15 @@
 extends Node2D
 
-var content_node_script_dict = {
-	&"lane_vertices": EditorLaneVertex,
-	&"lanes": EditorLaneSegments,
-	&"splits": EditorStoplightSector,
-	&"stoplights": EditorStoplightCore,
-}
-
 var _editor_global = editor_global
 
 @onready var _content_container = $ContentContainer
 @onready var _tool_container = $ToolContainer
 
 
-func _init():
-	content_node_script_dict.make_read_only()
-
-
 func _ready():
 	for group in _editor_global.content_db.groups:
 		var node_dict: Dictionary
-		var script = content_node_script_dict[group.name]
+		var script = EditorScriptDict.node[group.name]
 		group.contents_renewed.connect(_renew_content_nodes.bind(node_dict, script))
 		group.content_added.connect(_add_content_node.bind(node_dict, script))
 		group.content_removed.connect(_remove_content_node.bind(node_dict))
