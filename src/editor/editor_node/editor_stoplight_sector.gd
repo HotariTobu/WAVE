@@ -1,31 +1,17 @@
 class_name EditorStoplightSector
-extends EditorContent
+extends EditorScalable
 
 var _sector_helper: SectorHelper
 
 var _selecting_color: Color
 var _selected_color: Color
 
-var _segments: Array[CollisionShape2D]:
-	get:
-		return _segments
-	set(next):
-		var prev = _segments
-
-		for child in prev:
-			child.queue_free()
-
-		for child in next:
-			add_child(child)
-
-		_segments = next
-
 
 func _init(split: SplitData):
 	super(split, EditorPhysicsLayer.STOPLIGHT_SECTOR)
 
 
-func _draw():
+func _scaled_draw(drawing_scale: float) -> void:
 	if _sector_helper.point_count < 2:
 		return
 
@@ -37,13 +23,8 @@ func _draw():
 	else:
 		_sector_helper.color = setting.stoplight_sector_inactive_color
 
-	var width = setting.selection_radius / zoom_factor
+	var width = setting.selection_radius / drawing_scale
 	_sector_helper.draw_to(self, width)
-
-
-func _update_process():
-	super()
-	set_process(is_processing() or is_visible_in_tree())
 
 
 func update(sector_helper: SectorHelper):
@@ -65,15 +46,9 @@ func update(sector_helper: SectorHelper):
 		var point = Vector2.from_angle(angle) * sector_helper.radius
 		points[point_index] = point
 
-	var segments: Array[CollisionShape2D]
-	segments.resize(segment_count)
+	_collision_points = points
 
-	for index in range(segment_count):
-		var segment = create_segment()
-		segment.shape.a = points[index]
-		segment.shape.b = points[index + 1]
-		segments[index] = segment
 
-	_segments = segments
-
-	queue_redraw()
+func _on_visibility_changed():
+	super()
+	set_process(is_visible_in_tree())

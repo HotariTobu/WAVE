@@ -1,5 +1,5 @@
 class_name EditorStoplightCore
-extends EditorContent
+extends EditorScalable
 
 var opened: bool
 
@@ -16,8 +16,12 @@ var _sectors: Array[EditorStoplightSector]:
 
 func _init(stoplight: StoplightData):
 	super(stoplight, EditorPhysicsLayer.STOPLIGHT_CORE)
+	_collision_points = [Vector2.ZERO]
 
-	add_child(create_point())
+
+func _ready():
+	super()
+	set_process(true)
 
 
 func _enter_tree():
@@ -38,19 +42,17 @@ func _exit_tree():
 	core_source.unbind(&"selected").from(core_source, &"opened")
 
 
-func _draw():
-	SpotHelper.draw_to(self, setting.stoplight_color, setting.stoplight_radius, setting.stoplight_shape)
-
+func _scaled_draw(drawing_scale: float) -> void:
 	var color: Color
 	if selecting:
 		color = setting.selecting_color
 	elif selected:
 		color = setting.selected_color
 	else:
-		return
+		color = setting.stoplight_color
 
-	var radius = setting.selection_radius / zoom_factor
-	draw_circle(Vector2.ZERO, radius, color)
+	var radius = setting.stoplight_radius / drawing_scale
+	SpotHelper.draw_to(self, color, radius, setting.stoplight_shape)
 
 
 func _get_sectors_of(split_ids: Array) -> Array[EditorStoplightSector]:

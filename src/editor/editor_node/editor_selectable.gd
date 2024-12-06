@@ -1,60 +1,47 @@
 class_name EditorSelectable
-extends Area2D
+extends Selectable
 
 signal notified(property: StringName)
 
-var selecting: bool = false:
+var data: ContentData:
 	get:
-		return selecting
-	set(value):
-		selecting = value
-		notified.emit(&"selecting")
-		_on_property_updated()
+		return _data
 
-var selected: bool = false:
-	get:
-		return selected
-	set(value):
-		selected = value
-		notified.emit(&"selected")
-		_on_property_updated()
+var _editor_global = editor_global
 
-		if value:
-			add_to_group(NodeGroup.SELECTION)
-		else:
-			remove_from_group(NodeGroup.SELECTION)
-
-var zoom_factor: float:
-	get:
-		var viewport_scale = get_viewport_transform().get_scale()
-		return max(viewport_scale.x, viewport_scale.y)
+var _data: ContentData
+var _source: EditorBindingSource
 
 
-func _init(layer: int):
-	monitoring = false
-	collision_layer = layer
-	collision_mask = 0
-	input_pickable = false
+func _init(content: ContentData, layer: int):
+	super(layer)
 	z_as_relative = false
-	visibility_changed.connect(_on_visibility_changed)
+	unique_name_in_owner = true
+	name = content.id
+
+	_data = content
+	_source = _editor_global.source_db.get_or_add(_data)
 
 
 func _ready():
-	set_process(false)
+	_editor_global.set_content_node_owner(self)
 
 
-func _process(_delta):
-	queue_redraw()
-
-
-func _on_property_updated():
-	_update_process()
+func _on_selecting_changed():
+	super()
 	_update_z_index()
+	notified.emit(&"selecting")
 
 
-func _update_process():
-	set_process(selecting or selected)
-	queue_redraw()
+func _on_selected_changed():
+	super()
+	_update_z_index()
+	notified.emit(&"selected")
+
+	if selected:
+		add_to_group(NodeGroup.SELECTION)
+	else:
+		remove_from_group(NodeGroup.SELECTION)
 
 
 func _update_z_index():
@@ -66,24 +53,5 @@ func _update_z_index():
 		z_index = 0
 
 
-func _on_visibility_changed():
-	monitorable = is_visible_in_tree()
-
-
-static func create_point() -> CollisionShape2D:
-	var circle_shape = CircleShape2D.new()
-	circle_shape.radius = 0
-
-	var collision_shape = CollisionShape2D.new()
-	collision_shape.shape = circle_shape
-
-	return collision_shape
-
-
-static func create_segment() -> CollisionShape2D:
-	var segment_shape = SegmentShape2D.new()
-
-	var collision_shape = CollisionShape2D.new()
-	collision_shape.shape = segment_shape
-
-	return collision_shape
+static func data_of(node: EditorSelectable) -> ContentData:
+	return node._data

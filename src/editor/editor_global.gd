@@ -32,7 +32,7 @@ var tool: EditorTool = EditorTool.new():
 
 var selected_contents: Array[ContentData]:
 	get:
-		var contents = _selected_item_set.to_array().map(EditorContent.data_of)
+		var contents = _selected_item_set.to_array().map(EditorSelectable.data_of)
 		return Array(contents, TYPE_OBJECT, &"RefCounted", ContentData)
 
 var _selected_item_set = Set.new()
@@ -56,7 +56,7 @@ func set_network(network: NetworkData):
 		group.contents = network[group.name]
 
 
-func add_selected(item: EditorContent):
+func add_selected(item: EditorSelectable):
 	_selected_item_set.add(item)
 	item.selected = true
 
@@ -69,7 +69,7 @@ func add_selected(item: EditorContent):
 	notified.emit(&"selected_contents")
 
 
-func add_all_selected(items: Array[EditorContent]):
+func add_all_selected(items: Array[EditorSelectable]):
 	for item in items:
 		_selected_item_set.add(item)
 		item.selected = true
@@ -83,7 +83,7 @@ func add_all_selected(items: Array[EditorContent]):
 	notified.emit(&"selected_contents")
 
 
-func remove_selected(item: EditorContent):
+func remove_selected(item: EditorSelectable):
 	_selected_item_set.erase(item)
 	item.selected = false
 
@@ -108,15 +108,15 @@ func clear_selected():
 	notified.emit(&"selected_contents")
 
 
-func has_selected(item: EditorContent):
+func has_selected(item: EditorSelectable):
 	return _selected_item_set.has(item)
 
 
-func set_content_node_owner(content_node: EditorContent):
+func set_content_node_owner(content_node: EditorSelectable):
 	content_node.owner = _content_owner
 
 
-func content_node_of(content_id: StringName) -> EditorContent:
+func content_node_of(content_id: StringName) -> EditorSelectable:
 	var node = _content_owner.get_node("%" + content_id)
 	assert(node != null)
 	return node

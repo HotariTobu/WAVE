@@ -1,16 +1,21 @@
 class_name EditorLaneSegments
 extends EditorBlockTargetable
 
-var _collision_shape_dict: Dictionary
-
 var _vertices: Array[VertexData]:
 	get:
 		return _vertices
 	set(next):
 		var prev = _vertices
+
+		for vertex in prev:
+			var source = _editor_global.source_db.get_or_add(vertex)
+			source.remove_callback(&"pos", queue_redraw)
+
+		for vertex in next:
+			var source = _editor_global.source_db.get_or_add(vertex)
+			source.add_callback(&"pos", queue_redraw)
+
 		_vertices = next
-		_remove_segment_collision_shapes(prev)
-		_add_segment_collision_shapes(next)
 		queue_redraw()
 
 var _lane_vertex_db = _editor_global.content_db.get_group(&"lane_vertices")
@@ -29,11 +34,9 @@ func _exit_tree():
 
 
 func _draw():
-	var points = _vertices.map(VertexData.pos_of)
-	if len(points) < 2:
+	_collision_points = _vertices.map(VertexData.pos_of)
+	if len(_collision_points) < 2:
 		return
-
-	LaneHelper.draw_to(self, points, setting.lane_color, setting.lane_width)
 
 	var color: Color
 	if block_targeting:
@@ -45,55 +48,11 @@ func _draw():
 	elif selected:
 		color = setting.selected_color
 	else:
-		return
+		color = setting.lane_color
 
-	var width = setting.selection_radius / zoom_factor
-	var radius = width / 2
-	draw_circle(points[0], radius, color)
-	draw_polyline(points, color, width)
-	draw_circle(points[-1], radius, color)
+	LaneHelper.draw_to(self, _collision_points, color, setting.lane_width)
 
 
 func _get_vertices_of(vertex_ids: Array[StringName]) -> Array[VertexData]:
 	var vertices = vertex_ids.map(_lane_vertex_db.data_of)
 	return Array(vertices, TYPE_OBJECT, &"RefCounted", VertexData)
-
-
-func _add_segment_collision_shapes(vertices: Array[VertexData]):
-	var sources = vertices.map(_editor_global.source_db.get_or_add)
-
-	for index in range(len(sources) - 1):
-		var source0 = sources[index]
-		var source1 = sources[index + 1]
-
-		var collision_shape = create_segment()
-		var segment_shape = collision_shape.shape
-
-		source0.bind(&"pos").to(segment_shape, &"a")
-		source1.bind(&"pos").to(segment_shape, &"b")
-
-		add_child(collision_shape)
-		_collision_shape_dict[source0] = collision_shape
-
-	for source in sources:
-		source.add_callback(&"pos", queue_redraw)
-
-
-func _remove_segment_collision_shapes(vertices: Array[VertexData]):
-	var sources = vertices.map(_editor_global.source_db.get_or_add)
-
-	for index in range(len(sources) - 1):
-		var source0 = sources[index]
-		var source1 = sources[index + 1]
-
-		var collision_shape = _collision_shape_dict[source0]
-		var segment_shape = collision_shape.shape
-
-		source0.unbind(&"pos").from(segment_shape, &"a")
-		source1.unbind(&"pos").from(segment_shape, &"b")
-
-		remove_child(collision_shape)
-		_collision_shape_dict.erase(source0)
-
-	for source in sources:
-		source.remove_callback(&"pos", queue_redraw)

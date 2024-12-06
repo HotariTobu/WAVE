@@ -190,7 +190,7 @@ func _update_selecting_nodes():
 			_selecting_start_vertex_node = null
 			_selecting_prev_segments_nodes = []
 		else:
-			_prev_lanes.assign(prev_segments_nodes.map(EditorContent.data_of))
+			_prev_lanes.assign(prev_segments_nodes.map(EditorSelectable.data_of))
 			_selecting_start_vertex_node = vertex_node
 			_selecting_prev_segments_nodes = prev_segments_nodes
 
@@ -207,7 +207,7 @@ func _update_selecting_nodes():
 			_selecting_end_vertex_node = null
 			_selecting_next_segments_nodes = []
 		else:
-			_next_lanes.assign(next_segments_nodes.map(EditorContent.data_of))
+			_next_lanes.assign(next_segments_nodes.map(EditorSelectable.data_of))
 			_selecting_end_vertex_node = vertex_node
 			_selecting_next_segments_nodes = next_segments_nodes
 
@@ -353,5 +353,5 @@ func _calc_initial_speed_limit() -> int:
 
 
 static func _get_lanes(segments_nodes: Array[EditorLaneSegments]) -> Array[LaneData]:
-	var lanes = segments_nodes.map(EditorContent.data_of)
+	var lanes = segments_nodes.map(EditorSelectable.data_of)
 	return Array(lanes, TYPE_OBJECT, &"RefCounted", LaneData)

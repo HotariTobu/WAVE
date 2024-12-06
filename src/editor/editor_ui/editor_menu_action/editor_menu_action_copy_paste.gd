@@ -173,7 +173,7 @@ func _get_paste_offset():
 
 
 func _select_pasted_content_nodes(content_ids: Array[StringName]):
-	var content_nodes: Array[EditorContent]
+	var content_nodes: Array[EditorSelectable]
 	content_nodes.assign(content_ids.map(_editor_global.content_node_of))
 	_editor_global.clear_selected()
 	_editor_global.add_all_selected(content_nodes)

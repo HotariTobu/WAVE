@@ -32,6 +32,10 @@ var _are_targets_visible: bool = false:
 		return _are_targets_visible
 	set(value):
 		_are_targets_visible = value
+
+		if _last_hovered_item == null:
+			return
+
 		_update_targets_visibility(_last_hovered_item, value)
 
 
@@ -124,9 +128,6 @@ func _update_target_id_set():
 
 
 func _update_targets_visibility(source_node: EditorSelectable, are_targets_visible: bool):
-	if source_node is not EditorContent:
-		return
-
 	var source = source_node.data
 	if not _is_block_source(source):
 		return

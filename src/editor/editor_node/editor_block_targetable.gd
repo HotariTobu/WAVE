@@ -1,5 +1,5 @@
 class_name EditorBlockTargetable
-extends EditorContent
+extends EditorSelectable
 
 var block_targeting: bool = false:
 	get:
@@ -7,7 +7,8 @@ var block_targeting: bool = false:
 	set(value):
 		block_targeting = value
 		notified.emit(&"block_targeting")
-		_on_property_updated()
+		_update_z_index()
+		queue_redraw()
 
 var block_targeted: bool = false:
 	get:
@@ -15,12 +16,8 @@ var block_targeted: bool = false:
 	set(value):
 		block_targeted = value
 		notified.emit(&"block_targeted")
-		_on_property_updated()
-
-
-func _update_process():
-	super()
-	set_process(is_processing() or block_targeting or block_targeted)
+		_update_z_index()
+		queue_redraw()
 
 
 func _update_z_index():
