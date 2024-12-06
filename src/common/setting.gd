@@ -15,7 +15,7 @@ var vehicle_width = 3.0
 var pointer_area_radius = 10.0
 
 var selected_color = Color("#1987e0")
-var selecting_color = Color(selected_color, 0.5)
+var selecting_color = selected_color.lightened(0.5)
 var selection_radius = 10.0
 
 var force_default_lane_traffic = true
@@ -42,7 +42,7 @@ var stoplight_sector_inactive_color = Color("#bdbdbd", 0.5)
 var stoplight_sector_saturation = 0.5
 
 var lane_block_targeted_color = Color("#f01616")
-var lane_block_targeting_color = Color(lane_block_targeted_color, 0.5)
+var lane_block_targeting_color = lane_block_targeted_color.lightened(0.5)
 
 var default_step_delta = 1
 var default_max_step = 100
