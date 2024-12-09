@@ -29,8 +29,6 @@ var default_stoplight_offset = 0.0
 var default_split_count = 2
 var default_split_duration = 60.0
 
-var preview_lane_color = Color("#b2b2b2")
-
 var lane_start_point_selecting_color = Color("#2aa846", 0.5)
 var lane_end_point_selecting_color = Color("#cc2944", 0.5)
 
@@ -41,8 +39,8 @@ var stoplight_sector_delta_angle_inv = 90 / TAU
 var stoplight_sector_inactive_color = Color("#bdbdbd", 0.5)
 var stoplight_sector_saturation = 0.5
 
-var lane_block_targeted_color = Color("#f01616")
-var lane_block_targeting_color = lane_block_targeted_color.lightened(0.5)
+var block_targeted_color = Color("#f01616")
+var block_targeting_color = block_targeted_color.lightened(0.5)
 
 var default_step_delta = 1
 var default_max_step = 100
