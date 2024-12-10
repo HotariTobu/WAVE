@@ -2,6 +2,7 @@ class_name BridgeData
 extends SpaceData
 
 var traffic: float
+var forward: float
 var width_limit: int
 var prev_option_dict: Dictionary
 var next_option_dict: Dictionary
@@ -38,20 +39,22 @@ var _next_option_dict: Dictionary:
 
 
 static func to_dict(data: ContentData) -> Dictionary:
-	assert(data is LaneData)
+	assert(data is BridgeData)
 	var dict = super(data)
 	dict[&"traffic"] = data.traffic
+	dict[&"forward"] = data.forward
 	dict[&"speed_limit"] = data.speed_limit
 	dict[&"prev_option_dict"] = data._prev_option_dict
 	dict[&"next_option_dict"] = data._next_option_dict
 	return dict
 
 
-static func from_dict(dict: Dictionary, script: GDScript = LaneData) -> ContentData:
+static func from_dict(dict: Dictionary, script: GDScript = BridgeData) -> ContentData:
 	var data = super(dict, script)
-	assert(data is LaneData)
-	data.traffic = dict.get(&"traffic", setting.default_lane_traffic)
-	data.speed_limit = dict.get(&"speed_limit", setting.default_lane_speed_limit)
+	assert(data is BridgeData)
+	data.traffic = dict.get(&"traffic", setting.default_bridge_traffic)
+	data.forward = dict.get(&"forward", setting.default_bridge_forward)
+	data.speed_limit = dict.get(&"speed_limit", setting.default_bridge_speed_limit)
 	data._prev_option_dict = dict.get(&"prev_option_dict", {})
 	data._next_option_dict = dict.get(&"next_option_dict", {})
 	return data
@@ -65,5 +68,5 @@ class OptionData:
 
 	static func from_dict(dict: Dictionary) -> OptionData:
 		var data = OptionData.new()
-		data.weight = dict.get(&"weight", setting.default_lane_option_weight)
+		data.weight = dict.get(&"weight", setting.default_bridge_option_weight)
 		return data

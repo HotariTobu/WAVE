@@ -1,7 +1,7 @@
 extends "res://src/editor/editor_tool/editor_tool_base_pointer.gd"
 
-const TOOL_DISPLAY_NAME = "Add Lane tool"
-const TOOL_STATUS_HINT = "Left click: add a point, Right click: commit the lane"
+const TOOL_DISPLAY_NAME = "Add Bridge tool"
+const TOOL_STATUS_HINT = "Left click: add a point, Right click: commit the bridge"
 
 enum Phase { EMPTY, LACK, ENOUGH }
 
@@ -9,8 +9,8 @@ var _editor_global = editor_global
 
 var _points: PackedVector2Array
 
-var _prev_lanes: Array[LaneData]
-var _next_lanes: Array[LaneData]
+var _prev_bridges: Array[BridgeData]
+var _next_bridges: Array[BridgeData]
 
 var _phase: Phase:
 	get:
@@ -22,7 +22,7 @@ var _phase: Phase:
 			_:
 				return Phase.ENOUGH
 
-var _selecting_start_vertex_node: EditorLaneVertex:
+var _selecting_start_vertex_node: EditorBridgeVertex:
 	get:
 		return _selecting_start_vertex_node
 	set(next):
@@ -30,15 +30,15 @@ var _selecting_start_vertex_node: EditorLaneVertex:
 
 		if prev != null:
 			prev.selecting = false
-			prev.type = EditorLaneVertex.DEFAULT_TYPE
+			prev.type = EditorBridgeVertex.DEFAULT_TYPE
 
 		if next != null:
 			next.selecting = true
-			next.type = EditorLaneVertex.Type.START
+			next.type = EditorBridgeVertex.Type.START
 
 		_selecting_start_vertex_node = next
 
-var _selecting_end_vertex_node: EditorLaneVertex:
+var _selecting_end_vertex_node: EditorBridgeVertex:
 	get:
 		return _selecting_end_vertex_node
 	set(next):
@@ -46,15 +46,15 @@ var _selecting_end_vertex_node: EditorLaneVertex:
 
 		if prev != null:
 			prev.selecting = false
-			prev.type = EditorLaneVertex.DEFAULT_TYPE
+			prev.type = EditorBridgeVertex.DEFAULT_TYPE
 
 		if next != null:
 			next.selecting = true
-			next.type = EditorLaneVertex.Type.END
+			next.type = EditorBridgeVertex.Type.END
 
 		_selecting_end_vertex_node = next
 
-var _selecting_prev_segments_nodes: Array[EditorLaneSegments]:
+var _selecting_prev_segments_nodes: Array[EditorBridgeSegments]:
 	get:
 		return _selecting_prev_segments_nodes
 	set(next):
@@ -68,7 +68,7 @@ var _selecting_prev_segments_nodes: Array[EditorLaneSegments]:
 
 		_selecting_prev_segments_nodes = next
 
-var _selecting_next_segments_nodes: Array[EditorLaneSegments]:
+var _selecting_next_segments_nodes: Array[EditorBridgeSegments]:
 	get:
 		return _selecting_next_segments_nodes
 	set(next):
@@ -89,16 +89,17 @@ var _current_pos: Vector2:
 		else:
 			return _selecting_end_vertex_node.data.pos
 
-@onready var _lane_vertex_db = _editor_global.content_db.get_group(&"lane_vertices")
-@onready var _lane_db = _editor_global.content_db.get_group(&"lanes")
+@onready var _bridge_vertex_db = _editor_global.content_db.get_group(&"bridge_vertices")
+@onready var _bridge_db = _editor_global.content_db.get_group(&"bridges")
 
 
 func _draw():
 	if len(_points) < 2:
 		return
 
-	var color = Color(setting.lane_color, 0.5)
-	LaneHelper.draw_to(self, _points, color, setting.lane_width)
+	var color = Color(setting.bridge_color, 0.5)
+	var width = setting.bridge_width * setting.default_bridge_width_limit
+	draw_polyline(_points, color, width)
 
 
 func _unhandled_input(event: InputEvent):
@@ -136,7 +137,7 @@ func deactivate() -> void:
 
 
 func _get_mask() -> int:
-	return EditorPhysicsLayer.LANE_VERTEX
+	return EditorPhysicsLayer.BRIDGE_VERTEX
 
 
 func _on_pointer_area_area_entered(area):
@@ -162,54 +163,47 @@ func _update_selecting_nodes():
 
 	if _hovered_items.is_empty():
 		if phase == Phase.EMPTY:
-			_prev_lanes = []
+			_prev_bridges = []
 			_selecting_start_vertex_node = null
 			_selecting_prev_segments_nodes = []
 		else:
-			_next_lanes = []
+			_next_bridges = []
 			_selecting_end_vertex_node = null
 			_selecting_next_segments_nodes = []
 
 		return
 
-	var vertex_node = _hovered_items.back() as EditorLaneVertex
+	var vertex_node = _hovered_items.back() as EditorBridgeVertex
 	var vertex_id = vertex_node.data.id
-	var constraint = _editor_global.constraint_db.of(vertex_id) as EditorLaneVertexConstraint
-	var related_lanes = constraint.lane_set.to_array()
+	var constraint = _editor_global.constraint_db.of(vertex_id) as EditorBridgeVertexConstraint
+	var related_bridges = constraint.bridge_set.to_array()
+
+	var segments_nodes: Array[EditorBridgeSegments]
+
+	for bridge in related_bridges:
+		if bridge.vertex_ids.front() == vertex_id or bridge.vertex_ids.back() == vertex_id:
+			var segments_node = _editor_global.content_node_of(bridge.id)
+			segments_nodes.append(segments_node)
 
 	if _phase == Phase.EMPTY:
-		var prev_segments_nodes: Array[EditorLaneSegments]
-
-		for lane in related_lanes:
-			if lane.vertex_ids.back() == vertex_id:
-				var segments_node = _editor_global.content_node_of(lane.id)
-				prev_segments_nodes.append(segments_node)
-
-		if prev_segments_nodes.is_empty():
-			_prev_lanes = []
+		if segments_nodes.is_empty():
+			_prev_bridges = []
 			_selecting_start_vertex_node = null
 			_selecting_prev_segments_nodes = []
 		else:
-			_prev_lanes.assign(prev_segments_nodes.map(EditorSelectable.data_of))
+			_prev_bridges.assign(segments_nodes.map(EditorSelectable.data_of))
 			_selecting_start_vertex_node = vertex_node
-			_selecting_prev_segments_nodes = prev_segments_nodes
+			_selecting_prev_segments_nodes = segments_nodes
 
 	else:
-		var next_segments_nodes: Array[EditorLaneSegments]
-
-		for lane in related_lanes:
-			if lane.vertex_ids.front() == vertex_id:
-				var segments_node = _editor_global.content_node_of(lane.id)
-				next_segments_nodes.append(segments_node)
-
-		if next_segments_nodes.is_empty():
-			_next_lanes = []
+		if segments_nodes.is_empty():
+			_next_bridges = []
 			_selecting_end_vertex_node = null
 			_selecting_next_segments_nodes = []
 		else:
-			_next_lanes.assign(next_segments_nodes.map(EditorSelectable.data_of))
+			_next_bridges.assign(segments_nodes.map(EditorSelectable.data_of))
 			_selecting_end_vertex_node = vertex_node
-			_selecting_next_segments_nodes = next_segments_nodes
+			_selecting_next_segments_nodes = segments_nodes
 
 
 func _add_new_point():
@@ -254,43 +248,63 @@ func _commit():
 		vertex_ids[-1] = _selecting_end_vertex_node.data.id
 		new_vertices.pop_back()
 
+	var prev_option_dict: Dictionary
 	var next_option_dict: Dictionary
 
-	for lane in _next_lanes:
-		var option = LaneData.OptionData.from_dict({})
-		next_option_dict[lane.id] = option
+	for bridge in _prev_bridges:
+		var option = BridgeData.OptionData.from_dict({})
+		prev_option_dict[bridge.id] = option
 
-	var new_lane = LaneData.from_dict({})
-	new_lane.vertex_ids = vertex_ids
-	new_lane.next_option_dict = next_option_dict
+	for bridge in _next_bridges:
+		var option = BridgeData.OptionData.from_dict({})
+		next_option_dict[bridge.id] = option
 
-	if not setting.force_default_lane_traffic:
-		new_lane.traffic = _calc_initial_traffic()
+	var new_bridge = BridgeData.from_dict({})
+	new_bridge.vertex_ids = vertex_ids
+	new_bridge.prev_option_dict = prev_option_dict
+	new_bridge.next_option_dict = next_option_dict
 
-	if not setting.force_default_lane_speed_limit:
-		new_lane.speed_limit = _calc_initial_speed_limit()
+	if not setting.force_default_bridge_traffic:
+		new_bridge.traffic = _calc_initial_traffic()
 
-	_editor_global.undo_redo.create_action("Add lane")
+	if not setting.force_default_bridge_forward:
+		new_bridge.forward = _calc_initial_forward()
+
+	if not setting.force_default_bridge_width_limit:
+		new_bridge.width_limit = _calc_initial_width_limit()
+
+	_editor_global.undo_redo.create_action("Add bridge")
 
 	for vertex in new_vertices:
-		_editor_global.undo_redo.add_do_method(_lane_vertex_db.add.bind(vertex))
+		_editor_global.undo_redo.add_do_method(_bridge_vertex_db.add.bind(vertex))
 		_editor_global.undo_redo.add_do_reference(vertex)
-		_editor_global.undo_redo.add_undo_method(_lane_vertex_db.remove.bind(vertex))
+		_editor_global.undo_redo.add_undo_method(_bridge_vertex_db.remove.bind(vertex))
 
-	_editor_global.undo_redo.add_do_method(_lane_db.add.bind(new_lane))
-	_editor_global.undo_redo.add_do_reference(new_lane)
-	_editor_global.undo_redo.add_undo_method(_lane_db.remove.bind(new_lane))
+	_editor_global.undo_redo.add_do_method(_bridge_db.add.bind(new_bridge))
+	_editor_global.undo_redo.add_do_reference(new_bridge)
+	_editor_global.undo_redo.add_undo_method(_bridge_db.remove.bind(new_bridge))
 
-	for lane in _prev_lanes:
-		var option = LaneData.OptionData.from_dict({})
+	for bridge in _prev_bridges:
+		var option = BridgeData.OptionData.from_dict({})
 
-		var prev = lane.next_option_dict
+		var prev = bridge.next_option_dict
 		var next = prev.duplicate()
-		next[new_lane.id] = option
+		next[new_bridge.id] = option
 
-		var source = _editor_global.source_db.get_or_add(lane)
+		var source = _editor_global.source_db.get_or_add(bridge)
 		_editor_global.undo_redo.add_do_property(source, &"next_option_dict", next)
 		_editor_global.undo_redo.add_undo_property(source, &"next_option_dict", prev)
+
+	for bridge in _next_bridges:
+		var option = BridgeData.OptionData.from_dict({})
+
+		var prev = bridge.prev_option_dict
+		var next = prev.duplicate()
+		next[new_bridge.id] = option
+
+		var source = _editor_global.source_db.get_or_add(bridge)
+		_editor_global.undo_redo.add_do_property(source, &"prev_option_dict", next)
+		_editor_global.undo_redo.add_undo_property(source, &"prev_option_dict", prev)
 
 	_editor_global.undo_redo.commit_action()
 
@@ -305,8 +319,8 @@ func _cancel():
 
 
 func _unselect():
-	_prev_lanes.clear()
-	_next_lanes.clear()
+	_prev_bridges.clear()
+	_next_bridges.clear()
 	_selecting_prev_segments_nodes = []
 	_selecting_next_segments_nodes = []
 	_selecting_start_vertex_node = null
@@ -314,43 +328,55 @@ func _unselect():
 
 
 func _calc_initial_traffic() -> float:
-	if _prev_lanes.is_empty():
+	if _prev_bridges.is_empty():
 		return setting.default_lane_traffic
 
 	var initial_traffic = 0.0
 
-	for lane in _prev_lanes:
-		if lane.traffic == 0.0:
+	for bridge in _prev_bridges:
+		if bridge.traffic == 0.0:
 			continue
 
-		var options = lane.next_option_dict.values()
+		var options = bridge.next_option_dict.values()
 		var weights = options.map(func(option): return option.weight)
 		var sum_weight = weights.reduce(func(accum, weight): return accum + weight, 1.0)
 
-		initial_traffic += lane.traffic / sum_weight
+		initial_traffic += bridge.traffic / sum_weight
 
 	return initial_traffic
 
 
-func _calc_initial_speed_limit() -> int:
-	var sum_speed_limit = 0.0
+func _calc_initial_forward() -> int:
+	var sum_forward = 0.0
 
-	for lane in _prev_lanes:
-		sum_speed_limit += lane.speed_limit
+	for bridge in _prev_bridges:
+		sum_forward += bridge.forward
 
-	for lane in _next_lanes:
-		sum_speed_limit += lane.speed_limit
+	for bridge in _next_bridges:
+		sum_forward += bridge.forward
 
-	var lane_count = len(_prev_lanes) + len(_next_lanes)
-	var average_speed_limit = sum_speed_limit / lane_count
+	var lane_count = len(_prev_bridges) + len(_next_bridges)
+	var average_forward = sum_forward / lane_count
 
-	var initial_speed_limit = roundi(average_speed_limit / 10) * 10
-	if initial_speed_limit == 0:
-		initial_speed_limit = setting.default_lane_speed_limit
-
-	return initial_speed_limit
+	return average_forward
 
 
-static func _get_lanes(segments_nodes: Array[EditorLaneSegments]) -> Array[LaneData]:
+func _calc_initial_width_limit() -> int:
+	var sum_width_limit = 0.0
+
+	for bridge in _prev_bridges:
+		sum_width_limit += bridge.width_limit
+
+	for bridge in _next_bridges:
+		sum_width_limit += bridge.width_limit
+
+	var lane_count = len(_prev_bridges) + len(_next_bridges)
+	var average_width_limit = sum_width_limit / lane_count
+
+	var initial_width_limit = ceili(average_width_limit)
+	return initial_width_limit
+
+
+static func _get_lanes(segments_nodes: Array[EditorBridgeSegments]) -> Array[BridgeData]:
 	var lanes = segments_nodes.map(EditorSelectable.data_of)
-	return Array(lanes, TYPE_OBJECT, &"RefCounted", LaneData)
+	return Array(lanes, TYPE_OBJECT, &"RefCounted", BridgeData)

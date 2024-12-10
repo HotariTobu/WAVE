@@ -7,9 +7,10 @@ var _spawn_step: int
 var _die_step: int
 
 var _pos_history: PackedFloat32Array
-var _lane_history: Dictionary
 
 var _moved_steps: PackedInt32Array
+var _step_lane_dict: Dictionary
+
 var _last_moved_next_index: int = -1
 var _last_next_lane_length: float = NAN
 var _last_duplicated_curve: Curve2D = null
@@ -26,10 +27,13 @@ func _init(vehicle: VehicleData):
 	_die_step = vehicle.die_step
 
 	_pos_history = vehicle.pos_history
-	_lane_history = vehicle.lane_history
 
 	_moved_steps = vehicle.lane_history.keys()
 	_moved_steps.sort()
+
+	for step in vehicle.lane_history:
+		var lane_id = vehicle.lane_history[step]
+		_step_lane_dict[step] = player_global.content_db.player_data_of(lane_id)
 
 	if _die_step < 0:
 		_die_step = player_global.simulation.parameter.max_step + 1
@@ -53,14 +57,12 @@ func _process(_delta):
 	var moved_step_key = _moved_steps.bsearch(prev_index, false) - 1
 	var moved_step = _moved_steps[moved_step_key]
 
-	var lane_id = _lane_history[moved_step]
-	var lane = player_global.content_db.player_data_of(lane_id) as PlayerLaneData
+	var lane = _step_lane_dict[moved_step] as PlayerLaneData
 	var curve = lane.curve
 
-	if _lane_history.has(next_index):
+	if _step_lane_dict.has(next_index):
 		if _last_moved_next_index != next_index:
-			var next_lane_id = _lane_history[next_index]
-			var next_lane = player_global.content_db.player_data_of(next_lane_id) as PlayerLaneData
+			var next_lane = _step_lane_dict[next_index] as PlayerLaneData
 
 			_last_moved_next_index = next_index
 			_last_next_lane_length = next_lane.length

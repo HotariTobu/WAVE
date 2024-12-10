@@ -1,23 +1,11 @@
 extends Node2D
 
-static var content_node_script_dict = {
-	&"lane_vertices": null,
-	&"lanes": PlayerLane,
-	&"splits": null,
-	&"stoplights": PlayerStoplight,
-}
-
 static var agent_node_script_dict = {
 	&"vehicles": PlayerVehicle,
 }
 
 @onready var _content_container = $ContentContainer
 @onready var _agent_container = $AgentContainer
-
-
-static func _static_init():
-	content_node_script_dict.make_read_only()
-	agent_node_script_dict.make_read_only()
 
 
 func _ready():
@@ -32,7 +20,7 @@ func _renew_children():
 		child.queue_free()
 
 	for group_name in NetworkData.group_names:
-		var script = content_node_script_dict[group_name] as GDScript
+		var script = PlayerScriptDict.node[group_name] as GDScript
 		if script == null:
 			continue
 
@@ -49,3 +37,7 @@ func _renew_children():
 		for agent in agents:
 			var node = script.new(agent)
 			_agent_container.add_child(node)
+
+
+static func _static_init():
+	agent_node_script_dict.make_read_only()

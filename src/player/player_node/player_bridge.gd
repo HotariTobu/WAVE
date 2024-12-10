@@ -1,17 +1,17 @@
-class_name PlayerLane
+class_name PlayerBridge
 extends PlayerAnimatable
 
 var _block_step_set: Set
 var _is_blocked: bool
 
 
-func _init(lane: LaneData):
-	super(LaneData.to_dict(lane))
+func _init(bridge: BridgeData):
+	super(BridgeData.to_dict(bridge))
 
-	var player_lane = player_global.content_db.player_data_of(lane.id) as PlayerLaneData
-	_collision_points = player_lane.points
+	var player_bridge = player_global.content_db.player_data_of(bridge.id) as PlayerBridgeData
+	_collision_points = player_bridge.points
 
-	var block_steps = player_global.simulation.block_history.get_or_add(lane.id, [])
+	var block_steps = player_global.simulation.block_history.get_or_add(bridge.id, [])
 	_block_step_set = Set.from_array(block_steps)
 
 
@@ -37,6 +37,6 @@ func _draw():
 	elif _is_blocked:
 		color = setting.block_targeted_color
 	else:
-		color = setting.lane_color
+		color = setting.bridge_color
 
-	LaneHelper.draw_to(self, _collision_points, color, setting.lane_width)
+	draw_polyline(_collision_points, color, setting.bridge_width)

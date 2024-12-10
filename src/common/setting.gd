@@ -1,12 +1,18 @@
 class_name Setting
 extends Node
 
+var bridge_color = Color("#26c7b7")
+var bridge_width = 0.5
+
 var lane_color = Color("#b2b2b2")
 var lane_width = 1.5
 
 var stoplight_color = Color("#fffdd4")
 var stoplight_radius = 4.0
 var stoplight_shape = SpotHelper.Shape.CIRCLE
+
+var walker_head_length = 0.3
+var walker_color = Color("#3bfa2d")
 
 var vehicle_head_length = 2.0
 var vehicle_color = Color("#fcba03")
@@ -17,6 +23,18 @@ var pointer_area_radius = 10.0
 var selected_color = Color("#1987e0")
 var selecting_color = selected_color.lightened(0.5)
 var selection_radius = 10.0
+
+var block_targeted_color = Color("#f01616")
+var block_targeting_color = block_targeted_color.lightened(0.5)
+
+var force_default_bridge_traffic = true
+var force_default_bridge_forward = true
+var force_default_bridge_width_limit = false
+
+var default_bridge_traffic = 10.0
+var default_bridge_forward = 0.5
+var default_bridge_width_limit = 3
+var default_bridge_option_weight = 1.0
 
 var force_default_lane_traffic = true
 var force_default_lane_speed_limit = false
@@ -29,6 +47,8 @@ var default_stoplight_offset = 0.0
 var default_split_count = 2
 var default_split_duration = 60.0
 
+var bridge_end_point_selecting_color = Color("#cc2944", 0.5)
+
 var lane_start_point_selecting_color = Color("#2aa846", 0.5)
 var lane_end_point_selecting_color = Color("#cc2944", 0.5)
 
@@ -38,9 +58,6 @@ var stoplight_sector_delta_angle_inv = 90 / TAU
 
 var stoplight_sector_inactive_color = Color("#bdbdbd", 0.5)
 var stoplight_sector_saturation = 0.5
-
-var block_targeted_color = Color("#f01616")
-var block_targeting_color = block_targeted_color.lightened(0.5)
 
 var default_step_delta = 1
 var default_max_step = 100

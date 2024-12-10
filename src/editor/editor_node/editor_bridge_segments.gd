@@ -27,10 +27,12 @@ func _init(bridge: BridgeData):
 
 func _enter_tree():
 	_source.bind(&"vertex_ids").using(_get_vertices_of).to(self, &"_vertices")
+	_source.add_callback(&"width_limit", queue_redraw)
 
 
 func _exit_tree():
 	_source.unbind(&"vertex_ids").from(self, &"_vertices")
+	_source.remove_callback(&"width_limit", queue_redraw)
 
 
 func _draw():
@@ -40,19 +42,20 @@ func _draw():
 
 	var color: Color
 	if block_targeting:
-		color = setting.lane_block_targeting_color
+		color = setting.block_targeting_color
 	elif selecting:
 		color = setting.selecting_color
 	elif block_targeted:
-		color = setting.lane_block_targeted_color
+		color = setting.block_targeted_color
 	elif selected:
 		color = setting.selected_color
 	else:
-		color = setting.lane_color
+		color = setting.bridge_color
 
-	LaneHelper.draw_to(self, _collision_points, color, setting.lane_width)
+	var width = setting.bridge_width * _data.width_limit
+	draw_polyline(_collision_points, color, width)
 
 
 func _get_vertices_of(vertex_ids: Array[StringName]) -> Array[VertexData]:
-	var vertices = vertex_ids.map(_lane_vertex_db.data_of)
+	var vertices = vertex_ids.map(_bridge_vertex_db.data_of)
 	return Array(vertices, TYPE_OBJECT, &"RefCounted", VertexData)

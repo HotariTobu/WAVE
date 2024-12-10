@@ -8,7 +8,7 @@ var type = DEFAULT_TYPE
 
 
 func _init(vertex: VertexData):
-	super(vertex, EditorPhysicsLayer.LANE_VERTEX)
+	super(vertex, EditorPhysicsLayer.BRIDGE_VERTEX)
 	_collision_points = [Vector2.ZERO]
 
 
@@ -25,11 +25,11 @@ func _scaled_draw(drawing_scale: float) -> void:
 	if selecting:
 		match type:
 			Type.START:
-				color = setting.lane_start_point_selecting_color
+				color = setting.bridge_start_point_selecting_color
 			Type.WAY:
 				color = setting.selecting_color
 			Type.END:
-				color = setting.lane_end_point_selecting_color
+				color = setting.bridge_end_point_selecting_color
 	elif selected:
 		color = setting.selected_color
 	else:
