@@ -22,4 +22,4 @@ static func _static_init():
 
 
 static func _get_self_script() -> GDScript:
-	return BaseScript_Dict
+	return BaseScriptDict
