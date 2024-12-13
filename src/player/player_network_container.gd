@@ -1,6 +1,7 @@
 extends Node2D
 
 static var agent_node_script_dict = {
+	&"walkers": PlayerWalker,
 	&"vehicles": PlayerVehicle,
 }
 

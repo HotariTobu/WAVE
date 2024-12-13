@@ -1,7 +1,7 @@
 class_name AgentHelper
 
 
-static func draw_to(canvas: CanvasItem, head_length: float, length: float, color: Color, width: float) -> void:
+static func draw_to(canvas: CanvasItem, width: float, head_length: float, length: float, color: Color) -> void:
 	var width_half = width / 2
 	var points = [
 		Vector2.ZERO,

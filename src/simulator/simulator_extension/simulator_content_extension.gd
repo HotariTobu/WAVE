@@ -1,7 +1,7 @@
-class_name SimulatorContentData
+class_name SimulatorContentExtension
 
-var id: StringName
-
+var content: ContentData:
+	get
 
 func assign(content: ContentData, _data_of: Callable) -> void:
 	id = content.id
