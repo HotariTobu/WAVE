@@ -43,7 +43,7 @@ static func to_dict(data: ContentData) -> Dictionary:
 	var dict = super(data)
 	dict[&"traffic"] = data.traffic
 	dict[&"forward"] = data.forward
-	dict[&"speed_limit"] = data.speed_limit
+	dict[&"width_limit"] = data.width_limit
 	dict[&"prev_option_dict"] = data._prev_option_dict
 	dict[&"next_option_dict"] = data._next_option_dict
 	return dict
@@ -54,7 +54,7 @@ static func from_dict(dict: Dictionary, script: GDScript = BridgeData) -> Conten
 	assert(data is BridgeData)
 	data.traffic = dict.get(&"traffic", setting.default_bridge_traffic)
 	data.forward = dict.get(&"forward", setting.default_bridge_forward)
-	data.speed_limit = dict.get(&"speed_limit", setting.default_bridge_speed_limit)
+	data.width_limit = dict.get(&"width_limit", setting.default_bridge_width_limit)
 	data._prev_option_dict = dict.get(&"prev_option_dict", {})
 	data._next_option_dict = dict.get(&"next_option_dict", {})
 	return data

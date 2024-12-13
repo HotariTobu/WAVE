@@ -176,7 +176,7 @@ func _update_selecting_nodes():
 	var vertex_node = _hovered_items.back() as EditorBridgeVertex
 	var vertex_id = vertex_node.data.id
 	var constraint = _editor_global.constraint_db.of(vertex_id) as EditorBridgeVertexConstraint
-	var related_bridges = constraint.bridge_set.to_array()
+	var related_bridges = constraint.segments_set.to_array()
 
 	var segments_nodes: Array[EditorBridgeSegments]
 
@@ -329,7 +329,7 @@ func _unselect():
 
 func _calc_initial_traffic() -> float:
 	if _prev_bridges.is_empty():
-		return setting.default_lane_traffic
+		return setting.default_bridge_traffic
 
 	var initial_traffic = 0.0
 
@@ -347,6 +347,10 @@ func _calc_initial_traffic() -> float:
 
 
 func _calc_initial_forward() -> int:
+	var bridge_count = len(_prev_bridges) + len(_next_bridges)
+	if bridge_count == 0:
+		return setting.default_bridge_forward
+
 	var sum_forward = 0.0
 
 	for bridge in _prev_bridges:
@@ -355,13 +359,16 @@ func _calc_initial_forward() -> int:
 	for bridge in _next_bridges:
 		sum_forward += bridge.forward
 
-	var lane_count = len(_prev_bridges) + len(_next_bridges)
-	var average_forward = sum_forward / lane_count
+	var average_forward = sum_forward / bridge_count
 
 	return average_forward
 
 
 func _calc_initial_width_limit() -> int:
+	var bridge_count = len(_prev_bridges) + len(_next_bridges)
+	if bridge_count == 0:
+		return setting.default_bridge_width_limit
+
 	var sum_width_limit = 0.0
 
 	for bridge in _prev_bridges:
@@ -370,13 +377,12 @@ func _calc_initial_width_limit() -> int:
 	for bridge in _next_bridges:
 		sum_width_limit += bridge.width_limit
 
-	var lane_count = len(_prev_bridges) + len(_next_bridges)
-	var average_width_limit = sum_width_limit / lane_count
+	var average_width_limit = sum_width_limit / bridge_count
 
 	var initial_width_limit = ceili(average_width_limit)
 	return initial_width_limit
 
 
-static func _get_lanes(segments_nodes: Array[EditorBridgeSegments]) -> Array[BridgeData]:
-	var lanes = segments_nodes.map(EditorSelectable.data_of)
-	return Array(lanes, TYPE_OBJECT, &"RefCounted", BridgeData)
+static func _get_bridges(segments_nodes: Array[EditorBridgeSegments]) -> Array[BridgeData]:
+	var bridges = segments_nodes.map(EditorSelectable.data_of)
+	return Array(bridges, TYPE_OBJECT, &"RefCounted", BridgeData)

@@ -47,10 +47,8 @@ var default_stoplight_offset = 0.0
 var default_split_count = 2
 var default_split_duration = 60.0
 
-var bridge_end_point_selecting_color = Color("#cc2944", 0.5)
-
-var lane_start_point_selecting_color = Color("#2aa846", 0.5)
-var lane_end_point_selecting_color = Color("#cc2944", 0.5)
+var start_point_selecting_color = Color("#2aa846", 0.5)
+var end_point_selecting_color = Color("#cc2944", 0.5)
 
 var stoplight_sector_min_arc = 100.0
 var stoplight_sector_max_radius = 100.0

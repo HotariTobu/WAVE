@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://d2m22hrl2t0gd"]
+[gd_scene load_steps=14 format=3 uid="uid://d2m22hrl2t0gd"]
 
 [ext_resource type="Script" path="res://src/editor/editor_network_container.gd" id="1_6l2nm"]
 [ext_resource type="Script" path="res://src/common/common_node/pan_zoom_camera.gd" id="2_3of67"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_add_stoplight.gd" id="5_j0wfg"]
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_lasso_select.gd" id="6_km047"]
 [ext_resource type="Shortcut" uid="uid://blwmukco2nndw" path="res://src/editor/editor_tool/add_tool_shortcut.tres" id="6_satsf"]
+[ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_add_bridge.gd" id="7_cxyvw"]
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_add_block_target.gd" id="8_3e1ww"]
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_move.gd" id="9_8n64k"]
 [ext_resource type="Shortcut" uid="uid://b0e31fc1q00xj" path="res://src/editor/editor_tool/move_tool_shortcut.tres" id="10_1hp1y"]
@@ -35,6 +36,10 @@ shortcut = ExtResource("4_44g6h")
 visible = false
 script = ExtResource("6_km047")
 shortcut = ExtResource("4_44g6h")
+
+[node name="AddBridgeTool" type="Node2D" parent="ToolContainer"]
+script = ExtResource("7_cxyvw")
+shortcut = ExtResource("6_satsf")
 
 [node name="AddLaneTool" type="Node2D" parent="ToolContainer"]
 script = ExtResource("2_yb53e")

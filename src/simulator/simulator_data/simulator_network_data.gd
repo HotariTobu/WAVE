@@ -1,5 +1,7 @@
 class_name SimulatorNetworkData
 
+var bridge_vertices: Array[SimulatorVertexData]
+var bridges: Array[SimulatorBridgeData]
 var lane_vertices: Array[SimulatorVertexData]
 var lanes: Array[SimulatorLaneData]
 var splits: Array[SimulatorSplitData]

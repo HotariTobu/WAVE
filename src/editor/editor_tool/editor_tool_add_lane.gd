@@ -175,7 +175,7 @@ func _update_selecting_nodes():
 	var vertex_node = _hovered_items.back() as EditorLaneVertex
 	var vertex_id = vertex_node.data.id
 	var constraint = _editor_global.constraint_db.of(vertex_id) as EditorLaneVertexConstraint
-	var related_lanes = constraint.lane_set.to_array()
+	var related_lanes = constraint.segments_set.to_array()
 
 	if _phase == Phase.EMPTY:
 		var prev_segments_nodes: Array[EditorLaneSegments]
@@ -333,6 +333,10 @@ func _calc_initial_traffic() -> float:
 
 
 func _calc_initial_speed_limit() -> int:
+	var lane_count = len(_prev_lanes) + len(_next_lanes)
+	if lane_count == 0:
+		return setting.default_lane_speed_limit
+
 	var sum_speed_limit = 0.0
 
 	for lane in _prev_lanes:
@@ -341,7 +345,6 @@ func _calc_initial_speed_limit() -> int:
 	for lane in _next_lanes:
 		sum_speed_limit += lane.speed_limit
 
-	var lane_count = len(_prev_lanes) + len(_next_lanes)
 	var average_speed_limit = sum_speed_limit / lane_count
 
 	var initial_speed_limit = roundi(average_speed_limit / 10) * 10
