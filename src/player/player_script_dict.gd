@@ -3,7 +3,7 @@ extends BaseScriptDict
 
 static var data = {
 	&"bridge_vertices": null,
-	&"bridge": PlayerBridgeData,
+	&"bridges": PlayerBridgeData,
 	&"lane_vertices": null,
 	&"lanes": PlayerLaneData,
 	&"splits": null,
