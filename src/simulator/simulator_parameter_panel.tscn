@@ -29,7 +29,7 @@ min_value = 0.01
 
 [node name="Label2" type="Label" parent="GridContainer"]
 layout_mode = 2
-text = "Max Step"
+text = "Max step"
 
 [node name="MaxStepBox" type="LineEdit" parent="GridContainer"]
 unique_name_in_owner = true
