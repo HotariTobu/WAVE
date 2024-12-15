@@ -22,12 +22,12 @@ func _init(agent: AgentData):
 	_spawn_step = agent.spawn_step
 	_die_step = agent.die_step
 
+	_pos_history = agent.pos_history
+
 	if _die_step < 0:
 		_die_step = player_global.simulation.parameter.max_step + 1
 		_pos_history = _pos_history.duplicate()
 		_pos_history.append(_pos_history[-1])
-
-	_pos_history = agent.pos_history
 
 	_moved_indices = agent.space_history.keys()
 	_moved_indices.sort()
