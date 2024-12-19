@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://b8b0o7kbfcpfo"]
 
 [ext_resource type="Script" path="res://src/simulator/simulator_root.gd" id="1_ssr3d"]
-[ext_resource type="PackedScene" uid="uid://blg6o7cni0t0n" path="res://src/simulator/simulator_parameter_panel.tscn" id="2_wry1n"]
-[ext_resource type="PackedScene" uid="uid://of3bmugoqexm" path="res://src/simulator/path_panel.tscn" id="3_0g5ep"]
+[ext_resource type="PackedScene" uid="uid://blg6o7cni0t0n" path="res://src/simulator/simulator_ui/simulator_parameter_panel.tscn" id="2_wry1n"]
+[ext_resource type="PackedScene" uid="uid://of3bmugoqexm" path="res://src/simulator/simulator_ui/path_panel.tscn" id="3_0g5ep"]
 [ext_resource type="Script" path="res://src/common/common_ui/error_dialog.gd" id="4_ntuym"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_6oqft"]

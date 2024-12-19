@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://blg6o7cni0t0n"]
 
-[ext_resource type="Script" path="res://src/simulator/simulator_parameter_panel.gd" id="1_kvo3v"]
+[ext_resource type="Script" path="res://src/simulator/simulator_ui/simulator_parameter_panel.gd" id="1_kvo3v"]
 [ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="1_nvq3g"]
 [ext_resource type="LabelSettings" uid="uid://dn2qcijbjp0kh" path="res://src/header_label.tres" id="3_3f7yv"]
-[ext_resource type="PackedScene" uid="uid://b1jkmwu2ltfjy" path="res://src/simulator/simulator_range_panel.tscn" id="4_133vl"]
+[ext_resource type="PackedScene" uid="uid://b1jkmwu2ltfjy" path="res://src/simulator/simulator_ui/simulator_range_panel.tscn" id="4_133vl"]
 [ext_resource type="Texture2D" uid="uid://q21h4fm426vm" path="res://assets/plus.svg" id="4_njuww"]
 
 [node name="SimulatorParameterPanel" type="HBoxContainer"]
