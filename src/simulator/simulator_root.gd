@@ -6,7 +6,7 @@ enum NetworkSource { MEMORY, FILE }
 
 const Status = SimulatorManager.Status
 
-var _parameter = ParameterData.new()
+var _parameter: ParameterData
 
 var _data = BindingSource.new(Data.new(), &"notified")
 
