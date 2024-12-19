@@ -241,7 +241,7 @@ func _commit():
 	var new_vertices: Array[VertexData]
 
 	for point in _points:
-		var vertex = VertexData.from_dict({})
+		var vertex = VertexData.new_default()
 		vertex.pos = point
 		vertex_ids.append(vertex.id)
 		new_vertices.append(vertex)
@@ -257,10 +257,10 @@ func _commit():
 	var next_option_dict: Dictionary
 
 	for lane in _next_lanes:
-		var option = LaneData.OptionData.from_dict({})
+		var option = LaneData.OptionData.new_default()
 		next_option_dict[lane.id] = option
 
-	var new_lane = LaneData.from_dict({})
+	var new_lane = LaneData.new_default()
 	new_lane.vertex_ids = vertex_ids
 	new_lane.next_option_dict = next_option_dict
 
@@ -282,7 +282,7 @@ func _commit():
 	_editor_global.undo_redo.add_undo_method(_lane_db.remove.bind(new_lane))
 
 	for lane in _prev_lanes:
-		var option = LaneData.OptionData.from_dict({})
+		var option = LaneData.OptionData.new_default()
 
 		var prev = lane.next_option_dict
 		var next = prev.duplicate()

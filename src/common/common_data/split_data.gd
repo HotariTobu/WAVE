@@ -19,3 +19,7 @@ static func from_dict(dict: Dictionary, script: GDScript = SplitData) -> Content
 	data.duration = dict.get(&"duration", setting.default_split_duration)
 	data.block_target_ids.assign(dict.get(&"block_target_ids", []))
 	return data
+
+
+static func new_default() -> ContentData:
+	return from_dict({})

@@ -1,4 +1,5 @@
 class_name ParameterData
+extends DoNotNew
 
 var step_delta: float
 var max_step: int
@@ -52,7 +53,7 @@ static func to_dict(data: ParameterData) -> Dictionary:
 
 
 static func from_dict(dict: Dictionary) -> ParameterData:
-	var data = ParameterData.new()
+	var data = _new(ParameterData)
 	data.step_delta = dict.get(&"step_delta", setting.default_step_delta)
 	data.max_step = dict.get(&"max_step", setting.default_max_step)
 	data.random_seed = dict.get(&"random_seed", setting.default_random_seed)
@@ -73,6 +74,10 @@ static func from_dict(dict: Dictionary) -> ParameterData:
 	data.vehicle_high_speed_distance_range = IntRange.from_dict(dict.get(&"vehicle_high_speed_distance_range", setting.default_vehicle_high_speed_distance_range))
 	data.vehicle_high_speed_distance_mean = dict.get(&"vehicle_high_speed_distance_mean", setting.default_vehicle_high_speed_distance_mean)
 	return data
+
+
+static func new_default() -> ParameterData:
+	return from_dict({})
 
 
 class RandomOption:

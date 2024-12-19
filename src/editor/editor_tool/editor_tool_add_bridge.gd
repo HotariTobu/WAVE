@@ -235,7 +235,7 @@ func _commit():
 	var new_vertices: Array[VertexData]
 
 	for point in _points:
-		var vertex = VertexData.from_dict({})
+		var vertex = VertexData.new_default()
 		vertex.pos = point
 		vertex_ids.append(vertex.id)
 		new_vertices.append(vertex)
@@ -252,14 +252,14 @@ func _commit():
 	var next_option_dict: Dictionary
 
 	for bridge in _prev_bridges:
-		var option = BridgeData.OptionData.from_dict({})
+		var option = BridgeData.OptionData.new_default()
 		prev_option_dict[bridge.id] = option
 
 	for bridge in _next_bridges:
-		var option = BridgeData.OptionData.from_dict({})
+		var option = BridgeData.OptionData.new_default()
 		next_option_dict[bridge.id] = option
 
-	var new_bridge = BridgeData.from_dict({})
+	var new_bridge = BridgeData.new_default()
 	new_bridge.vertex_ids = vertex_ids
 	new_bridge.prev_option_dict = prev_option_dict
 	new_bridge.next_option_dict = next_option_dict
@@ -285,7 +285,7 @@ func _commit():
 	_editor_global.undo_redo.add_undo_method(_bridge_db.remove.bind(new_bridge))
 
 	for bridge in _prev_bridges:
-		var option = BridgeData.OptionData.from_dict({})
+		var option = BridgeData.OptionData.new_default()
 
 		var prev = bridge.next_option_dict
 		var next = prev.duplicate()
@@ -296,7 +296,7 @@ func _commit():
 		_editor_global.undo_redo.add_undo_property(source, &"next_option_dict", prev)
 
 	for bridge in _next_bridges:
-		var option = BridgeData.OptionData.from_dict({})
+		var option = BridgeData.OptionData.new_default()
 
 		var prev = bridge.prev_option_dict
 		var next = prev.duplicate()

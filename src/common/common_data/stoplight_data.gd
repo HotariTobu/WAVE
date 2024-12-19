@@ -19,3 +19,7 @@ static func from_dict(dict: Dictionary, script: GDScript = StoplightData) -> Con
 	data.offset = dict.get(&"offset", setting.default_stoplight_offset)
 	data.split_ids.assign(dict.get(&"split_ids", []))
 	return data
+
+
+static func new_default() -> ContentData:
+	return from_dict({})

@@ -60,6 +60,10 @@ static func from_dict(dict: Dictionary, script: GDScript = BridgeData) -> Conten
 	return data
 
 
+static func new_default() -> ContentData:
+	return from_dict({})
+
+
 class OptionData:
 	extends DoNotNew
 
@@ -72,3 +76,6 @@ class OptionData:
 		var data = _new(OptionData)
 		data.weight = dict.get(&"weight", setting.default_bridge_option_weight)
 		return data
+
+	static func new_default() -> OptionData:
+		return from_dict({})
