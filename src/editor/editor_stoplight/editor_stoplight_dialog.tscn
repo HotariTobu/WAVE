@@ -5,8 +5,9 @@
 
 [node name="EditorStoplightDialog" type="ConfirmationDialog"]
 title = "Stoplight properties"
-initial_position = 2
+initial_position = 3
 size = Vector2i(300, 146)
+current_screen = 0
 ok_button_text = "Add"
 script = ExtResource("1_phqqh")
 
