@@ -10,7 +10,7 @@ var _parameter = ParameterData.new()
 
 var _data = BindingSource.new(Data.new(), &"notified")
 
-var _manager = SimulatorManager.new()
+var _manager: SimulatorManager = null
 var _thread = Thread.new()
 var _mutex = Mutex.new()
 
@@ -23,8 +23,6 @@ func _ready():
 	_parameter = $ParameterPanel.parameter
 
 	_data.network_file_path = editor_global.network_file_path
-
-	_manager.status_changed.connect(_on_simulator_status_changed.call_deferred)
 
 	var case = CaseBindingConverter
 	_data.bind(&"network_source").using(case.new(NetworkSource.MEMORY)).to_check_box(%NetworkMemoryOption)
@@ -60,8 +58,6 @@ func _status_to_cancel_disabled(status: Status) -> bool:
 
 func _run_simulation() -> SimulationData:
 	_mutex.lock()
-	var parameter_dict = ParameterData.to_dict(_parameter)
-	var parameter = ParameterData.from_dict(parameter_dict)
 	var network_source = _data.network_source
 	_mutex.unlock()
 
@@ -85,13 +81,21 @@ func _run_simulation() -> SimulationData:
 	if network == null:
 		return Data.NULL_SIMULATION
 
+	var manager = SimulatorManager.new()
+
 	_mutex.lock()
+	var parameter_dict = ParameterData.to_dict(_parameter)
+	var parameter = ParameterData.from_dict(parameter_dict)
+
 	_data.set_deferred(&"status", Status.INITIALIZED)
 	_data.set_deferred(&"max_progress_value", parameter.max_step)
+
+	_manager = manager
+	_manager.status_changed.connect(_on_simulator_status_changed.call_deferred)
 	_mutex.unlock()
 
-	_manager.prepare(_parameter, network)
-	var simulation = _manager.start()
+	manager.prepare(_parameter, network)
+	var simulation = manager.start()
 
 	if simulation == null:
 		return Data.NULL_SIMULATION
@@ -107,6 +111,9 @@ func _on_start_button_pressed():
 
 
 func _on_cancel_button_pressed():
+	if _manager == null:
+		return
+
 	if not _thread.is_started():
 		return
 
@@ -140,6 +147,9 @@ func _on_simulator_status_changed(new_status):
 
 
 func _on_progress_bar_timer_timeout():
+	if _manager == null:
+		return
+
 	_mutex.lock()
 	var current_step = _manager.current_step
 	_mutex.unlock()
