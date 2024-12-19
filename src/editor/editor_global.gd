@@ -9,8 +9,6 @@ var source_db = EditorBindingSourceDB.new()
 
 var undo_redo = UndoRedo.new()
 
-var camera: PanZoomCamera
-
 var source = EditorBindingSource.new(self, &"notified")
 
 var network_file_path: String
