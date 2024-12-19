@@ -53,6 +53,7 @@ func get_network() -> NetworkData:
 
 
 func set_network(network: NetworkData):
+	source_db.clear()
 	undo_redo.clear_history()
 
 	for group in content_db.groups:
