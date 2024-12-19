@@ -22,8 +22,6 @@ func _ready():
 
 	_parameter = $ParameterPanel.parameter
 
-	_data.network_file_path = editor_global.network_file_path
-
 	var case = CaseBindingConverter
 	_data.bind(&"network_source").using(case.new(NetworkSource.MEMORY)).to_check_box(%NetworkMemoryOption)
 	_data.bind(&"network_source").using(case.new(NetworkSource.FILE)).to_check_box(%NetworkFileOption)
