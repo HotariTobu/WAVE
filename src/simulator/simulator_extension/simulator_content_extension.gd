@@ -1,22 +1,32 @@
 class_name SimulatorContentExtension
 
-# var content: ContentData:
-# 	get
+var id: StringName:
+	get:
+		return _data.id
 
-# func assign(content: ContentData, _data_of: Callable) -> void:
-# 	id = content.id
-
-
-# func assign_array(self_property: StringName, base_array: Array, data_of: Callable) -> void:
-# 	var array = self[self_property] as Array
-# 	array.assign(base_array.map(data_of))
-# 	array.make_read_only()
+var _data: ContentData
 
 
-# func assign_dict(self_property: StringName, base_dict: Dictionary, data_of: Callable) -> void:
-# 	var dict = self[self_property] as Dictionary
-# 	for base_key in base_dict:
-# 		var key = data_of.call(base_key)
-# 		var value = base_dict[base_key]
-# 		dict[key] = value
-# 	dict.make_read_only()
+func _init(data: ContentData):
+	_data = data
+
+
+func extend(_ext_of: Callable) -> void:
+	pass
+
+
+func _assign_ext_array(self_property: StringName, data_property: StringName, ext_of: Callable) -> void:
+	var dst_array = self[self_property] as Array
+	var src_array = _data[data_property] as Array
+	dst_array.assign(src_array.map(ext_of))
+	dst_array.make_read_only()
+
+
+func _assign_ext_dict(self_property: StringName, data_property: StringName, ext_of: Callable) -> void:
+	var dst_dict = self[self_property] as Dictionary
+	var src_dict = _data[data_property] as Dictionary
+	for content_id in src_dict:
+		var key = ext_of.call(content_id)
+		var value = src_dict[content_id]
+		dst_dict[key] = value
+	dst_dict.make_read_only()

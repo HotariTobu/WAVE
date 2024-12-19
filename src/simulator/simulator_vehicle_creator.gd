@@ -33,8 +33,8 @@ func _init(rng: RandomNumberGenerator, parameter: ParameterData):
 	)
 
 
-func create() -> SimulatorVehicleData:
-	var vehicle = SimulatorVehicleData.new()
+func create() -> SimulatorVehicleExtension:
+	var vehicle = VehicleData.new()
 
 	vehicle.length = _length_rng.next()
 
@@ -54,6 +54,5 @@ func create() -> SimulatorVehicleData:
 	vehicle.half_speed_distance = distances[1]
 	vehicle.high_speed_distance = distances[2]
 
-	vehicle.init_params()
-
-	return vehicle
+	var vehicle_ext = SimulatorVehicleExtension.new(vehicle)
+	return vehicle_ext

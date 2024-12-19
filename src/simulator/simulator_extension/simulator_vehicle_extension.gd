@@ -20,8 +20,6 @@ var _acceleration_slope: float
 func _init(data: VehicleData):
 	super(data)
 
-
-func init_params():
 	var high = _data.high_speed_distance
 	var half = _data.half_speed_distance
 	var zero = _data.zero_speed_distance
@@ -33,14 +31,14 @@ func init_params():
 	_acceleration_slope = _data.high_speed_acceleration / BASE_HIGH_SPEED
 
 
-func spawn_at(space: SimulatorSpaceData, pos: float, step: int):
-	super(space, pos, step)
+func spawn_at(space_ext: SimulatorSpaceExtension, pos: float, step: int):
+	super(space_ext, pos, step)
 	over_last_pos = pos
 
 
-func move_to(space: SimulatorSpaceData, step: int):
-	super(space, step)
-	over_last_pos += space.length
+func move_to(space_ext: SimulatorSpaceExtension, step: int):
+	super(space_ext, step)
+	over_last_pos += space_ext.length
 
 
 func get_preferred_distance(speed: float) -> float:
@@ -53,9 +51,3 @@ func get_preferred_speed(speed_limit: float) -> float:
 
 func get_acceleration(preferred_speed: float) -> float:
 	return preferred_speed * _acceleration_slope
-
-
-func _enter(space: SimulatorSpaceData, step: int):
-	assert(space is SimulatorLaneData)
-	super(space, step)
-	space.vehicles.append(self)
