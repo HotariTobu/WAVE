@@ -102,21 +102,3 @@ class RandomOption:
 
 	static func from_dict(dict: Dictionary) -> RandomOption:
 		return RandomOption.new(dict.get(&"value", NAN), dict.get(&"weight", NAN))
-
-
-class IntRange:
-	var begin: int
-	var end: int
-
-	func _init(_begin: int, _end: int):
-		begin = _begin
-		end = _end
-
-	static func to_dict(data: IntRange) -> Dictionary:
-		return {
-			&"begin": data.begin,
-			&"end": data.end,
-		}
-
-	static func from_dict(dict: Dictionary) -> IntRange:
-		return IntRange.new(dict.get(&"begin", 0), dict.get(&"end", 0))
