@@ -114,7 +114,7 @@ func _init_ordered_lane_exts():
 				else:
 					rest_lane_exts.append(prev_lane_ext)
 
-		lane_exts = rest_lane_exts.filter(unvisited)
+		lane_exts = rest_lane_exts
 
 	_ordered_lane_exts.make_read_only()
 
