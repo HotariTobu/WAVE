@@ -20,15 +20,15 @@ var _acceleration_slope: float
 func _init(data: VehicleData):
 	super(data)
 
-	var high = _data.high_speed_distance
-	var half = _data.half_speed_distance
-	var zero = _data.zero_speed_distance
+	var high = data.high_speed_distance
+	var half = data.half_speed_distance
+	var zero = data.zero_speed_distance
 
 	_distance_factor = ((half - zero) ** 2) / (high - 2 * half + zero)
 	_distance_base = ((high - half) / (half - zero)) ** (1.0 / (BASE_HIGH_SPEED / 2))
 	_distance_intercept = zero - _distance_factor
-	_speed_slope = _data.high_speed / BASE_HIGH_SPEED
-	_acceleration_slope = _data.high_speed_acceleration / BASE_HIGH_SPEED
+	_speed_slope = data.high_speed / BASE_HIGH_SPEED
+	_acceleration_slope = data.high_speed_acceleration / BASE_HIGH_SPEED
 
 
 func spawn_at(space_ext: SimulatorSpaceExtension, pos: float, step: int):
