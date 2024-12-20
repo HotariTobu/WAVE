@@ -28,11 +28,11 @@ var block_targeted_color = Color("#f01616")
 var block_targeting_color = block_targeted_color.lightened(0.5)
 
 var force_default_bridge_traffic = true
-var force_default_bridge_forward = true
+var force_default_bridge_forward_rate = true
 var force_default_bridge_width_limit = false
 
 var default_bridge_traffic = 10.0
-var default_bridge_forward = 0.5
+var default_bridge_forward_rate = 0.5
 var default_bridge_width_limit = 3
 var default_bridge_option_weight = 1.0
 

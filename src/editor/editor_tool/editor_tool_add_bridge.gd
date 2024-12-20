@@ -267,8 +267,8 @@ func _commit():
 	if not setting.force_default_bridge_traffic:
 		new_bridge.traffic = _calc_initial_traffic()
 
-	if not setting.force_default_bridge_forward:
-		new_bridge.forward = _calc_initial_forward()
+	if not setting.force_default_bridge_forward_rate:
+		new_bridge.forward_rate = _calc_initial_forward_rate()
 
 	if not setting.force_default_bridge_width_limit:
 		new_bridge.width_limit = _calc_initial_width_limit()
@@ -346,22 +346,22 @@ func _calc_initial_traffic() -> float:
 	return initial_traffic
 
 
-func _calc_initial_forward() -> int:
+func _calc_initial_forward_rate() -> int:
 	var bridge_count = len(_prev_bridges) + len(_next_bridges)
 	if bridge_count == 0:
-		return setting.default_bridge_forward
+		return setting.default_bridge_forward_rate
 
-	var sum_forward = 0.0
+	var sum_forward_rate = 0.0
 
 	for bridge in _prev_bridges:
-		sum_forward += bridge.forward
+		sum_forward_rate += bridge.forward_rate
 
 	for bridge in _next_bridges:
-		sum_forward += bridge.forward
+		sum_forward_rate += bridge.forward_rate
 
-	var average_forward = sum_forward / bridge_count
+	var average_forward_rate = sum_forward_rate / bridge_count
 
-	return average_forward
+	return average_forward_rate
 
 
 func _calc_initial_width_limit() -> int:

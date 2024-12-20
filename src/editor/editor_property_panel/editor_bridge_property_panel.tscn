@@ -28,9 +28,9 @@ max_value = 200.0
 
 [node name="Label4" type="Label" parent="."]
 layout_mode = 2
-text = "Forward"
+text = "Forward rate"
 
-[node name="ForwardBox" type="LineEdit" parent="."]
+[node name="ForwardRateBox" type="LineEdit" parent="."]
 layout_mode = 2
 select_all_on_focus = true
 script = ExtResource("2_4rs1l")
@@ -49,5 +49,5 @@ min_value = 1.0
 max_value = 10.0
 
 [connection signal="value_changed" from="TrafficBox" to="." method="_on_traffic_box_value_changed"]
-[connection signal="value_changed" from="ForwardBox" to="." method="_on_forward_box_value_changed"]
+[connection signal="value_changed" from="ForwardRateBox" to="." method="_on_forward_rate_box_value_changed"]
 [connection signal="value_changed" from="WidthLimitBox" to="." method="_on_width_limit_box_value_changed"]

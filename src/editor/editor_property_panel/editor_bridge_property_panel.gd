@@ -32,7 +32,7 @@ var _next_option_cells: Array[Control]:
 		_next_option_cells = next
 
 @onready var _traffic_box = $TrafficBox
-@onready var _forward_box = $ForwardBox
+@onready var _forward_rate_box = $ForwardRateBox
 @onready var _width_limit_box = $WidthLimitBox
 
 
@@ -44,12 +44,12 @@ func _bind_cells(next_sources: Array[EditorBindingSource]):
 	var first_source = next_sources.front() as EditorBindingSource
 
 	var traffic_converter = UnifyConverter.from_property(first_source, &"traffic")
-	var forward_converter = UnifyConverter.from_property(first_source, &"forward")
+	var forward_rate_converter = UnifyConverter.from_property(first_source, &"forward_rate")
 	var speed_limit_converter = UnifyConverter.from_property(first_source, &"width_limit")
 
 	for source in next_sources:
 		source.bind(&"traffic").using(traffic_converter).to(_traffic_box, &"value")
-		source.bind(&"forward").using(forward_converter).to(_forward_box, &"value")
+		source.bind(&"forward_rate").using(forward_rate_converter).to(_forward_rate_box, &"value")
 		source.bind(&"width_limit").using(speed_limit_converter).to(_width_limit_box, &"value")
 
 	if len(next_sources) == 1:
@@ -64,7 +64,7 @@ func _unbind_cells(prev_sources: Array[EditorBindingSource]):
 
 	for source in prev_sources:
 		source.unbind(&"traffic").from(_traffic_box, &"value")
-		source.unbind(&"forward").from(_forward_box, &"value")
+		source.unbind(&"forward_rate").from(_forward_rate_box, &"value")
 		source.unbind(&"width_limit").from(_width_limit_box, &"value")
 
 	if len(prev_sources) == 1:
@@ -84,12 +84,12 @@ func _on_traffic_box_value_changed(new_value):
 	_editor_global.undo_redo.commit_action()
 
 
-func _on_forward_box_value_changed(new_value):
-	_editor_global.undo_redo.create_action("Change bridge forward")
+func _on_forward_rate_box_value_changed(new_value):
+	_editor_global.undo_redo.create_action("Change bridge forward rate")
 
 	for source in sources:
-		_editor_global.undo_redo.add_do_property(source, &"forward", new_value)
-		_editor_global.undo_redo.add_undo_property(source, &"forward", source.forward)
+		_editor_global.undo_redo.add_do_property(source, &"forward_rate", new_value)
+		_editor_global.undo_redo.add_undo_property(source, &"forward_rate", source.forward_rate)
 
 	_editor_global.undo_redo.commit_action()
 

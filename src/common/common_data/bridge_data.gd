@@ -2,7 +2,7 @@ class_name BridgeData
 extends SpaceData
 
 var traffic: float
-var forward: float
+var forward_rate: float
 var width_limit: int
 var prev_option_dict: Dictionary
 var next_option_dict: Dictionary
@@ -42,7 +42,7 @@ static func to_dict(data: ContentData) -> Dictionary:
 	assert(data is BridgeData)
 	var dict = super(data)
 	dict[&"traffic"] = data.traffic
-	dict[&"forward"] = data.forward
+	dict[&"forward_rate"] = data.forward_rate
 	dict[&"width_limit"] = data.width_limit
 	dict[&"prev_option_dict"] = data._prev_option_dict
 	dict[&"next_option_dict"] = data._next_option_dict
@@ -53,7 +53,7 @@ static func from_dict(dict: Dictionary, script: GDScript = BridgeData) -> Conten
 	var data = super(dict, script)
 	assert(data is BridgeData)
 	data.traffic = dict.get(&"traffic", setting.default_bridge_traffic)
-	data.forward = dict.get(&"forward", setting.default_bridge_forward)
+	data.forward_rate = dict.get(&"forward_rate", setting.default_bridge_forward_rate)
 	data.width_limit = dict.get(&"width_limit", setting.default_bridge_width_limit)
 	data._prev_option_dict = dict.get(&"prev_option_dict", {})
 	data._next_option_dict = dict.get(&"next_option_dict", {})
