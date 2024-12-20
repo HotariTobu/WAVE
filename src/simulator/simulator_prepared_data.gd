@@ -65,20 +65,17 @@ func _init_lane_exts():
 
 		if next_lane_count == 1:
 			var next_lane_ext = lane_ext.next_lane_exts.front()
-			lane_ext.next_lane_ext_chooser = func(): return next_lane_ext
+			lane_ext.choose_next_lane_ext = func(): return next_lane_ext
 			continue
 
-		var random_options: Array[ParameterData.RandomOption]
+		var next_lane_ext_chooser = SimulatorRandomWeightedArray.new(_rng)
+		_instances.append(next_lane_ext_chooser)
 
 		for next_lane_ext in lane_ext.next_option_dict:
 			var next_option = lane_ext.next_option_dict[next_lane_ext]
-			var random_option = ParameterData.RandomOption.new(next_lane_ext, next_option.weight)
-			random_options.append(random_option)
+			next_lane_ext_chooser.add_option(next_option.weight, next_lane_ext)
 
-		var random_next_lane_ext = SimulatorRandomWeightedArray.new(_rng, random_options)
-		_instances.append(random_next_lane_ext)
-
-		lane_ext.next_lane_ext_chooser = random_next_lane_ext.next
+		lane_ext.choose_next_lane_ext = next_lane_ext_chooser.next
 
 
 func _init_ordered_lane_exts():

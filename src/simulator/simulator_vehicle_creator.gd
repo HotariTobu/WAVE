@@ -15,7 +15,9 @@ var _high_speed_distance_rng: SimulatorRandomNormalDistributionRange
 
 
 func _init(rng: RandomNumberGenerator, parameter: ParameterData):
-	_length_rng = SimulatorRandomWeightedArray.new(rng, parameter.vehicle_length_options)
+	_length_rng = SimulatorRandomWeightedArray.new(rng)
+	for o in parameter.vehicle_length_options:
+		_length_rng.add_option(o.weight, o.value)
 
 	_high_speed_acceleration_rng = SimulatorRandomNormalDistributionRange.new(rng, parameter.vehicle_high_speed_acceleration_range, parameter.vehicle_high_speed_acceleration_mean)
 
