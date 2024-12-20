@@ -118,13 +118,39 @@ func _iterate_forward_bridges(step: int):
 		if bridge_ext.forward_is_closed and rear_pos < 0:
 			rear_pos = 0
 
+		var crowd_end = 0
+
+		var walker_count = len(bridge_ext.agent_exts)
 		var removed_count = 0
 
-		for index in range(len(bridge_ext.agent_exts)):
+		for index in range(walker_count):
+			if bridge_ext.width_count_dict.has(index):
+				var width_count = bridge_ext.width_count_dict[index]
+				if width_count
 			var walker_ext = bridge_ext.agent_exts[index] as SimulatorWalkerExtension
 			var walker = walker_ext.walker
 
 			var pos = walker.pos_history[-1]
+
+			var preferred_displacement = walker.speed * _parameter.step_delta
+
+			var last_displacement = walker_ext.over_last_pos - pos
+
+			var preferred_distance = (walker.public_distance - walker.personal_distance) * last_displacement / preferred_displacement + walker.personal_distance
+
+			for forward_index in range(index):
+				var forward_walker_ext = bridge_ext.agent_exts[forward_index] as SimulatorWalkerExtension
+				var forward_walker = forward_walker_ext.walker
+
+				var forward_pos = forward_walker.pos_history[-1]
+				var gap = forward_pos - pos
+
+				if preferred_distance < gap + walker_ext.diameter:
+
+
+					break
+
+
 
 			var next_displacement = min(possible_displacement, limited_displacement, accelerated_displacement)
 			var next_pos = pos - next_displacement
@@ -136,28 +162,14 @@ func _iterate_forward_bridges(step: int):
 			if next_pos < 0:
 				removed_count += 1
 
-			#printt(
-			#	#"[%02d]" % (walker.spawn_step),
-			#	"[%02d]" % (walker.length),
-			#	"%.2f m" % (last_displacement),
-			#	"%.2f km/h" % (last_speed * 3.6),
-			#	"%.2f m" % (actual_distance),
-			#	"%.2f m" % (preferred_distance),
-			#	"%.2f km/h" % (relative_speed * 3.6),
-			#	"%.2f km/h" % (preferred_speed * 3.6),
-			#	"%.2f" % (acceleration),
-			#	"%.2f km/h" % (accelerated_speed * 3.6),
-			#	"%.2f km/h" % (speed * 3.6),
-			#)
-
 		for _i in range(removed_count):
-			var walker_ext = bridge_ext.agent_exts.pop_front() as SimulatorwalkerExtension
+			var walker_ext = bridge_ext.agent_exts.pop_front() as SimulatorWalkerExtension
 
 			if bridge_ext.choose_next_bridge_ext == null:
 				walker_ext.die(step)
 				continue
 
-			var next_bridge_ext = bridge_ext.choose_next_bridge_ext.call() as SimulatorbridgeExtension
+			var next_bridge_ext = bridge_ext.choose_next_bridge_ext.call() as SimulatorBridgeExtension
 
 			if bridge_ext.loop_next_bridge_ext_set.has(next_bridge_ext):
 				var buffered_walker_exts = loop_tail_buffer_dict.get_or_add(next_bridge_ext, []) as Array

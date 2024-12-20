@@ -2,6 +2,7 @@ class_name SimulatorWalkerExtension
 extends SimulatorAgentExtension
 
 var forward: bool
+var over_last_pos: float
 
 var diameter: float
 

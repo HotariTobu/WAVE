@@ -4,7 +4,7 @@ extends SimulatorSpaceExtension
 const TRAFFIC_FACTOR = 1.0 / 100.0
 
 var traffic: float
-var width_limit: float
+var width_limit: int
 
 var prev_option_dict: Dictionary
 var next_option_dict: Dictionary
@@ -19,6 +19,7 @@ var loop_next_bridge_ext_set = Set.new()
 
 var forward_is_closed: bool
 var backward_is_closed: bool
+var width_count_dict: Dictionary
 
 var bridge: BridgeData:
 	get:
