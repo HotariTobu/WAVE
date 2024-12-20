@@ -1,8 +1,9 @@
 class_name SimulatorWalkerExtension
 extends SimulatorAgentExtension
 
-var last_distance: float
-var over_last_pos: float
+var forward: bool
+
+var diameter: float
 
 var walker: WalkerData:
 	get:
@@ -11,3 +12,5 @@ var walker: WalkerData:
 
 func _init(data: WalkerData):
 	super(data)
+
+	diameter = data.radius * 2

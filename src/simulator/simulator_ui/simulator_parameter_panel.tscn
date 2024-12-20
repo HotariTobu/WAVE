@@ -38,6 +38,17 @@ script = ExtResource("1_nvq3g")
 suffix = " step(s)"
 min_value = 0.0
 
+[node name="Label20" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Max entry step offset"
+
+[node name="MaxEntryStepOffsetBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_nvq3g")
+suffix = " step(s)"
+min_value = 0.0
+
 [node name="Label6" type="Label" parent="GridContainer"]
 layout_mode = 2
 text = "Random seed"

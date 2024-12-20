@@ -59,7 +59,27 @@ var stoplight_sector_saturation = 0.5
 
 var default_step_delta = 1
 var default_max_step = 100
+var default_max_entry_step_offset = 10
 var default_random_seed = 5
+
+var default_walker_spawn_before_start = true
+var default_walker_spawn_after_start = true
+var default_walker_spawn_rate = 0.8
+
+var default_walker_spawn_parameters = [
+	{
+		&"weight": 100.0,
+		&"radius": 0.5,
+		&"desired_speed_range": {&"begin": 1.0, &"end": 5.0},
+		&"desired_speed_mean": 3.0,
+		&"overtake_speed_range": {&"begin": 1.0, &"end": 5.0},
+		&"overtake_speed_mean": 2.0,
+		&"personal_distance_range": {&"begin": 0.3, &"end": 1.0},
+		&"personal_distance_mean": 0.5,
+		&"public_distance_range": {&"begin": 0.5, &"end": 3.0},
+		&"public_distance_mean": 1.5,
+	},
+]
 
 var default_vehicle_spawn_before_start = true
 var default_vehicle_spawn_after_start = true

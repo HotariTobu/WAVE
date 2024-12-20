@@ -6,11 +6,14 @@ func iterate(step: int) -> bool:
 	if _done(step):
 		return false
 
+	_iterate_walker_entry_point(step)
 	_iterate_vehicle_entry_point(step)
 
 	_iterate_block_sources(step)
 	_iterate_block_targets(step)
 
+	_iterate_forward_bridges(step)
+	_iterate_backward_bridges(step)
 	_iterate_lanes(step)
 
 	return true
@@ -18,6 +21,32 @@ func iterate(step: int) -> bool:
 
 func _done(step: int) -> bool:
 	return _parameter.max_step <= step
+
+
+func _iterate_walker_entry_point(step: int):
+	for entry_point in _walker_entry_points:
+		if _should_exit.call():
+			return
+
+		if step - entry_point.last_entry_step < entry_point.interval:
+			continue
+
+		var bridge_ext = entry_point.entry_space_ext as SimulatorBridgeExtension
+
+		# if 0 <= bridge_ext.overflowing:
+		# 	continue
+
+		if _parameter.walker_spawn_rate <= _rng.randf():
+			continue
+
+		var walker_ext = _walker_creator.create()
+		walker_ext.forward = bridge_ext.prev_bridge_exts.is_empty()
+		var pos = bridge_ext.length if walker_ext.forward else 0.0
+		walker_ext.spawn_at(bridge_ext, pos, step)
+		simulation.walkers.append(walker_ext.walker)
+
+		# bridge_ext.update_overflowing()
+		entry_point.last_entry_step = step
 
 
 func _iterate_vehicle_entry_point(step: int):
@@ -28,18 +57,20 @@ func _iterate_vehicle_entry_point(step: int):
 		if step - entry_point.last_entry_step < entry_point.interval:
 			continue
 
-		if 0 <= entry_point.entry_lane_ext.overflowing:
+		var lane_ext = entry_point.entry_space_ext as SimulatorLaneExtension
+
+		if 0 <= lane_ext.overflowing:
 			continue
 
 		if _parameter.vehicle_spawn_rate <= _rng.randf():
 			continue
 
 		var vehicle_ext = _vehicle_creator.create()
-		var pos = entry_point.entry_lane_ext.length
-		vehicle_ext.spawn_at(entry_point.entry_lane_ext, pos, step)
+		var pos = lane_ext.length
+		vehicle_ext.spawn_at(lane_ext, pos, step)
 		simulation.vehicles.append(vehicle_ext.vehicle)
 
-		entry_point.entry_lane_ext.update_overflowing()
+		lane_ext.update_overflowing()
 		entry_point.last_entry_step = step
 
 
@@ -65,8 +96,89 @@ func _iterate_block_targets(step: int):
 
 		simulation.block_history[block_target_ext.id].append(step)
 
+	for bridge_ext in _closable_bridge_exts:
+		bridge_ext.forward_is_closed = bridge_ext.next_bridge_exts.all(_is_blocked)
+		bridge_ext.backward_is_closed = bridge_ext.prev_bridge_exts.all(_is_blocked)
+
 	for lane_ext in _closable_lane_exts:
 		lane_ext.is_closed = lane_ext.next_lane_exts.all(_is_blocked)
+
+
+func _iterate_forward_bridges(step: int):
+	var loop_tail_buffer_dict: Dictionary
+
+	for bridge_ext in _forward_ordered_bridge_exts:
+		if _should_exit.call():
+			return
+
+		if bridge_ext.agent_exts.is_empty():
+			continue
+
+		var rear_pos = bridge_ext.overflowed
+		if bridge_ext.forward_is_closed and rear_pos < 0:
+			rear_pos = 0
+
+		var removed_count = 0
+
+		for index in range(len(bridge_ext.agent_exts)):
+			var walker_ext = bridge_ext.agent_exts[index] as SimulatorWalkerExtension
+			var walker = walker_ext.walker
+
+			var pos = walker.pos_history[-1]
+
+			var next_displacement = min(possible_displacement, limited_displacement, accelerated_displacement)
+			var next_pos = pos - next_displacement
+
+			walker.pos_history.append(next_pos)
+
+			rear_pos = next_pos + walker.length
+
+			if next_pos < 0:
+				removed_count += 1
+
+			#printt(
+			#	#"[%02d]" % (walker.spawn_step),
+			#	"[%02d]" % (walker.length),
+			#	"%.2f m" % (last_displacement),
+			#	"%.2f km/h" % (last_speed * 3.6),
+			#	"%.2f m" % (actual_distance),
+			#	"%.2f m" % (preferred_distance),
+			#	"%.2f km/h" % (relative_speed * 3.6),
+			#	"%.2f km/h" % (preferred_speed * 3.6),
+			#	"%.2f" % (acceleration),
+			#	"%.2f km/h" % (accelerated_speed * 3.6),
+			#	"%.2f km/h" % (speed * 3.6),
+			#)
+
+		for _i in range(removed_count):
+			var walker_ext = bridge_ext.agent_exts.pop_front() as SimulatorwalkerExtension
+
+			if bridge_ext.choose_next_bridge_ext == null:
+				walker_ext.die(step)
+				continue
+
+			var next_bridge_ext = bridge_ext.choose_next_bridge_ext.call() as SimulatorbridgeExtension
+
+			if bridge_ext.loop_next_bridge_ext_set.has(next_bridge_ext):
+				var buffered_walker_exts = loop_tail_buffer_dict.get_or_add(next_bridge_ext, []) as Array
+				buffered_walker_exts.append(walker_ext)
+
+				var walker = walker_ext.walker
+				walker.pos_history[-1] += next_bridge_ext.length
+				next_bridge_ext.update_overflowing_by(walker)
+
+			else:
+				walker_ext.move_to(next_bridge_ext, step)
+				next_bridge_ext.update_overflowing()
+
+		bridge_ext.update_overflowing()
+
+	for next_bridge_ext in loop_tail_buffer_dict:
+		var buffered_walker_exts = loop_tail_buffer_dict[next_bridge_ext]
+
+		for walker_ext in buffered_walker_exts:
+			walker_ext.walker.pos_history[-1] -= next_bridge_ext.length
+			walker_ext.move_to(next_bridge_ext, step)
 
 
 func _iterate_lanes(step: int):

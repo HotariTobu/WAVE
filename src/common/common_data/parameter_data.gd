@@ -3,8 +3,14 @@ extends DoNotNew
 
 var step_delta: float
 var max_step: int
-
+var max_entry_step_offset: int
 var random_seed: int
+
+var walker_spawn_before_start: bool
+var walker_spawn_after_start: bool
+var walker_spawn_rate: float
+
+var walker_spawn_parameters: Array[WalkerData.SpawnParameterData]
 
 var vehicle_spawn_before_start: bool
 var vehicle_spawn_after_start: bool
@@ -32,7 +38,12 @@ static func to_dict(data: ParameterData) -> Dictionary:
 	return {
 		&"step_delta": data.step_delta,
 		&"max_step": data.max_step,
+		&"max_entry_step_offset": data.max_entry_step_offset,
 		&"random_seed": data.random_seed,
+		&"walker_spawn_before_start": data.walker_spawn_before_start,
+		&"walker_spawn_after_start": data.walker_spawn_after_start,
+		&"walker_spawn_rate": data.walker_spawn_rate,
+		&"walker_spawn_parameters": data.walker_spawn_parameters.map(WalkerData.SpawnParameterData.to_dict),
 		&"vehicle_spawn_before_start": data.vehicle_spawn_before_start,
 		&"vehicle_spawn_after_start": data.vehicle_spawn_after_start,
 		&"vehicle_spawn_rate": data.vehicle_spawn_rate,
@@ -56,7 +67,12 @@ static func from_dict(dict: Dictionary) -> ParameterData:
 	var data = _new(ParameterData)
 	data.step_delta = dict.get(&"step_delta", setting.default_step_delta)
 	data.max_step = dict.get(&"max_step", setting.default_max_step)
+	data.max_entry_step_offset = dict.get(&"max_entry_step_offset", setting.default_max_entry_step_offset)
 	data.random_seed = dict.get(&"random_seed", setting.default_random_seed)
+	data.walker_spawn_before_start = dict.get(&"walker_spawn_before_start", setting.default_walker_spawn_before_start)
+	data.walker_spawn_after_start = dict.get(&"walker_spawn_after_start", setting.default_walker_spawn_after_start)
+	data.walker_spawn_rate = dict.get(&"walker_spawn_rate", setting.default_walker_spawn_rate)
+	data.walker_spawn_parameters.assign(dict.get(&"walker_spawn_parameters", setting.default_walker_spawn_parameters).map(WalkerData.SpawnParameterData.from_dict))
 	data.vehicle_spawn_before_start = dict.get(&"vehicle_spawn_before_start", setting.default_vehicle_spawn_before_start)
 	data.vehicle_spawn_after_start = dict.get(&"vehicle_spawn_after_start", setting.default_vehicle_spawn_after_start)
 	data.vehicle_spawn_rate = dict.get(&"vehicle_spawn_rate", setting.default_vehicle_spawn_rate)
@@ -79,6 +95,15 @@ static func from_dict(dict: Dictionary) -> ParameterData:
 static func new_default() -> ParameterData:
 	return from_dict({})
 
+
+
+
+
+
+
+##
+##
+##
 
 class RandomOption:
 	var value: Variant
