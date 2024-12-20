@@ -3,7 +3,7 @@ extends AgentData
 
 var radius: float
 
-var desired_speed: float
+var speed: float
 var overtake_speed: float
 
 var personal_distance: float
@@ -14,7 +14,7 @@ static func to_dict(data: AgentData) -> Dictionary:
 	assert(data is VehicleData)
 	var dict = super(data)
 	dict[&"radius"] = data.radius
-	dict[&"desired_speed"] = data.desired_speed
+	dict[&"speed"] = data.speed
 	dict[&"overtake_speed"] = data.overtake_speed
 	dict[&"personal_distance"] = data.personal_distance
 	dict[&"public_distance"] = data.public_distance
@@ -25,7 +25,7 @@ static func from_dict(dict: Dictionary, script: GDScript = VehicleData) -> Agent
 	var data = super(dict, script)
 	assert(data is VehicleData)
 	data.radius = dict.get(&"radius", NAN)
-	data.desired_speed = dict.get(&"desired_speed", NAN)
+	data.speed = dict.get(&"speed", NAN)
 	data.overtake_speed = dict.get(&"overtake_speed", NAN)
 	data.personal_distance = dict.get(&"personal_distance", NAN)
 	data.public_distance = dict.get(&"public_distance", NAN)
@@ -37,8 +37,8 @@ class SpawnParameterData:
 
 	var radius: float
 
-	var desired_speed_range: FloatRange
-	var desired_speed_mean: float
+	var speed_range: FloatRange
+	var speed_mean: float
 	var overtake_speed_range: FloatRange
 	var overtake_speed_mean: float
 
@@ -51,8 +51,8 @@ class SpawnParameterData:
 		return {
 			&"weight": data.weight,
 			&"radius": data.radius,
-			&"desired_speed_range": FloatRange.to_dict(data.desired_speed_range),
-			&"desired_speed_mean": data.desired_speed_mean,
+			&"speed_range": FloatRange.to_dict(data.speed_range),
+			&"speed_mean": data.speed_mean,
 			&"overtake_speed_range": FloatRange.to_dict(data.overtake_speed_range),
 			&"overtake_speed_mean": data.overtake_speed_mean,
 			&"personal_distance_range": FloatRange.to_dict(data.personal_distance_range),
@@ -65,8 +65,8 @@ class SpawnParameterData:
 		var data = SpawnParameterData.new()
 		data.weight = dict.get(&"weight", NAN)
 		data.radius = dict.get(&"radius", NAN)
-		data.desired_speed_range = FloatRange.from_dict(dict.get(&"desired_speed_range", {}))
-		data.desired_speed_mean = dict.get(&"desired_speed_mean", NAN)
+		data.speed_range = FloatRange.from_dict(dict.get(&"speed_range", {}))
+		data.speed_mean = dict.get(&"speed_mean", NAN)
 		data.overtake_speed_range = FloatRange.from_dict(dict.get(&"overtake_speed_range", {}))
 		data.overtake_speed_mean = dict.get(&"overtake_speed_mean", NAN)
 		data.personal_distance_range = FloatRange.from_dict(dict.get(&"personal_distance_range", {}))

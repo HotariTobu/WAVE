@@ -70,8 +70,8 @@ var default_walker_spawn_parameters = [
 	{
 		&"weight": 100.0,
 		&"radius": 0.5,
-		&"desired_speed_range": {&"begin": 1.0, &"end": 5.0},
-		&"desired_speed_mean": 3.0,
+		&"speed_range": {&"begin": 1.0, &"end": 5.0},
+		&"speed_mean": 3.0,
 		&"overtake_speed_range": {&"begin": 1.0, &"end": 5.0},
 		&"overtake_speed_mean": 2.0,
 		&"personal_distance_range": {&"begin": 0.3, &"end": 1.0},
