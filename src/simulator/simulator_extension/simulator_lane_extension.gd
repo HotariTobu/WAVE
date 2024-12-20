@@ -12,7 +12,7 @@ var next_option_dict: Dictionary
 var next_lane_exts: Array[SimulatorLaneExtension]
 var prev_lane_exts: Array[SimulatorLaneExtension]
 
-var next_lane_ext_chooser = null
+var choose_next_lane_ext = null
 var loop_next_lane_ext_set = Set.new()
 
 var overflowed: float

@@ -138,11 +138,11 @@ func _iterate_lanes(step: int):
 		for _i in range(removed_count):
 			var vehicle_ext = lane_ext.agent_exts.pop_front() as SimulatorVehicleExtension
 
-			if lane_ext.next_lane_ext_chooser == null:
+			if lane_ext.choose_next_lane_ext == null:
 				vehicle_ext.die(step)
 				continue
 
-			var next_lane_ext = lane_ext.next_lane_ext_chooser.call() as SimulatorLaneExtension
+			var next_lane_ext = lane_ext.choose_next_lane_ext.call() as SimulatorLaneExtension
 
 			if lane_ext.loop_next_lane_ext_set.has(next_lane_ext):
 				var buffered_vehicle_exts = loop_tail_buffer_dict.get_or_add(next_lane_ext, []) as Array
