@@ -15,6 +15,7 @@ var prev_lane_exts: Array[SimulatorLaneExtension]
 var choose_next_lane_ext = null
 var loop_next_lane_ext_set = Set.new()
 
+var is_closed: bool
 var overflowed: float
 var overflowing: float
 

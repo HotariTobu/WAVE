@@ -3,7 +3,6 @@ extends SimulatorSegmentsExtension
 
 var is_blocking: bool
 var is_blocked: bool
-var is_closed: bool
 
 var agent_exts: Array[SimulatorAgentExtension]
 
