@@ -111,20 +111,23 @@ func _init_forward_ordered_bridge_exts():
 
 	while not bridge_exts.is_empty() and not _should_exit.call():
 		var bridge_ext_stack: Array[SimulatorBridgeExtension]
-		var rest_bridge_exts: Array[SimulatorBridgeExtension]
+		var rest_bridge_ext_set = Set.new()
 
 		for bridge_ext in bridge_exts:
 			if bridge_ext.next_bridge_exts.all(visited):
 				bridge_ext_stack.append(bridge_ext)
 			else:
-				rest_bridge_exts.append(bridge_ext)
+				rest_bridge_ext_set.add(bridge_ext)
 
 		if bridge_ext_stack.is_empty():
-			var bridge_ext = rest_bridge_exts.pop_back() as SimulatorBridgeExtension
+			var bridge_ext = bridge_exts.front() as SimulatorBridgeExtension
 			bridge_ext_stack.append(bridge_ext)
+			rest_bridge_ext_set.erase(bridge_ext)
 
 			var loop_next_bridges = bridge_ext.next_bridge_exts.filter(unvisited)
 			bridge_ext.loop_next_bridge_ext_set.add_all(loop_next_bridges)
+
+		var prioritized_bridge_ext_set = Set.new()
 
 		while not bridge_ext_stack.is_empty() and not _should_exit.call():
 			var bridge_ext = bridge_ext_stack.pop_back() as SimulatorBridgeExtension
@@ -136,9 +139,10 @@ func _init_forward_ordered_bridge_exts():
 				if prev_bridge_ext.next_bridge_exts.all(visited):
 					bridge_ext_stack.append(prev_bridge_ext)
 				else:
-					rest_bridge_exts.append(prev_bridge_ext)
+					prioritized_bridge_ext_set.add(prev_bridge_ext)
 
-		bridge_exts = rest_bridge_exts
+		rest_bridge_ext_set.exclude(prioritized_bridge_ext_set)
+		bridge_exts = prioritized_bridge_ext_set.to_array() + rest_bridge_ext_set.to_array()
 
 	_forward_ordered_bridge_exts.make_read_only()
 
@@ -152,20 +156,23 @@ func _init_backward_ordered_bridge_exts():
 
 	while not bridge_exts.is_empty() and not _should_exit.call():
 		var bridge_ext_stack: Array[SimulatorBridgeExtension]
-		var rest_bridge_exts: Array[SimulatorBridgeExtension]
+		var rest_bridge_ext_set = Set.new()
 
 		for bridge_ext in bridge_exts:
 			if bridge_ext.prev_bridge_exts.all(visited):
 				bridge_ext_stack.append(bridge_ext)
 			else:
-				rest_bridge_exts.append(bridge_ext)
+				rest_bridge_ext_set.add(bridge_ext)
 
 		if bridge_ext_stack.is_empty():
-			var bridge_ext = rest_bridge_exts.pop_back() as SimulatorBridgeExtension
+			var bridge_ext = bridge_exts.front() as SimulatorBridgeExtension
 			bridge_ext_stack.append(bridge_ext)
+			rest_bridge_ext_set.erase(bridge_ext)
 
 			var loop_prev_bridges = bridge_ext.prev_bridge_exts.filter(unvisited)
 			bridge_ext.loop_prev_bridge_ext_set.add_all(loop_prev_bridges)
+
+		var prioritized_bridge_ext_set = Set.new()
 
 		while not bridge_ext_stack.is_empty() and not _should_exit.call():
 			var bridge_ext = bridge_ext_stack.pop_back() as SimulatorBridgeExtension
@@ -177,9 +184,10 @@ func _init_backward_ordered_bridge_exts():
 				if next_bridge_ext.prev_bridge_exts.all(visited):
 					bridge_ext_stack.append(next_bridge_ext)
 				else:
-					rest_bridge_exts.append(next_bridge_ext)
+					prioritized_bridge_ext_set.add(next_bridge_ext)
 
-		bridge_exts = rest_bridge_exts
+		rest_bridge_ext_set.exclude(prioritized_bridge_ext_set)
+		bridge_exts = prioritized_bridge_ext_set.to_array() + rest_bridge_ext_set.to_array()
 
 	_backward_ordered_bridge_exts.make_read_only()
 
@@ -219,20 +227,23 @@ func _init_ordered_lane_exts():
 
 	while not lane_exts.is_empty() and not _should_exit.call():
 		var lane_ext_stack: Array[SimulatorLaneExtension]
-		var rest_lane_exts: Array[SimulatorLaneExtension]
+		var rest_lane_ext_set = Set.new()
 
 		for lane_ext in lane_exts:
 			if lane_ext.next_lane_exts.all(visited):
 				lane_ext_stack.append(lane_ext)
 			else:
-				rest_lane_exts.append(lane_ext)
+				rest_lane_ext_set.add(lane_ext)
 
 		if lane_ext_stack.is_empty():
-			var lane_ext = rest_lane_exts.pop_back() as SimulatorLaneExtension
+			var lane_ext = lane_exts.front() as SimulatorLaneExtension
 			lane_ext_stack.append(lane_ext)
+			rest_lane_ext_set.erase(lane_ext)
 
 			var loop_next_lanes = lane_ext.next_lane_exts.filter(unvisited)
 			lane_ext.loop_next_lane_ext_set.add_all(loop_next_lanes)
+
+		var prioritized_lane_ext_set = Set.new()
 
 		while not lane_ext_stack.is_empty() and not _should_exit.call():
 			var lane_ext = lane_ext_stack.pop_back() as SimulatorLaneExtension
@@ -244,9 +255,10 @@ func _init_ordered_lane_exts():
 				if prev_lane_ext.next_lane_exts.all(visited):
 					lane_ext_stack.append(prev_lane_ext)
 				else:
-					rest_lane_exts.append(prev_lane_ext)
+					prioritized_lane_ext_set.add(prev_lane_ext)
 
-		lane_exts = rest_lane_exts
+		rest_lane_ext_set.exclude(prioritized_lane_ext_set)
+		lane_exts = prioritized_lane_ext_set.to_array() + rest_lane_ext_set.to_array()
 
 	_ordered_lane_exts.make_read_only()
 
