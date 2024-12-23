@@ -291,11 +291,11 @@ func _init_initial_walkers():
 				if bridge_ext.length < secured_pos + max_walker_diameter:
 					break
 
-				if _parameter.walker_spawn_rate <= _rng.randf():
+				if _rng.randf() >= _parameter.walker_spawn_rate:
 					continue
 
 				var walker_ext = _walker_creator.create()
-				walker_ext.forward = bridge_ext.bridge > _rng.randf()
+				walker_ext.forward = _rng.randf() < bridge_ext.bridge.forward_rate
 
 				secured_pos += walker_ext.diameter
 				pending_walker_exts.append(walker_ext)
@@ -359,7 +359,7 @@ func _init_initial_vehicles():
 			if lane_ext.length < secured_pos:
 				break
 
-			if _parameter.vehicle_spawn_rate <= _rng.randf():
+			if _rng.randf() >= _parameter.vehicle_spawn_rate:
 				continue
 
 			var vehicle_ext = _vehicle_creator.create()
