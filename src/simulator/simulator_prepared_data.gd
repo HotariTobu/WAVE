@@ -320,6 +320,11 @@ func _init_walker_entry_points():
 	if not _parameter.walker_spawn_after_start:
 		return
 
+	var sum_waler_speed = 0.0
+	for walker_spawn_parameter in _parameter.walker_spawn_parameters:
+		sum_waler_speed += walker_spawn_parameter.speed_mean
+	var average_walker_speed = sum_waler_speed / len(_parameter.walker_spawn_parameters)
+
 	for bridge_ext in _ext_db.bridges:
 		if _should_exit.call():
 			return
@@ -327,7 +332,7 @@ func _init_walker_entry_points():
 		if not bridge_ext.prev_bridge_exts.is_empty() and not bridge_ext.next_bridge_exts.is_empty():
 			continue
 
-		var one_per_step = bridge_ext.traffic * bridge_ext.speed_limit * _parameter.step_delta
+		var one_per_step = bridge_ext.traffic * average_walker_speed * _parameter.step_delta
 		var interval = roundi(1.0 / one_per_step)
 
 		var entry_point = EntryPoint.new()
