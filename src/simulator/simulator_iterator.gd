@@ -36,7 +36,7 @@ func _iterate_walker_entry_point(step: int):
 		# if 0 <= bridge_ext.overflowing:
 		# 	continue
 
-		if _parameter.walker_spawn_rate <= _rng.randf():
+		if _rng.randf() >= _parameter.walker_spawn_rate:
 			continue
 
 		var walker_ext = _walker_creator.create()
@@ -62,7 +62,7 @@ func _iterate_vehicle_entry_point(step: int):
 		if 0 <= lane_ext.overflowing:
 			continue
 
-		if _parameter.vehicle_spawn_rate <= _rng.randf():
+		if _rng.randf() >= _parameter.vehicle_spawn_rate:
 			continue
 
 		var vehicle_ext = _vehicle_creator.create()
