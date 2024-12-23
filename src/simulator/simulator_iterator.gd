@@ -28,7 +28,7 @@ func _iterate_walker_entry_point(step: int):
 		if _should_exit.call():
 			return
 
-		if step - entry_point.last_entry_step < entry_point.interval:
+		if step < entry_point.next_entry_step:
 			continue
 
 		var bridge_ext = entry_point.entry_space_ext as SimulatorBridgeExtension
@@ -46,7 +46,7 @@ func _iterate_walker_entry_point(step: int):
 		simulation.walkers.append(walker_ext.walker)
 
 		# bridge_ext.update_overflowing()
-		entry_point.last_entry_step = step
+		entry_point.next_entry_step = step + entry_point.interval
 
 
 func _iterate_vehicle_entry_point(step: int):
@@ -54,7 +54,7 @@ func _iterate_vehicle_entry_point(step: int):
 		if _should_exit.call():
 			return
 
-		if step - entry_point.last_entry_step < entry_point.interval:
+		if step < entry_point.next_entry_step:
 			continue
 
 		var lane_ext = entry_point.entry_space_ext as SimulatorLaneExtension
@@ -71,7 +71,7 @@ func _iterate_vehicle_entry_point(step: int):
 		simulation.vehicles.append(vehicle_ext.vehicle)
 
 		lane_ext.update_overflowing()
-		entry_point.last_entry_step = step
+		entry_point.next_entry_step = step + entry_point.interval
 
 
 func _iterate_block_sources(step: int):

@@ -338,7 +338,7 @@ func _init_walker_entry_points():
 		var entry_point = EntryPoint.new()
 		entry_point.entry_bridge_ext = bridge_ext
 		entry_point.interval = interval
-		entry_point.last_entry_step = _rng.randi_range(0, _parameter.max_entry_step_offset)
+		entry_point.next_entry_step = _rng.randi_range(0, _parameter.max_entry_step_offset)
 
 		_walker_entry_points.append(entry_point)
 
@@ -407,7 +407,7 @@ func _init_vehicle_entry_points():
 		var entry_point = EntryPoint.new()
 		entry_point.entry_lane_ext = lane_ext
 		entry_point.interval = interval
-		entry_point.last_entry_step = _rng.randi_range(0, _parameter.max_entry_step_offset)
+		entry_point.next_entry_step = _rng.randi_range(0, _parameter.max_entry_step_offset)
 
 		_vehicle_entry_points.append(entry_point)
 
@@ -482,4 +482,4 @@ class EntryPoint:
 	var entry_space_ext: SimulatorSpaceExtension
 	var interval: int
 
-	var last_entry_step: int
+	var next_entry_step: int
