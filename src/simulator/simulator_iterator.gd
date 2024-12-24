@@ -13,7 +13,7 @@ func iterate(step: int) -> bool:
 	_iterate_block_targets(step)
 
 	_iterate_forward_bridges(step)
-	_iterate_backward_bridges(step)
+	# _iterate_backward_bridges(step)
 	_iterate_lanes(step)
 
 	return true
@@ -114,19 +114,19 @@ func _iterate_forward_bridges(step: int):
 		if bridge_ext.agent_exts.is_empty():
 			continue
 
-		var rear_pos = bridge_ext.overflowed
-		if bridge_ext.forward_is_closed and rear_pos < 0:
-			rear_pos = 0
+		# var rear_pos = bridge_ext.overflowed
+		# if bridge_ext.forward_is_closed and rear_pos < 0:
+		# 	rear_pos = 0
 
-		var crowd_end = 0
+		#var crowd_end = 0
 
 		var walker_count = len(bridge_ext.agent_exts)
 		var removed_count = 0
 
 		for index in range(walker_count):
-			if bridge_ext.width_count_dict.has(index):
-				var width_count = bridge_ext.width_count_dict[index]
-				if width_count
+			# if bridge_ext.width_count_dict.has(index):
+			# 	var width_count = bridge_ext.width_count_dict[index]
+			# 	if width_count
 			var walker_ext = bridge_ext.agent_exts[index] as SimulatorWalkerExtension
 			var walker = walker_ext.walker
 
@@ -134,30 +134,31 @@ func _iterate_forward_bridges(step: int):
 
 			var preferred_displacement = walker.speed * _parameter.step_delta
 
-			var last_displacement = walker_ext.over_last_pos - pos
+			# var last_displacement = walker_ext.over_last_pos - pos
 
-			var preferred_distance = (walker.public_distance - walker.personal_distance) * last_displacement / preferred_displacement + walker.personal_distance
+			# var preferred_distance = (walker.public_distance - walker.personal_distance) * last_displacement / preferred_displacement + walker.personal_distance
 
-			for forward_index in range(index):
-				var forward_walker_ext = bridge_ext.agent_exts[forward_index] as SimulatorWalkerExtension
-				var forward_walker = forward_walker_ext.walker
+			# for forward_index in range(index):
+			# 	var forward_walker_ext = bridge_ext.agent_exts[forward_index] as SimulatorWalkerExtension
+			# 	var forward_walker = forward_walker_ext.walker
 
-				var forward_pos = forward_walker.pos_history[-1]
-				var gap = forward_pos - pos
+			# 	var forward_pos = forward_walker.pos_history[-1]
+			# 	var gap = forward_pos - pos
 
-				if preferred_distance < gap + walker_ext.diameter:
-
-
-					break
+			# 	if preferred_distance < gap + walker_ext.diameter:
 
 
+			# 		break
 
-			var next_displacement = min(possible_displacement, decelerated_displacement, accelerated_displacement)
+
+
+			# var next_displacement = min(possible_displacement, decelerated_displacement, accelerated_displacement)
+			var next_displacement = preferred_displacement
 			var next_pos = pos - next_displacement
 
 			walker.pos_history.append(next_pos)
 
-			rear_pos = next_pos + walker.length
+			# rear_pos = next_pos + walker.length
 
 			if next_pos < 0:
 				removed_count += 1
@@ -177,13 +178,13 @@ func _iterate_forward_bridges(step: int):
 
 				var walker = walker_ext.walker
 				walker.pos_history[-1] += next_bridge_ext.length
-				next_bridge_ext.update_overflowing_by(walker)
+				# next_bridge_ext.update_overflowing_by(walker)
 
 			else:
 				walker_ext.move_to(next_bridge_ext, step)
-				next_bridge_ext.update_overflowing()
+				# next_bridge_ext.update_overflowing()
 
-		bridge_ext.update_overflowing()
+		# bridge_ext.update_overflowing()
 
 	for next_bridge_ext in loop_tail_buffer_dict:
 		var buffered_walker_exts = loop_tail_buffer_dict[next_bridge_ext]
