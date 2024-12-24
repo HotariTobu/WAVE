@@ -2,7 +2,7 @@ class_name SimulatorManager
 
 signal status_changed(new_status: Status)
 
-enum Status { INITIALIZED, PREPARING, PREPARED, RUNNING, COMPLETED, CANCELED }
+enum Status { INITIALIZED, PREPARING, PREPARED, RUNNING, COMPLETED, CANCELED, ERROR }
 
 var status: Status:
 	get:
@@ -33,6 +33,10 @@ func prepare(parameter: ParameterData, network: NetworkData) -> void:
 	if _status != Status.INITIALIZED:
 		return
 
+	if parameter == null or network == null:
+		_status = Status.ERROR
+		return
+
 	_status = Status.PREPARING
 	_is_canceled = false
 
@@ -50,7 +54,7 @@ func start() -> SimulationData:
 	if _iterator == null:
 		return null
 
-	if _status in [Status.INITIALIZED, Status.PREPARING, Status.RUNNING]:
+	if _status in [Status.INITIALIZED, Status.PREPARING, Status.RUNNING, Status.ERROR]:
 		return null
 
 	_status = Status.RUNNING

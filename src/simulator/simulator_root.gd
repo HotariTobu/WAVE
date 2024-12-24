@@ -47,7 +47,7 @@ func _exit_tree():
 
 
 func _status_to_start_disabled(status: Status) -> bool:
-	return status not in [Status.INITIALIZED, Status.COMPLETED, Status.CANCELED]
+	return status not in [Status.INITIALIZED, Status.COMPLETED, Status.CANCELED, Status.ERROR]
 
 
 func _status_to_cancel_disabled(status: Status) -> bool:
@@ -76,16 +76,13 @@ func _run_simulation() -> SimulationData:
 
 			network = _read_network(network_file_path)
 
-	if network == null:
-		return Data.NULL_SIMULATION
-
 	var manager = SimulatorManager.new()
 
 	_mutex.lock()
 	var parameter_dict = ParameterData.to_dict(_parameter)
 	var parameter = ParameterData.from_dict(parameter_dict)
 
-	_data.set_deferred(&"status", Status.INITIALIZED)
+	_data.set_deferred(&"status", manager.status)
 	_data.set_deferred(&"max_progress_value", parameter.max_step)
 
 	_manager = manager
@@ -143,6 +140,9 @@ func _on_simulator_status_changed(new_status):
 
 		completed.emit(simulation)
 
+	elif new_status == Status.ERROR:
+		_thread.wait_to_finish()
+
 
 func _on_progress_bar_timer_timeout():
 	if _manager == null:
@@ -166,12 +166,12 @@ func _on_simulation_save_file_dialog_file_selected(path):
 func _read_network(path: String) -> NetworkData:
 	var result = CommonIO.read_data(path, NetworkData)
 	if not result.ok:
-		_show_error.bind("Failed to open file", result.error).call_deferred()
+		_show_error.call_deferred("Failed to open file", result.error)
 		return null
 
 	var network = result.data as NetworkData
 	if network == null:
-		_show_error.bind("Opened invalid network file").call_deferred()
+		_show_error.call_deferred("Opened invalid network file")
 		return null
 
 	return network
@@ -180,7 +180,7 @@ func _read_network(path: String) -> NetworkData:
 func _write_simulation(path: String, simulation: SimulationData):
 	var result = CommonIO.write_data(path, SimulationData, simulation)
 	if not result.ok:
-		_show_error.bind("Failed to open file", result.error).call_deferred()
+		_show_error.call_deferred("Failed to open file", result.error)
 
 
 static func _get_status_label(status: Status) -> String:
@@ -197,6 +197,8 @@ static func _get_status_label(status: Status) -> String:
 			return "Completed!"
 		Status.CANCELED:
 			return "Canceled!"
+		Status.ERROR:
+			return "Error!"
 		_:
 			return ""
 
