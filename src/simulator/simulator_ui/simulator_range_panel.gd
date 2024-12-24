@@ -1,6 +1,6 @@
 extends HBoxContainer
 
-signal range_value_changed(new_range_value: ParameterData.IntRange)
+signal range_value_changed(new_range_value: IntRange)
 
 @export var prefix: String:
 	get:
@@ -30,7 +30,7 @@ signal range_value_changed(new_range_value: ParameterData.IntRange)
 	set(value):
 		$EndBox.max_value = value
 
-var range_value: ParameterData.IntRange:
+var range_value: IntRange:
 	get:
 		return range_value
 	set(value):
@@ -47,12 +47,16 @@ var range_value: ParameterData.IntRange:
 func _on_begin_box_value_changed(new_value):
 	_end_box.min_value = new_value
 	range_value.begin = new_value
-	var new_range_value = ParameterData.IntRange.new(new_value, range_value.end)
+	var new_range_value = IntRange.new()
+	new_range_value.begin = new_value
+	new_range_value.end = range_value.end
 	range_value_changed.emit(new_range_value)
 
 
 func _on_end_box_value_changed(new_value):
 	_begin_box.max_value = new_value
 	range_value.end = new_value
-	var new_range_value = ParameterData.IntRange.new(range_value.begin, new_value)
+	var new_range_value = IntRange.new()
+	new_range_value.begin = range_value.begin
+	new_range_value.end = new_value
 	range_value_changed.emit(new_range_value)

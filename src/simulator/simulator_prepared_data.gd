@@ -336,7 +336,7 @@ func _init_walker_entry_points():
 		var interval = roundi(1.0 / one_per_step)
 
 		var entry_point = EntryPoint.new()
-		entry_point.entry_bridge_ext = bridge_ext
+		entry_point.entry_space_ext = bridge_ext
 		entry_point.interval = interval
 		entry_point.next_entry_step = _rng.randi_range(0, _parameter.max_entry_step_offset)
 
@@ -405,7 +405,7 @@ func _init_vehicle_entry_points():
 		var interval = roundi(1.0 / one_per_step)
 
 		var entry_point = EntryPoint.new()
-		entry_point.entry_lane_ext = lane_ext
+		entry_point.entry_space_ext = lane_ext
 		entry_point.interval = interval
 		entry_point.next_entry_step = _rng.randi_range(0, _parameter.max_entry_step_offset)
 
