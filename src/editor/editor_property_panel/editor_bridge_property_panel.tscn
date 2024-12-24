@@ -39,7 +39,7 @@ max_value = 1.0
 
 [node name="Label3" type="Label" parent="."]
 layout_mode = 2
-text = "Width Limit"
+text = "Width limit"
 
 [node name="WidthLimitBox" type="LineEdit" parent="."]
 layout_mode = 2
