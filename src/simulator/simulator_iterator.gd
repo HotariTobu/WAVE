@@ -152,7 +152,7 @@ func _iterate_forward_bridges(step: int):
 
 
 
-			var next_displacement = min(possible_displacement, limited_displacement, accelerated_displacement)
+			var next_displacement = min(possible_displacement, decelerated_displacement, accelerated_displacement)
 			var next_pos = pos - next_displacement
 
 			walker.pos_history.append(next_pos)
@@ -225,7 +225,7 @@ func _iterate_lanes(step: int):
 			var preferred_displacement = actual_distance - preferred_distance
 			var relative_displacement = actual_distance - vehicle_ext.last_distance
 			var affected_displacement = maxf(preferred_displacement, -relative_displacement)
-			var limited_displacement = maxf(0.0, (preferred_displacement + affected_displacement) / 2)
+			var decelerated_displacement = maxf(0.0, (preferred_displacement + affected_displacement) / 2)
 
 			var preferred_speed = vehicle_ext.get_preferred_speed(lane_ext.speed_limit)
 			var acceleration = vehicle_ext.get_acceleration(preferred_speed)
@@ -233,7 +233,7 @@ func _iterate_lanes(step: int):
 			var speed = min(vehicle.max_speed, preferred_speed, accelerated_speed)
 			var accelerated_displacement = speed * _parameter.step_delta
 
-			var next_displacement = min(possible_displacement, limited_displacement, accelerated_displacement)
+			var next_displacement = min(possible_displacement, decelerated_displacement, accelerated_displacement)
 			var next_pos = pos - next_displacement
 
 			vehicle_ext.last_distance = actual_distance
