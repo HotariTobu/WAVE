@@ -10,61 +10,61 @@ func _init(walker: WalkerData):
 	_helper = Helper.new(walker.radius * 2)
 
 
-class Transformer:
-	extends PlayerAgent.Transformer
+# class Transformer:
+# 	extends PlayerAgent.Transformer
 
-	var _forward: bool
-
-
-	func get_transform() -> Transform2D:
-		var transform = super()
-
-		if _forward:
-			return transform
-		else:
-			return transform.rotated(PI)
+# 	var _forward: bool
 
 
-class Mutator:
-	extends PlayerAgent.Mutator
+# 	func get_transform() -> Transform2D:
+# 		var transform = super()
 
-	var _base_offset: float
-	var _next_pos_func: Callable
-
-
-	func update(space: PlayerSpaceData, next_space: PlayerSpaceData) -> void:
-		super(space, next_space)
-
-		if space.start_vertex_id == next_space.start_vertex_id:
-			_duplicated_curve.add_point(next_space.points[1], Vector2.ZERO, Vector2.ZERO, 0)
-			_base_offset = next_space.points[0].distance_to(next_space.points[1])
-			_next_pos_func = func(pos: float): return next_space.length - pos + space.length
-
-		elif space.end_vertex_id == next_space.start_vertex_id:
-			_duplicated_curve.add_point(next_space.points[1])
-			_base_offset = 0
-			_next_pos_func = func(pos: float): return pos - next_space.length
-
-		elif space.start_vertex_id == next_space.end_vertex_id:
-			_duplicated_curve.add_point(next_space.points[-2], Vector2.ZERO, Vector2.ZERO, 0)
-			_base_offset = next_space.points[-1].distance_to(next_space.points[-2])
-			_next_pos_func = func(pos: float): return pos + space.length
-
-		elif space.end_vertex_id == next_space.end_vertex_id:
-			_duplicated_curve.add_point(next_space.points[-2])
-			_base_offset = 0
-			_next_pos_func = func(pos: float): return -pos
+# 		if _forward:
+# 			return transform
+# 		else:
+# 			return transform.rotated(PI)
 
 
-	func mutate(transformer: Transformer) -> void:
-		super(transformer)
-		transformer.base_pos += _base_offset
-		transformer.next_pos = _next_pos_func.call(transformer.next_pos)
+# class Mutator:
+# 	extends PlayerAgent.Mutator
 
-		if transformer.prev_pos < transformer.next_pos:
-			transformer._forward = false
-		elif transformer.prev_pos > transformer.next_pos:
-			transformer._forward = true
+# 	var _base_offset: float
+# 	var _next_pos_func: Callable
+
+
+# 	func update(space: PlayerSpaceData, next_space: PlayerSpaceData) -> void:
+# 		super(space, next_space)
+
+# 		if space.start_vertex_id == next_space.start_vertex_id:
+# 			_duplicated_curve.add_point(next_space.points[1], Vector2.ZERO, Vector2.ZERO, 0)
+# 			_base_offset = next_space.points[0].distance_to(next_space.points[1])
+# 			_next_pos_func = func(pos: float): return next_space.length - pos + space.length
+
+# 		elif space.end_vertex_id == next_space.start_vertex_id:
+# 			_duplicated_curve.add_point(next_space.points[1])
+# 			_base_offset = 0
+# 			_next_pos_func = func(pos: float): return pos - next_space.length
+
+# 		elif space.start_vertex_id == next_space.end_vertex_id:
+# 			_duplicated_curve.add_point(next_space.points[-2], Vector2.ZERO, Vector2.ZERO, 0)
+# 			_base_offset = next_space.points[-1].distance_to(next_space.points[-2])
+# 			_next_pos_func = func(pos: float): return pos + space.length
+
+# 		elif space.end_vertex_id == next_space.end_vertex_id:
+# 			_duplicated_curve.add_point(next_space.points[-2])
+# 			_base_offset = 0
+# 			_next_pos_func = func(pos: float): return -pos
+
+
+# 	func mutate(transformer: Transformer) -> void:
+# 		super(transformer)
+# 		transformer.base_pos += _base_offset
+# 		transformer.next_pos = _next_pos_func.call(transformer.next_pos)
+
+# 		if transformer.prev_pos < transformer.next_pos:
+# 			transformer._forward = false
+# 		elif transformer.prev_pos > transformer.next_pos:
+# 			transformer._forward = true
 
 
 class Helper:

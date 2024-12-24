@@ -129,6 +129,9 @@ func _iterate_forward_bridges(step: int):
 			# 	if width_count
 			var walker_ext = bridge_ext.agent_exts[index] as SimulatorWalkerExtension
 			var walker = walker_ext.walker
+			
+			#if not walker_ext.forward:
+				#continue
 
 			var pos = walker.pos_history[-1]
 
