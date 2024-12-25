@@ -4,7 +4,6 @@ extends SimulatorAgentExtension
 const BASE_HIGH_SPEED = 100.0 * 1000.0 / 3600.0
 
 var last_distance: float
-var over_last_pos: float
 
 var vehicle: VehicleData:
 	get:
@@ -29,16 +28,6 @@ func _init(data: VehicleData):
 	_distance_intercept = zero - _distance_factor
 	_speed_slope = data.high_speed / BASE_HIGH_SPEED
 	_acceleration_slope = data.high_speed_acceleration / BASE_HIGH_SPEED
-
-
-func spawn_at(space_ext: SimulatorSpaceExtension, pos: float, step: int):
-	super(space_ext, pos, step)
-	over_last_pos = pos
-
-
-func move_to(space_ext: SimulatorSpaceExtension, step: int):
-	super(space_ext, step)
-	over_last_pos += space_ext.length
 
 
 func get_preferred_distance(speed: float) -> float:

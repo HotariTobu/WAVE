@@ -1,5 +1,7 @@
 class_name SimulatorAgentExtension
 
+var over_last_pos: float
+
 var agent: AgentData:
 	get:
 		return _data
@@ -12,6 +14,7 @@ func _init(data: AgentData):
 
 
 func spawn_at(space_ext: SimulatorSpaceExtension, pos: float, step: int):
+	over_last_pos = pos
 	_data.spawn_step = step
 	_data.die_step = -1
 	_data.pos_history.append(pos)
@@ -19,6 +22,7 @@ func spawn_at(space_ext: SimulatorSpaceExtension, pos: float, step: int):
 
 
 func move_to(space_ext: SimulatorSpaceExtension, step: int):
+	over_last_pos += space_ext.length
 	_data.pos_history[-1] += space_ext.length
 	_enter(space_ext, step)
 
