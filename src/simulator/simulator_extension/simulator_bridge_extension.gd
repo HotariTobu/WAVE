@@ -19,7 +19,7 @@ var loop_next_bridge_ext_set = Set.new()
 
 var forward_is_closed: bool
 var backward_is_closed: bool
-var width_count_dict: Dictionary
+var tails_array: Array[PackedFloat32Array]
 
 var bridge: BridgeData:
 	get:
@@ -47,3 +47,121 @@ func extend(ext_of: Callable) -> void:
 
 func update_is_blocking(_time: float):
 	is_blocking = not agent_exts.is_empty()
+
+
+func init_tails_array():
+	var walker_count = len(agent_exts)
+	if walker_count == 0:
+		return
+
+	tails_array.resize(walker_count)
+	_update_tails_array(0, walker_count)
+
+
+func forward_arrange_walker_exts_from(index: int):
+	var walker_ext = agent_exts[index] as SimulatorWalkerExtension
+	var pos = walker_ext.walker.pos_history[-1]
+
+	var forward_index = index - 1
+	while forward_index >= 0:
+		var forward_walker_ext = agent_exts[forward_index] as SimulatorWalkerExtension
+		var forward_pos = forward_walker_ext.walker.pos_history[-1]
+		if forward_pos < pos:
+			break
+
+		agent_exts[forward_index + 1] = forward_walker_ext
+		agent_exts[forward_index] = walker_ext
+
+		forward_index -= 1
+
+	_update_tails_array(forward_index + 1, index)
+
+
+func forward_arrange_walker_exts_from_end():
+	var walker_count = len(agent_exts)
+	tails_array.resize(walker_count)
+	forward_arrange_walker_exts_from(walker_count - 1)
+
+
+func forward_remove_tails(count: int):
+	var max_tail = 0.0
+
+	for _i in range(count):
+		var tail = tails_array.pop_front()[-1]
+		if max_tail < tail:
+			max_tail = tail
+
+	for index in range(len(agent_exts)):
+		var walker_ext = agent_exts[index] as SimulatorWalkerExtension
+		var pos = walker_ext.walker.pos_history[-1]
+		if max_tail < pos:
+			break
+
+		var slice_start = tails_array[index].bsearch(max_tail, false)
+		tails_array[index] = tails_array[index].slice(slice_start)
+
+
+func backward_arrange_walker_exts_from(index: int):
+	var walker_ext = agent_exts[index] as SimulatorWalkerExtension
+	var pos = walker_ext.walker.pos_history[-1]
+
+	var backward_index = index + 1
+	var walker_count = len(agent_exts)
+	while backward_index < walker_count:
+		var backward_walker_ext = agent_exts[backward_index] as SimulatorWalkerExtension
+		var backward_pos = backward_walker_ext.walker.pos_history[-1]
+		if pos < backward_pos:
+			break
+
+		agent_exts[backward_index - 1] = backward_walker_ext
+		agent_exts[backward_index] = walker_ext
+
+		backward_index += 1
+
+	_update_tails_array(index, backward_index - 1)
+
+
+func backward_arrange_walker_exts_from_start():
+	for _i in range(len(agent_exts) - len(tails_array)):
+		tails_array.push_front(PackedFloat32Array())
+	backward_arrange_walker_exts_from(0)
+
+
+func backward_remove_tails(count: int):
+	for _i in range(count):
+		tails_array.pop_front()
+
+	_update_tails_array(0, len(agent_exts))
+
+
+func _update_tails_array(start_index: int, end_index: int):
+	var start = start_index
+	if start_index < 1:
+		start = 1
+
+		var walker_ext = agent_exts[0] as SimulatorWalkerExtension
+		var pos = walker_ext.walker.pos_history[-1]
+		var tail = pos + walker_ext.diameter
+		tails_array[0].clear()
+		tails_array[0].append(tail)
+
+	var end = mini(len(agent_exts), end_index + 1)
+
+	for index in range(start, end):
+		var walker_ext = agent_exts[index] as SimulatorWalkerExtension
+		var pos = walker_ext.walker.pos_history[-1]
+		var tail = pos + walker_ext.diameter
+		tails_array[index].clear()
+		tails_array[index].append(tail)
+
+		var forward_tails = tails_array[index - 1]
+		for offset in range(-1, -len(forward_tails) - 1, -1):
+			var forward_tail = forward_tails[offset]
+			if forward_tail < pos:
+				break
+
+			var tails = tails_array[index + offset]
+			tails.insert(tails.bsearch(tail), tail)
+			tails_array[index].append(forward_tail)
+
+		tails_array[index].reverse()
