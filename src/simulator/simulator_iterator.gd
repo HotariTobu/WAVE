@@ -45,10 +45,10 @@ func _iterate_walker_entry_point(step: int):
 		walker_ext.spawn_at(bridge_ext, pos, step)
 		simulation.walkers.append(walker_ext.walker)
 
-		if walker_ext.forward:
-			bridge_ext.forward_arrange_walker_exts_from_end()
-		else:
-			bridge_ext.backward_arrange_walker_exts_from_start()
+		# if walker_ext.forward:
+		# 	bridge_ext.forward_arrange_walker_exts_from_end()
+		# else:
+		# 	bridge_ext.backward_arrange_walker_exts_from_start()
 
 		# bridge_ext.update_overflowing()
 		entry_point.next_entry_step = step + entry_point.interval
@@ -155,7 +155,7 @@ func _iterate_forward_bridges(step: int):
 			walker_ext.over_last_pos = pos
 			walker.pos_history.append(next_pos)
 
-			bridge_ext.forward_arrange_walker_exts_from(index)
+			# bridge_ext.forward_arrange_walker_exts_from(index)
 
 			if next_pos < 0:
 				removed_count += 1
@@ -178,9 +178,9 @@ func _iterate_forward_bridges(step: int):
 
 			else:
 				walker_ext.move_to(next_bridge_ext, step)
-				next_bridge_ext.forward_arrange_walker_exts_from_end()
+				# next_bridge_ext.forward_arrange_walker_exts_from_end()
 
-		bridge_ext.forward_remove_tails(removed_count)
+		# bridge_ext.forward_remove_tails(removed_count)
 
 	for next_bridge_ext in loop_tail_buffer_dict:
 		var buffered_walker_exts = loop_tail_buffer_dict[next_bridge_ext]
@@ -188,7 +188,7 @@ func _iterate_forward_bridges(step: int):
 		for walker_ext in buffered_walker_exts:
 			walker_ext.walker.pos_history[-1] -= next_bridge_ext.length
 			walker_ext.move_to(next_bridge_ext, step)
-			next_bridge_ext.forward_arrange_walker_exts_from_end()
+			# next_bridge_ext.forward_arrange_walker_exts_from_end()
 
 
 func _iterate_backward_bridges(step: int):
@@ -236,7 +236,7 @@ func _iterate_backward_bridges(step: int):
 			walker_ext.over_last_pos = pos
 			walker.pos_history.append(next_pos)
 
-			bridge_ext.backward_arrange_walker_exts_from(index)
+			# bridge_ext.backward_arrange_walker_exts_from(index)
 
 			if next_pos > bridge_ext.length:
 				removed_count += 1
@@ -259,9 +259,9 @@ func _iterate_backward_bridges(step: int):
 
 			else:
 				walker_ext.move_to(prev_bridge_ext, step)
-				prev_bridge_ext.backward_arrange_walker_exts_from_start()
+				# prev_bridge_ext.backward_arrange_walker_exts_from_start()
 
-		bridge_ext.backward_remove_tails(removed_count)
+		# bridge_ext.backward_remove_tails(removed_count)
 
 	for prev_bridge_ext in loop_tail_buffer_dict:
 		var buffered_walker_exts = loop_tail_buffer_dict[prev_bridge_ext]
@@ -269,7 +269,7 @@ func _iterate_backward_bridges(step: int):
 		for walker_ext in buffered_walker_exts:
 			walker_ext.walker.pos_history[-1] -= prev_bridge_ext.length
 			walker_ext.move_to(prev_bridge_ext, step)
-			prev_bridge_ext.backward_arrange_walker_exts_from_start()
+			# prev_bridge_ext.backward_arrange_walker_exts_from_start()
 
 
 func _iterate_lanes(step: int):
