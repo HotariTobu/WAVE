@@ -9,6 +9,9 @@ var width_limit: int
 var prev_option_dict: Dictionary
 var next_option_dict: Dictionary
 
+var start_vertex_id: StringName
+var end_vertex_id: StringName
+
 var next_bridge_exts: Array[SimulatorBridgeExtension]
 var prev_bridge_exts: Array[SimulatorBridgeExtension]
 
@@ -71,6 +74,9 @@ func extend(ext_of: Callable) -> void:
 	_assign_ext_dict(&"prev_option_dict", &"prev_option_dict", ext_of)
 	_assign_ext_dict(&"next_option_dict", &"next_option_dict", ext_of)
 
+	start_vertex_id = _data.vertex_ids[0]
+	end_vertex_id = _data.vertex_ids[-1]
+
 	prev_bridge_exts.assign(prev_option_dict.keys())
 	next_bridge_exts.assign(next_option_dict.keys())
 	prev_bridge_exts.make_read_only()
@@ -90,23 +96,23 @@ func update_is_blocking(_time: float):
 # 	_update_tails_array(0, walker_count)
 
 
-# func forward_arrange_walker_exts_from(index: int):
-# 	var walker_ext = agent_exts[index] as SimulatorWalkerExtension
-# 	var pos = walker_ext.walker.pos_history[-1]
+func forward_arrange_walker_exts_from(index: int):
+	var walker_ext = agent_exts[index] as SimulatorWalkerExtension
+	var pos = walker_ext.walker.pos_history[-1]
 
-# 	var forward_index = index - 1
-# 	while forward_index >= 0:
-# 		var forward_walker_ext = agent_exts[forward_index] as SimulatorWalkerExtension
-# 		var forward_pos = forward_walker_ext.walker.pos_history[-1]
-# 		if forward_pos < pos:
-# 			break
+	var forward_index = index - 1
+	while forward_index >= 0:
+		var forward_walker_ext = agent_exts[forward_index] as SimulatorWalkerExtension
+		var forward_pos = forward_walker_ext.walker.pos_history[-1]
+		if forward_pos < pos:
+			break
 
-# 		agent_exts[forward_index + 1] = forward_walker_ext
-# 		agent_exts[forward_index] = walker_ext
+		agent_exts[forward_index + 1] = forward_walker_ext
+		agent_exts[forward_index] = walker_ext
 
-# 		forward_index -= 1
+		forward_index -= 1
 
-# 	_update_tails_array(forward_index + 1, index)
+	# _update_tails_array(forward_index + 1, index)
 
 
 # func forward_arrange_walker_exts_from_end():
@@ -133,24 +139,24 @@ func update_is_blocking(_time: float):
 # 		tails_array[index] = tails_array[index].slice(slice_start)
 
 
-# func backward_arrange_walker_exts_from(index: int):
-# 	var walker_ext = agent_exts[index] as SimulatorWalkerExtension
-# 	var pos = walker_ext.walker.pos_history[-1]
+func backward_arrange_walker_exts_from(index: int):
+	var walker_ext = agent_exts[index] as SimulatorWalkerExtension
+	var pos = walker_ext.walker.pos_history[-1]
 
-# 	var backward_index = index + 1
-# 	var walker_count = len(agent_exts)
-# 	while backward_index < walker_count:
-# 		var backward_walker_ext = agent_exts[backward_index] as SimulatorWalkerExtension
-# 		var backward_pos = backward_walker_ext.walker.pos_history[-1]
-# 		if pos < backward_pos:
-# 			break
+	var backward_index = index + 1
+	var walker_count = len(agent_exts)
+	while backward_index < walker_count:
+		var backward_walker_ext = agent_exts[backward_index] as SimulatorWalkerExtension
+		var backward_pos = backward_walker_ext.walker.pos_history[-1]
+		if pos < backward_pos:
+			break
 
-# 		agent_exts[backward_index - 1] = backward_walker_ext
-# 		agent_exts[backward_index] = walker_ext
+		agent_exts[backward_index - 1] = backward_walker_ext
+		agent_exts[backward_index] = walker_ext
 
-# 		backward_index += 1
+		backward_index += 1
 
-# 	_update_tails_array(index, backward_index - 1)
+	# _update_tails_array(index, backward_index - 1)
 
 
 # func backward_arrange_walker_exts_from_start():

@@ -30,6 +30,12 @@ func _init(data: VehicleData):
 	_acceleration_slope = data.high_speed_acceleration / BASE_HIGH_SPEED
 
 
+func move_to(lane_ext: SimulatorLaneExtension, step: int):
+	over_last_pos += lane_ext.length
+	_data.pos_history[-1] += lane_ext.length
+	_enter(lane_ext, step)
+
+
 func get_preferred_distance(speed: float) -> float:
 	return _distance_factor * _distance_base ** speed + _distance_intercept
 

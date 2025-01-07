@@ -13,7 +13,7 @@ func iterate(step: int) -> bool:
 	_iterate_block_targets(step)
 
 	_iterate_forward_bridges(step)
-	# _iterate_backward_bridges(step)
+	_iterate_backward_bridges(step)
 	_iterate_lanes(step)
 
 	return true
@@ -155,7 +155,7 @@ func _iterate_forward_bridges(step: int):
 			walker_ext.over_last_pos = pos
 			walker.pos_history.append(next_pos)
 
-			# bridge_ext.forward_arrange_walker_exts_from(index)
+			bridge_ext.forward_arrange_walker_exts_from(index)
 
 			if next_pos < 0:
 				removed_count += 1
@@ -236,7 +236,7 @@ func _iterate_backward_bridges(step: int):
 			walker_ext.over_last_pos = pos
 			walker.pos_history.append(next_pos)
 
-			# bridge_ext.backward_arrange_walker_exts_from(index)
+			bridge_ext.backward_arrange_walker_exts_from(index)
 
 			if next_pos > bridge_ext.length:
 				removed_count += 1
