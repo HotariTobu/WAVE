@@ -317,10 +317,13 @@ func _init_walker_entry_points():
 	if not _parameter.walker_spawn_after_start:
 		return
 
-	var sum_waler_speed = 0.0
+	var sum_walker_weighted_speed_mean = 0.0
+	var sum_walker_weight = 0.0
 	for walker_spawn_parameter in _parameter.walker_spawn_parameters:
-		sum_waler_speed += walker_spawn_parameter.speed_mean
-	var average_walker_speed = sum_waler_speed / len(_parameter.walker_spawn_parameters)
+		sum_walker_weighted_speed_mean += walker_spawn_parameter.speed_mean * walker_spawn_parameter.weight
+		sum_walker_weight += walker_spawn_parameter.weight
+	var average_walker_speed = sum_walker_weighted_speed_mean / sum_walker_weight
+	average_walker_speed *= SimulatorWalkerCreator.SPEED_FACTOR
 
 	for bridge_ext in _ext_db.bridges:
 		if _should_exit.call():
