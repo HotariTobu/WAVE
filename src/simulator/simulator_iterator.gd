@@ -208,7 +208,7 @@ func _iterate_backward_bridges(step: int):
 		var walker_count = len(bridge_ext.agent_exts)
 		var removed_count = 0
 
-		for index in range(walker_count):
+		for index in range(walker_count - 1, -1, -1):
 			var walker_ext = bridge_ext.agent_exts[index] as SimulatorWalkerExtension
 			var walker = walker_ext.walker
 
