@@ -33,7 +33,7 @@ var tails_array: Array[PackedFloat32Array]:
 		var first_tail = first_pos + first_walker_ext.diameter
 		result[0].append(first_tail)
 
-		for index in range(agent_count):
+		for index in range(1, agent_count):
 			var walker_ext = agent_exts[index] as SimulatorWalkerExtension
 			var pos = walker_ext.walker.pos_history[-1]
 			var tail = pos + walker_ext.diameter
