@@ -123,6 +123,8 @@ func _iterate_forward_bridges(step: int):
 		if bridge_ext.forward_is_closed:
 			next_crowd_tail = 0.0
 
+		var crowd_count = 0
+
 		var walker_count = len(bridge_ext.agent_exts)
 		var removed_count = 0
 
@@ -136,8 +138,14 @@ func _iterate_forward_bridges(step: int):
 			var crowd_tail = next_crowd_tail
 
 			var tails = bridge_ext.tails_array[index]
-			if bridge_ext.width_limit <= len(tails):
-				next_crowd_tail = tail
+			if len(tails) < bridge_ext.width_limit:
+				crowd_count = 0
+
+			else:
+				crowd_count += 1
+
+				if crowd_count >= bridge_ext.width_limit:
+					next_crowd_tail = tail
 
 			if not walker_ext.forward:
 				continue
@@ -205,6 +213,8 @@ func _iterate_backward_bridges(step: int):
 		if bridge_ext.backward_is_closed:
 			next_crowd_head = bridge_ext.length
 
+		var crowd_count = 0
+
 		var walker_count = len(bridge_ext.agent_exts)
 		var removed_count = 0
 
@@ -217,8 +227,14 @@ func _iterate_backward_bridges(step: int):
 			var crowd_head = next_crowd_head
 
 			var tails = bridge_ext.tails_array[index]
-			if bridge_ext.width_limit <= len(tails):
-				next_crowd_head = pos
+			if len(tails) < bridge_ext.width_limit:
+				crowd_count = 0
+
+			else:
+				crowd_count += 1
+
+				if crowd_count >= bridge_ext.width_limit:
+					next_crowd_head = pos
 
 			if walker_ext.forward:
 				continue
