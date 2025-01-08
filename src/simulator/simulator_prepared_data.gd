@@ -333,6 +333,9 @@ func _init_walker_entry_points():
 			continue
 
 		var one_per_step = bridge_ext.traffic * average_walker_speed * _parameter.step_delta
+		if one_per_step == 0:
+			continue
+
 		var interval = roundi(1.0 / one_per_step)
 
 		var entry_point = EntryPoint.new()
@@ -402,6 +405,9 @@ func _init_vehicle_entry_points():
 			continue
 
 		var one_per_step = lane_ext.traffic * lane_ext.speed_limit * _parameter.step_delta
+		if one_per_step == 0:
+			continue
+
 		var interval = roundi(1.0 / one_per_step)
 
 		var entry_point = EntryPoint.new()
