@@ -19,24 +19,24 @@ func _init(data: WalkerData):
 
 func move_to(bridge_ext: SimulatorBridgeExtension, step: int):
 	if current_bridge_ext.start_vertex_id == bridge_ext.start_vertex_id:
-		over_last_pos = -over_last_pos
-		_data.pos_history[-1] = -_data.pos_history[-1]
-		forward = false
-
-	elif current_bridge_ext.start_vertex_id == bridge_ext.end_vertex_id:
-		over_last_pos += bridge_ext.length
-		_data.pos_history[-1] += bridge_ext.length
+		over_last_pos = bridge_ext.length + current_bridge_ext.length - over_last_pos
+		_data.pos_history[-1] = bridge_ext.length + current_bridge_ext.length - _data.pos_history[-1]
 		forward = true
 
-	elif current_bridge_ext.end_vertex_id == bridge_ext.start_vertex_id:
+	elif current_bridge_ext.start_vertex_id == bridge_ext.end_vertex_id:
 		over_last_pos -= current_bridge_ext.length
 		_data.pos_history[-1] -= current_bridge_ext.length
 		forward = false
 
-	elif current_bridge_ext.end_vertex_id == bridge_ext.end_vertex_id:
-		over_last_pos = bridge_ext.length + current_bridge_ext.length - over_last_pos
-		_data.pos_history[-1] = bridge_ext.length + current_bridge_ext.length - _data.pos_history[-1]
+	elif current_bridge_ext.end_vertex_id == bridge_ext.start_vertex_id:
+		over_last_pos += bridge_ext.length
+		_data.pos_history[-1] += bridge_ext.length
 		forward = true
+
+	elif current_bridge_ext.end_vertex_id == bridge_ext.end_vertex_id:
+		over_last_pos = -over_last_pos
+		_data.pos_history[-1] = -_data.pos_history[-1]
+		forward = false
 
 	_enter(bridge_ext, step)
 
