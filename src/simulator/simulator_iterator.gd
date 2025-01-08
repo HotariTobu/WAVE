@@ -41,7 +41,7 @@ func _iterate_walker_entry_point(step: int):
 
 		var walker_ext = _walker_creator.create()
 		walker_ext.forward = bridge_ext.prev_bridge_exts.is_empty()
-		var pos = bridge_ext.length if walker_ext.forward else 0.0
+		var pos = bridge_ext.length if walker_ext.forward else -walker_ext.diameter
 		walker_ext.spawn_at(bridge_ext, pos, step)
 		simulation.walkers.append(walker_ext.walker)
 
