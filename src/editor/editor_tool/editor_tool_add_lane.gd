@@ -110,12 +110,12 @@ func _unhandled_input(event: InputEvent):
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			if event.alt_pressed:
-				_commit_lane()
+				_commit()
 			else:
 				_add_new_point()
 
 		elif event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed:
-			_commit_lane()
+			_commit()
 
 	elif event.is_action_pressed(&"ui_cancel"):
 		_cancel()
@@ -175,7 +175,7 @@ func _update_selecting_nodes():
 	var vertex_node = _hovered_items.back() as EditorLaneVertex
 	var vertex_id = vertex_node.data.id
 	var constraint = _editor_global.constraint_db.of(vertex_id) as EditorLaneVertexConstraint
-	var related_lanes = constraint.lane_set.to_array()
+	var related_lanes = constraint.segments_set.to_array()
 
 	if _phase == Phase.EMPTY:
 		var prev_segments_nodes: Array[EditorLaneSegments]
@@ -215,8 +215,7 @@ func _update_selecting_nodes():
 func _add_new_point():
 	var current_pos = _current_pos
 
-	var empty = _phase == Phase.EMPTY
-	if empty:
+	if _phase == Phase.EMPTY:
 		if _selecting_start_vertex_node != null:
 			current_pos = _selecting_start_vertex_node.data.pos
 
@@ -227,10 +226,10 @@ func _add_new_point():
 	if _selecting_end_vertex_node == null:
 		return
 
-	_commit_lane()
+	_commit()
 
 
-func _commit_lane():
+func _commit():
 	if _phase != Phase.ENOUGH:
 		_cancel()
 		return
@@ -242,7 +241,7 @@ func _commit_lane():
 	var new_vertices: Array[VertexData]
 
 	for point in _points:
-		var vertex = VertexData.from_dict({})
+		var vertex = VertexData.new_default()
 		vertex.pos = point
 		vertex_ids.append(vertex.id)
 		new_vertices.append(vertex)
@@ -258,10 +257,10 @@ func _commit_lane():
 	var next_option_dict: Dictionary
 
 	for lane in _next_lanes:
-		var option = LaneData.OptionData.from_dict({})
+		var option = LaneData.OptionData.new_default()
 		next_option_dict[lane.id] = option
 
-	var new_lane = LaneData.from_dict({})
+	var new_lane = LaneData.new_default()
 	new_lane.vertex_ids = vertex_ids
 	new_lane.next_option_dict = next_option_dict
 
@@ -283,7 +282,7 @@ func _commit_lane():
 	_editor_global.undo_redo.add_undo_method(_lane_db.remove.bind(new_lane))
 
 	for lane in _prev_lanes:
-		var option = LaneData.OptionData.from_dict({})
+		var option = LaneData.OptionData.new_default()
 
 		var prev = lane.next_option_dict
 		var next = prev.duplicate()
@@ -334,6 +333,10 @@ func _calc_initial_traffic() -> float:
 
 
 func _calc_initial_speed_limit() -> int:
+	var lane_count = len(_prev_lanes) + len(_next_lanes)
+	if lane_count == 0:
+		return setting.default_lane_speed_limit
+
 	var sum_speed_limit = 0.0
 
 	for lane in _prev_lanes:
@@ -342,7 +345,6 @@ func _calc_initial_speed_limit() -> int:
 	for lane in _next_lanes:
 		sum_speed_limit += lane.speed_limit
 
-	var lane_count = len(_prev_lanes) + len(_next_lanes)
 	var average_speed_limit = sum_speed_limit / lane_count
 
 	var initial_speed_limit = roundi(average_speed_limit / 10) * 10

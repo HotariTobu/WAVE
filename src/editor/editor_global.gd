@@ -9,8 +9,6 @@ var source_db = EditorBindingSourceDB.new()
 
 var undo_redo = UndoRedo.new()
 
-var camera: PanZoomCamera
-
 var source = EditorBindingSource.new(self, &"notified")
 
 var network_file_path: String
@@ -55,6 +53,7 @@ func get_network() -> NetworkData:
 
 
 func set_network(network: NetworkData):
+	source_db.clear()
 	undo_redo.clear_history()
 
 	for group in content_db.groups:

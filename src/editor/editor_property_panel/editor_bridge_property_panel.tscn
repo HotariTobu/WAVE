@@ -1,0 +1,53 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6asi6n6iq8vx"]
+
+[ext_resource type="Script" path="res://src/editor/editor_property_panel/editor_bridge_property_panel.gd" id="1_ng0yo"]
+[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="2_4rs1l"]
+
+[node name="EditorBridgePropertyPanel" type="GridContainer"]
+script = ExtResource("1_ng0yo")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Bridge(s)"
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 2
+text = "Traffic"
+
+[node name="TrafficBox" type="LineEdit" parent="."]
+layout_mode = 2
+select_all_on_focus = true
+script = ExtResource("2_4rs1l")
+suffix = " /100m"
+min_value = 0.0
+max_value = 200.0
+
+[node name="Label4" type="Label" parent="."]
+layout_mode = 2
+text = "Forward rate"
+
+[node name="ForwardRateBox" type="LineEdit" parent="."]
+layout_mode = 2
+select_all_on_focus = true
+script = ExtResource("2_4rs1l")
+min_value = 0.0
+max_value = 1.0
+
+[node name="Label3" type="Label" parent="."]
+layout_mode = 2
+text = "Width limit"
+
+[node name="WidthLimitBox" type="LineEdit" parent="."]
+layout_mode = 2
+select_all_on_focus = true
+script = ExtResource("2_4rs1l")
+min_value = 1.0
+max_value = 10.0
+
+[connection signal="value_changed" from="TrafficBox" to="." method="_on_traffic_box_value_changed"]
+[connection signal="value_changed" from="ForwardRateBox" to="." method="_on_forward_rate_box_value_changed"]
+[connection signal="value_changed" from="WidthLimitBox" to="." method="_on_width_limit_box_value_changed"]

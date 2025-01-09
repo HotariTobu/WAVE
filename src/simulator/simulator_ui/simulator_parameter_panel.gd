@@ -6,7 +6,7 @@ var parameter: ParameterData:
 	get:
 		return _parameter
 
-var _parameter = ParameterData.from_dict({})
+var _parameter = ParameterData.new_default()
 
 var _vehicle_length_cells: Array[Control]:
 	get:

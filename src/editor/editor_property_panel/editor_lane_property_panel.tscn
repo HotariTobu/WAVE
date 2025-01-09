@@ -28,7 +28,7 @@ max_value = 30.0
 
 [node name="Label3" type="Label" parent="."]
 layout_mode = 2
-text = "Speed Limit"
+text = "Speed limit"
 
 [node name="SpeedLimitBox" type="LineEdit" parent="."]
 layout_mode = 2

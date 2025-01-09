@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://of3bmugoqexm"]
 
-[ext_resource type="Script" path="res://src/simulator/path_panel.gd" id="1_s7g4y"]
+[ext_resource type="Script" path="res://src/simulator/simulator_ui/path_panel.gd" id="1_s7g4y"]
 
 [node name="PathPanel" type="HBoxContainer"]
 offset_right = 459.0

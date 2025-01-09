@@ -15,26 +15,28 @@ var _high_speed_distance_rng: SimulatorRandomNormalDistributionRange
 
 
 func _init(rng: RandomNumberGenerator, parameter: ParameterData):
-	_length_rng = SimulatorRandomWeightedArray.new(rng, parameter.vehicle_length_options)
+	_length_rng = SimulatorRandomWeightedArray.new(rng)
+	for o in parameter.vehicle_length_options:
+		_length_rng.add_option(o.weight, o.value)
 
-	_high_speed_acceleration_rng = SimulatorRandomNormalDistributionRange.new(rng, parameter.vehicle_high_speed_acceleration_range, parameter.vehicle_high_speed_acceleration_mean)
+	_high_speed_acceleration_rng = R.new(rng, parameter.vehicle_high_speed_acceleration_range, parameter.vehicle_high_speed_acceleration_mean)
 
-	_high_speed_rng = SimulatorRandomNormalDistributionRange.new(rng, parameter.vehicle_high_speed_range, parameter.vehicle_high_speed_mean)
-	_max_speed_rng = SimulatorRandomNormalDistributionRange.new(rng, parameter.vehicle_max_speed_range, parameter.vehicle_max_speed_mean)
+	_high_speed_rng = R.new(rng, parameter.vehicle_high_speed_range, parameter.vehicle_high_speed_mean)
+	_max_speed_rng = R.new(rng, parameter.vehicle_max_speed_range, parameter.vehicle_max_speed_mean)
 
-	_zero_speed_distance_rng = SimulatorRandomNormalDistributionRange.new(
+	_zero_speed_distance_rng = R.new(
 		rng, parameter.vehicle_zero_speed_distance_range, parameter.vehicle_zero_speed_distance_mean
 	)
-	_half_speed_distance_rng = SimulatorRandomNormalDistributionRange.new(
+	_half_speed_distance_rng = R.new(
 		rng, parameter.vehicle_half_speed_distance_range, parameter.vehicle_half_speed_distance_mean
 	)
-	_high_speed_distance_rng = SimulatorRandomNormalDistributionRange.new(
+	_high_speed_distance_rng = R.new(
 		rng, parameter.vehicle_high_speed_distance_range, parameter.vehicle_high_speed_distance_mean
 	)
 
 
-func create() -> SimulatorVehicleData:
-	var vehicle = SimulatorVehicleData.new()
+func create() -> SimulatorVehicleExtension:
+	var vehicle = VehicleData.new()
 
 	vehicle.length = _length_rng.next()
 
@@ -54,6 +56,15 @@ func create() -> SimulatorVehicleData:
 	vehicle.half_speed_distance = distances[1]
 	vehicle.high_speed_distance = distances[2]
 
-	vehicle.init_params()
+	var vehicle_ext = SimulatorVehicleExtension.new(vehicle)
+	return vehicle_ext
 
-	return vehicle
+
+class R:
+	extends SimulatorRandomNormalDistributionRange
+
+	func _init(rng: RandomNumberGenerator, range_value: IntRange, mean: int):
+		var r = FloatRange.new()
+		r.begin = range_value.begin
+		r.end = range_value.end
+		super(rng, r, mean)

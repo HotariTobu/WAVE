@@ -28,7 +28,7 @@ func _ready():
 
 func _renew_content_nodes(contents: Array[ContentData], node_dict: Dictionary, script: GDScript):
 	for node in node_dict.values():
-		node.queue_free()
+		node.free()
 
 	node_dict.clear()
 

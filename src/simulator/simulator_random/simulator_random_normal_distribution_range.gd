@@ -9,7 +9,7 @@ var _mean: float
 var _deviation: float
 
 
-func _init(rng: RandomNumberGenerator, range_value: ParameterData.IntRange, mean: int):
+func _init(rng: RandomNumberGenerator, range_value: FloatRange, mean: float):
 	_rng = rng
 
 	_min_value = range_value.begin

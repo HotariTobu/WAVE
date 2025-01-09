@@ -39,13 +39,22 @@ static func from_dict(dict: Dictionary, script: GDScript = LaneData) -> ContentD
 	return data
 
 
+static func new_default() -> ContentData:
+	return from_dict({})
+
+
 class OptionData:
+	extends DoNotNew
+
 	var weight: float
 
 	static func to_dict(data: OptionData) -> Dictionary:
 		return {&"weight": data.weight}
 
 	static func from_dict(dict: Dictionary) -> OptionData:
-		var data = OptionData.new()
+		var data = _new(OptionData)
 		data.weight = dict.get(&"weight", setting.default_lane_option_weight)
 		return data
+
+	static func new_default() -> OptionData:
+		return from_dict({})

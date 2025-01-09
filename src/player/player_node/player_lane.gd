@@ -7,7 +7,7 @@ var _is_blocked: bool
 
 func _init(lane: LaneData):
 	super(LaneData.to_dict(lane))
-	
+
 	var player_lane = player_global.content_db.player_data_of(lane.id) as PlayerLaneData
 	_collision_points = player_lane.points
 
@@ -35,7 +35,7 @@ func _draw():
 	elif selected:
 		color = setting.selected_color
 	elif _is_blocked:
-		color = setting.lane_block_targeted_color
+		color = setting.block_targeted_color
 	else:
 		color = setting.lane_color
 

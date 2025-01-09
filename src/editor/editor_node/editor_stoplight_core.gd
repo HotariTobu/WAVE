@@ -3,6 +3,8 @@ extends EditorScalable
 
 var opened: bool
 
+var _self_source: BindingSource
+
 var _sectors: Array[EditorStoplightSector]:
 	get:
 		return _sectors
@@ -18,6 +20,8 @@ func _init(stoplight: StoplightData):
 	super(stoplight, EditorPhysicsLayer.STOPLIGHT_CORE)
 	_collision_points = [Vector2.ZERO]
 
+	_self_source = _editor_global.source_db.get_or_add(self, &"notified")
+
 
 func _ready():
 	super()
@@ -28,18 +32,14 @@ func _enter_tree():
 	_source.bind(&"pos").to(self, &"position")
 	_source.add_callback(&"offset", _update_sectors)
 	_source.bind(&"split_ids").using(_get_sectors_of).to(self, &"_sectors")
-
-	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
-	core_source.bind(&"selected").to(core_source, &"opened")
+	_self_source.bind(&"selected").to(_self_source, &"opened")
 
 
 func _exit_tree():
 	_source.unbind(&"pos").from(self, &"position")
 	_source.remove_callback(&"offset", _update_sectors)
 	_source.unbind(&"split_ids").from(self, &"_sectors")
-
-	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
-	core_source.unbind(&"selected").from(core_source, &"opened")
+	_self_source.unbind(&"selected").from(_self_source, &"opened")
 
 
 func _scaled_draw(drawing_scale: float) -> void:
@@ -62,14 +62,13 @@ func _get_sectors_of(split_ids: Array) -> Array[EditorStoplightSector]:
 
 func _bind_sectors(next_sectors: Array[EditorStoplightSector]):
 	var unify_converter = UnifyConverter.from_property(self, &"selected", true)
-	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
 
 	for sector in next_sectors:
 		_source.bind(&"pos").to(sector, &"position")
 
 		var sector_source = _editor_global.source_db.get_or_add(sector, &"notified")
-		sector_source.bind(&"selected").using(unify_converter).to(core_source, &"opened")
-		core_source.bind(&"opened").to(sector, &"visible")
+		sector_source.bind(&"selected").using(unify_converter).to(_self_source, &"opened")
+		_self_source.bind(&"opened").to(sector, &"visible")
 
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)
@@ -77,14 +76,12 @@ func _bind_sectors(next_sectors: Array[EditorStoplightSector]):
 
 
 func _unbind_sectors(prev_sectors: Array[EditorStoplightSector]):
-	var core_source = _editor_global.source_db.get_or_add(self, &"notified")
-
 	for sector in prev_sectors:
 		_source.unbind(&"pos").from(sector, &"position")
 
 		var sector_source = _editor_global.source_db.get_or_add(sector, &"notified")
-		sector_source.unbind(&"selected").from(core_source, &"opened")
-		core_source.unbind(&"opened").from(sector, &"visible")
+		sector_source.unbind(&"selected").from(_self_source, &"opened")
+		_self_source.unbind(&"opened").from(sector, &"visible")
 
 		var split = sector.data as SplitData
 		var split_source = _editor_global.source_db.get_or_add(split)

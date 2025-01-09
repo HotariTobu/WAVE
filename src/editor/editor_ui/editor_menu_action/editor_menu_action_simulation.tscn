@@ -11,8 +11,9 @@ script = ExtResource("1_y8iws")
 
 [node name="SimulatorWindow" type="Window" parent="."]
 title = "Simulator"
-initial_position = 1
+initial_position = 3
 size = Vector2i(1000, 600)
+current_screen = 0
 visible = false
 force_native = true
 
@@ -37,8 +38,9 @@ layout_mode = 2
 
 [node name="PlayerWindow" type="Window" parent="."]
 title = "Player"
-initial_position = 1
+initial_position = 3
 size = Vector2i(1000, 600)
+current_screen = 0
 visible = false
 force_native = true
 
@@ -46,8 +48,9 @@ force_native = true
 
 [node name="PlayConfirmationDialog" type="ConfirmationDialog" parent="."]
 title = "Simulation Completed!"
-initial_position = 2
+initial_position = 3
 size = Vector2i(300, 100)
+current_screen = 0
 ok_button_text = "Play now!"
 cancel_button_text = "Not now..."
 

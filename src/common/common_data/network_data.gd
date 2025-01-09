@@ -1,5 +1,7 @@
 class_name NetworkData
 
+var bridge_vertices: Array[VertexData]
+var bridges: Array[BridgeData]
 var lane_vertices: Array[VertexData]
 var lanes: Array[LaneData]
 var splits: Array[SplitData]

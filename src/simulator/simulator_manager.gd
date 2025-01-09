@@ -2,7 +2,7 @@ class_name SimulatorManager
 
 signal status_changed(new_status: Status)
 
-enum Status { INITIALIZED, PREPARING, PREPARED, RUNNING, COMPLETED, CANCELED }
+enum Status { INITIALIZED, PREPARING, PREPARED, RUNNING, COMPLETED, CANCELED, ERROR }
 
 var status: Status:
 	get:
@@ -25,20 +25,16 @@ var _status: Status = Status.INITIALIZED:
 
 var _is_canceled: bool = false
 
-var _parameter: ParameterData
-var _network: NetworkData
-
 var _current_step: int
 var _iterator: SimulatorIterator
 
 
-func _init(parameter: ParameterData, network: NetworkData):
-	_parameter = parameter
-	_network = network
-
-
-func prepare() -> void:
+func prepare(parameter: ParameterData, network: NetworkData) -> void:
 	if _status != Status.INITIALIZED:
+		return
+
+	if parameter == null or network == null:
+		_status = Status.ERROR
 		return
 
 	_status = Status.PREPARING
@@ -46,7 +42,7 @@ func prepare() -> void:
 
 	_current_step = 0
 	_iterator = null
-	_iterator = SimulatorIterator.new(_should_exit, _parameter, _network)
+	_iterator = SimulatorIterator.new(_should_exit, parameter, network)
 
 	if _should_exit():
 		return
@@ -58,18 +54,17 @@ func start() -> SimulationData:
 	if _iterator == null:
 		return null
 
-	if _status in [Status.INITIALIZED, Status.PREPARING, Status.RUNNING]:
+	if _status in [Status.INITIALIZED, Status.PREPARING, Status.RUNNING, Status.ERROR]:
 		return null
 
 	_status = Status.RUNNING
 	_is_canceled = false
 
-	for step in range(_parameter.max_step):
+	while _iterator.iterate(_current_step):
 		if _should_exit():
 			return null
 
-		_current_step = step
-		_iterator.iterate(step)
+		_current_step += 1
 
 	var simulation = _iterator.simulation
 

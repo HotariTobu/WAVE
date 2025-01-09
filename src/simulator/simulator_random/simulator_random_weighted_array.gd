@@ -6,11 +6,13 @@ var _weights: PackedFloat32Array
 var _values: Array
 
 
-func _init(rng: RandomNumberGenerator, options: Array[ParameterData.RandomOption]):
+func _init(rng: RandomNumberGenerator):
 	_rng = rng
 
-	_weights = options.map(ParameterData.RandomOption.weight_of)
-	_values = options.map(ParameterData.RandomOption.value_of)
+
+func add_option(weight: float, value: Variant) -> void:
+	_weights.append(weight)
+	_values.append(value)
 
 
 func next() -> Variant:

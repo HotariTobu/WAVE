@@ -22,6 +22,10 @@ static func from_dict(dict: Dictionary, script: GDScript = VertexData) -> Conten
 	return data
 
 
+static func new_default() -> ContentData:
+	return from_dict({})
+
+
 class Pos:
 	static func to_dict(data: Vector2) -> Dictionary:
 		return {

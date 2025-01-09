@@ -34,7 +34,7 @@ func _on_selected_contents_changed():
 	for property_content in _property_contents:
 		var type = property_content.get_target_content_type()
 
-		if _is_descendant_of(first_type, type):
+		if Utils.is_descendant_of(first_type, type):
 			_activated_property_content_set.add(property_content)
 
 		elif _activated_property_content_set.has(property_content):
@@ -47,16 +47,3 @@ func _on_active_property_content_added(property_content: EditorPropertyPanelCont
 
 func _on_active_property_content_removed(property_content: EditorPropertyPanelContent):
 	property_content.deactivate.call_deferred()
-
-
-static func _is_descendant_of(script: Script, ancestor_script: Script):
-	assert(ancestor_script != null)
-
-	if script == null:
-		return false
-
-	if script == ancestor_script:
-		return true
-
-	var base_script = script.get_base_script()
-	return _is_descendant_of(base_script, ancestor_script)

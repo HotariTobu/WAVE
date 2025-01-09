@@ -6,19 +6,21 @@ enum NetworkSource { MEMORY, FILE }
 
 const Status = SimulatorManager.Status
 
-var _parameter = ParameterData.new()
+var _parameter: ParameterData
 
 var _data = BindingSource.new(Data.new(), &"notified")
 
-var _simulator: SimulatorManager = null
+var _manager: SimulatorManager = null
 var _thread = Thread.new()
 var _mutex = Mutex.new()
 
+@onready var _show_error = $ErrorDialog.show_error
+
 
 func _ready():
-	_parameter = $ParameterPanel.parameter
+	completed.connect($SimulationSaveFileDialog.show.unbind(1))
 
-	_data.network_file_path = editor_global.network_file_path
+	_parameter = $ParameterPanel.parameter
 
 	var case = CaseBindingConverter
 	_data.bind(&"network_source").using(case.new(NetworkSource.MEMORY)).to_check_box(%NetworkMemoryOption)
@@ -39,15 +41,13 @@ func _ready():
 
 	_data.bind(&"simulation").using(case.new(Data.NULL_SIMULATION)).to(%SaveButton, &"disabled")
 
-	completed.connect($SimulationSaveFileDialog.show.unbind(1))
-
 
 func _exit_tree():
 	_on_cancel_button_pressed()
 
 
 func _status_to_start_disabled(status: Status) -> bool:
-	return status not in [Status.INITIALIZED, Status.COMPLETED, Status.CANCELED]
+	return status not in [Status.INITIALIZED, Status.COMPLETED, Status.CANCELED, Status.ERROR]
 
 
 func _status_to_cancel_disabled(status: Status) -> bool:
@@ -56,12 +56,11 @@ func _status_to_cancel_disabled(status: Status) -> bool:
 
 func _run_simulation() -> SimulationData:
 	_mutex.lock()
-	var parameter_dict = ParameterData.to_dict(_parameter)
-	var parameter = ParameterData.from_dict(parameter_dict)
 	var network_source = _data.network_source
 	_mutex.unlock()
 
-	var network: NetworkData
+	var network: NetworkData = null
+
 	match network_source:
 		NetworkSource.MEMORY:
 			_mutex.lock()
@@ -76,20 +75,22 @@ func _run_simulation() -> SimulationData:
 			_mutex.unlock()
 
 			network = _read_network(network_file_path)
-			if network == null:
-				return Data.NULL_SIMULATION
 
-	var simulator = SimulatorManager.new(parameter, network)
-	simulator.status_changed.connect(_on_simulator_status_changed.call_deferred)
+	var manager = SimulatorManager.new()
 
 	_mutex.lock()
-	_simulator = simulator
-	_data.set_deferred(&"status", Status.INITIALIZED)
+	var parameter_dict = ParameterData.to_dict(_parameter)
+	var parameter = ParameterData.from_dict(parameter_dict)
+
+	_data.set_deferred(&"status", manager.status)
 	_data.set_deferred(&"max_progress_value", parameter.max_step)
+
+	_manager = manager
+	_manager.status_changed.connect(_on_simulator_status_changed.call_deferred)
 	_mutex.unlock()
 
-	simulator.prepare()
-	var simulation = simulator.start()
+	manager.prepare(_parameter, network)
+	var simulation = manager.start()
 
 	if simulation == null:
 		return Data.NULL_SIMULATION
@@ -105,10 +106,16 @@ func _on_start_button_pressed():
 
 
 func _on_cancel_button_pressed():
+	if _manager == null:
+		return
+
 	if not _thread.is_started():
 		return
 
-	_call_locked(_simulator.stop)
+	_mutex.lock()
+	_manager.stop()
+	_mutex.unlock()
+
 	_thread.wait_to_finish()
 
 
@@ -133,13 +140,16 @@ func _on_simulator_status_changed(new_status):
 
 		completed.emit(simulation)
 
+	elif new_status == Status.ERROR:
+		_thread.wait_to_finish()
+
 
 func _on_progress_bar_timer_timeout():
-	if _simulator == null:
+	if _manager == null:
 		return
 
 	_mutex.lock()
-	var current_step = _simulator.current_step
+	var current_step = _manager.current_step
 	_mutex.unlock()
 
 	_data.progress_value = current_step
@@ -156,12 +166,12 @@ func _on_simulation_save_file_dialog_file_selected(path):
 func _read_network(path: String) -> NetworkData:
 	var result = CommonIO.read_data(path, NetworkData)
 	if not result.ok:
-		_call_locked($ErrorDialog.show_error.bind("Failed to open file", result.error))
+		_show_error.call_deferred("Failed to open file", result.error)
 		return null
 
 	var network = result.data as NetworkData
 	if network == null:
-		_call_locked($ErrorDialog.show_error.bind("Opened invalid network file"))
+		_show_error.call_deferred("Opened invalid network file")
 		return null
 
 	return network
@@ -170,13 +180,7 @@ func _read_network(path: String) -> NetworkData:
 func _write_simulation(path: String, simulation: SimulationData):
 	var result = CommonIO.write_data(path, SimulationData, simulation)
 	if not result.ok:
-		_call_locked($ErrorDialog.show_error.bind("Failed to open file", result.error))
-
-
-func _call_locked(callable: Callable):
-	_mutex.lock()
-	callable.call()
-	_mutex.unlock()
+		_show_error.call_deferred("Failed to open file", result.error)
 
 
 static func _get_status_label(status: Status) -> String:
@@ -193,6 +197,8 @@ static func _get_status_label(status: Status) -> String:
 			return "Completed!"
 		Status.CANCELED:
 			return "Canceled!"
+		Status.ERROR:
+			return "Error!"
 		_:
 			return ""
 

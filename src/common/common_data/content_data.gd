@@ -1,15 +1,7 @@
 class_name ContentData
+extends DoNotNew
 
-const NULL_ID = &"null"
-
-var _id: StringName = NULL_ID
-
-var id: StringName:
-	get:
-		if _id == NULL_ID:
-			_id = UUID.v7()
-
-		return _id
+var id: StringName
 
 
 static func id_of(data: ContentData) -> StringName:
@@ -23,7 +15,7 @@ static func to_dict(data: ContentData) -> Dictionary:
 
 
 static func from_dict(dict: Dictionary, script: GDScript = ContentData) -> ContentData:
-	var data = script.new()
+	var data = _new(script)
 	assert(data is ContentData)
-	data._id = dict.get(&"id", NULL_ID)
+	data.id = dict.get(&"id", UUID.v7())
 	return data

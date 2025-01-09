@@ -123,7 +123,7 @@ class SplitCellCreator:
 		_editor_global.undo_redo.commit_action()
 
 	func _on_add_split_button_pressed():
-		var split = SplitData.from_dict({})
+		var split = SplitData.new_default()
 
 		var prev = _stoplight_source.split_ids as Array
 		var next = prev.duplicate()

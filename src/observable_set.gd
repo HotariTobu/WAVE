@@ -45,6 +45,12 @@ func erase(value: Variant) -> bool:
 	return false
 
 
+func exclude(another: Set) -> void:
+	for value in another._data:
+		_data.erase(value)
+		value_removed.emit(value)
+
+
 func intersect(another: Set) -> void:
 	var removed_values: Array
 

@@ -48,6 +48,23 @@ func erase(value: Variant) -> bool:
 	return _data.erase(value)
 
 
+func exclude(another: Set) -> void:
+	for value in another._data:
+		_data.erase(value)
+
+
+func excluded(another: Set) -> Set:
+	var new_set = Set.new()
+
+	for value in _data:
+		if another._data.has(value):
+			continue
+
+		new_set._data[value] = null
+
+	return new_set
+
+
 func has(value: Variant) -> bool:
 	return _data.has(value)
 
