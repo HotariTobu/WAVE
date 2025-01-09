@@ -142,7 +142,8 @@ func _init_forward_ordered_bridge_exts():
 
 	_forward_ordered_bridge_exts.make_read_only()
 
-	assert(len(_ext_db.bridges) == len(_forward_ordered_bridge_exts) and len(_forward_ordered_bridge_exts) == Set.from_array(_forward_ordered_bridge_exts).size())
+	assert(len(_ext_db.bridges) == len(_forward_ordered_bridge_exts))
+	assert(len(_forward_ordered_bridge_exts) == Set.from_array(_forward_ordered_bridge_exts).size())
 
 
 func _init_backward_ordered_bridge_exts():
@@ -185,7 +186,8 @@ func _init_backward_ordered_bridge_exts():
 
 	_backward_ordered_bridge_exts.make_read_only()
 
-	assert(len(_ext_db.bridges) == len(_backward_ordered_bridge_exts) and len(_backward_ordered_bridge_exts) == Set.from_array(_backward_ordered_bridge_exts).size())
+	assert(len(_ext_db.bridges) == len(_backward_ordered_bridge_exts))
+	assert(len(_backward_ordered_bridge_exts) == Set.from_array(_backward_ordered_bridge_exts).size())
 
 
 func _init_lane_exts():
@@ -254,7 +256,8 @@ func _init_ordered_lane_exts():
 
 	_ordered_lane_exts.make_read_only()
 
-	assert(len(_ext_db.lanes) == len(_ordered_lane_exts) and len(_ordered_lane_exts) == Set.from_array(_ordered_lane_exts).size())
+	assert(len(_ext_db.lanes) == len(_ordered_lane_exts))
+	assert(len(_ordered_lane_exts) == Set.from_array(_ordered_lane_exts).size())
 
 
 func _init_initial_walkers():
