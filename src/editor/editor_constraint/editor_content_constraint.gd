@@ -30,6 +30,7 @@ var _data_source: EditorBindingSource
 var _targets: Array
 var _snapshots: Array
 
+var _disposers: Array[Callable]
 var _copy_dependency_id_set_mergers: Array[Callable]
 var _movable_id_set_mergers: Array[Callable]
 
@@ -39,6 +40,11 @@ func _init(content: ContentData):
 	_data_source = editor_global.source_db.get_or_add(content)
 
 	_constrain.call_deferred()
+
+
+func dispose():
+	for disposer in _disposers:
+		disposer.call()
 
 
 func merge_copy_dependency_id_set_to(copy_dependency_id_set: Set) -> void:
@@ -66,6 +72,7 @@ func _bind_array(self_content_property: StringName, constraint_property: StringN
 
 	died.connect(func(): _erase_all_self_data_from_constraint_of(_data[self_content_property], constraint_property))
 	revived.connect(func(): _add_all_self_data_to_constraint_of(_data[self_content_property], constraint_property))
+	_disposers.append(func(): _erase_all_self_data_from_constraint_of(_data[self_content_property], constraint_property))
 
 
 func _bind_dict(self_content_property: StringName, constraint_property: StringName):
@@ -79,6 +86,7 @@ func _bind_dict(self_content_property: StringName, constraint_property: StringNa
 
 	died.connect(func(): _erase_all_self_data_from_constraint_of(_data[self_content_property].keys(), constraint_property))
 	revived.connect(func(): _add_all_self_data_to_constraint_of(_data[self_content_property].keys(), constraint_property))
+	_disposers.append(func(): _erase_all_self_data_from_constraint_of(_data[self_content_property].keys(), constraint_property))
 
 
 func _unlink_array_on_died(content_set: Set, content_property: StringName):

@@ -14,6 +14,7 @@ func _init(content_group: EditorContentDataDB.Group, content_constraint_script: 
 
 	content_group.contents_renewed.connect(_renew_content_constraints)
 	content_group.content_added.connect(_add_content_constraint)
+	content_group.content_removed.connect(_remove_content_constraint)
 
 
 func _renew_content_constraints(contents: Array[ContentData]):
@@ -38,6 +39,18 @@ func _add_content_constraint(content: ContentData):
 
 	constraint.died.connect(push.bind(_remove_content.bind(content)))
 	constraint.revived.connect(push.bind(_add_content.bind(content)))
+
+
+func _remove_content_constraint(content: ContentData):
+	if not _editor_global.constraint_db.has_of(content.id):
+		return
+
+	var constraint = _editor_global.constraint_db.of(content.id)
+	if constraint.dead:
+		return
+
+	constraint.dispose()
+	_editor_global.constraint_db.remove.call_deferred(constraint)
 
 
 func _add_content(content: ContentData):
