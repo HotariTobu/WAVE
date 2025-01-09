@@ -12,8 +12,9 @@ func iterate(step: int) -> bool:
 	_iterate_block_sources(step)
 	_iterate_block_targets(step)
 
-	_iterate_forward_bridges(step)
-	_iterate_backward_bridges(step)
+	# _iterate_forward_bridges(step)
+	# _iterate_backward_bridges(step)
+	_iterate_bridges(step)
 	_iterate_lanes(step)
 
 	return true
@@ -109,10 +110,189 @@ func _iterate_block_targets(step: int):
 		lane_ext.is_closed = lane_ext.next_lane_exts.all(_is_blocked)
 
 
-func _iterate_forward_bridges(step: int):
-	var loop_tail_buffer_dict: Dictionary
+# func _iterate_forward_bridges(step: int):
+# 	var loop_tail_buffer_dict: Dictionary
 
-	for bridge_ext in _forward_ordered_bridge_exts:
+# 	for bridge_ext in _forward_ordered_bridge_exts:
+# 		if _should_exit.call():
+# 			return
+
+# 		if bridge_ext.agent_exts.is_empty():
+# 			continue
+
+# 		var next_crowd_tail = -INF
+# 		if bridge_ext.forward_is_closed:
+# 			next_crowd_tail = 0.0
+
+# 		var crowd_count = 0
+
+# 		var walker_count = len(bridge_ext.agent_exts)
+# 		var removed_count = 0
+
+# 		for index in range(walker_count):
+# 			var walker_ext = bridge_ext.agent_exts[index] as SimulatorWalkerExtension
+# 			var walker = walker_ext.walker
+
+# 			var pos = walker.pos_history[-1]
+# 			var tail = pos + walker_ext.diameter
+
+# 			var crowd_tail = next_crowd_tail
+
+# 			var tails = bridge_ext.tails_array[index]
+# 			if len(tails) < bridge_ext.width_limit:
+# 				crowd_count = 0
+
+# 			else:
+# 				crowd_count += 1
+
+# 				if crowd_count >= bridge_ext.width_limit:
+# 					next_crowd_tail = tail
+
+# 			if not walker_ext.forward:
+# 				continue
+
+# 			var preferred_displacement = walker.speed * _parameter.step_delta
+
+# 			var last_displacement = walker_ext.over_last_pos - pos
+# 			var preferred_distance = (walker.public_distance - walker.personal_distance) * last_displacement / preferred_displacement + walker.personal_distance
+# 			var affected_pos = crowd_tail + preferred_distance
+# 			var affected_displacement = maxf(0.0, pos - affected_pos)
+
+# 			var next_displacement = min(preferred_displacement, affected_displacement)
+# 			var next_pos = pos - next_displacement
+
+# 			walker_ext.over_last_pos = pos
+# 			walker.pos_history.append(next_pos)
+
+# 			bridge_ext.forward_arrange_walker_exts_from(index)
+
+# 			if next_pos < 0:
+# 				removed_count += 1
+
+# 		for _i in range(removed_count):
+# 			var walker_ext = bridge_ext.agent_exts.pop_front() as SimulatorWalkerExtension
+
+# 			if bridge_ext.choose_next_bridge_ext == null:
+# 				walker_ext.die(step)
+# 				continue
+
+# 			var next_bridge_ext = bridge_ext.choose_next_bridge_ext.call() as SimulatorBridgeExtension
+
+# 			if bridge_ext.loop_next_bridge_ext_set.has(next_bridge_ext):
+# 				var buffered_walker_exts = loop_tail_buffer_dict.get_or_add(next_bridge_ext, []) as Array
+# 				buffered_walker_exts.append(walker_ext)
+
+# 				var walker = walker_ext.walker
+# 				walker.pos_history[-1] += next_bridge_ext.length
+
+# 			else:
+# 				walker_ext.move_to(next_bridge_ext, step)
+# 				# next_bridge_ext.forward_arrange_walker_exts_from_end()
+
+# 		# bridge_ext.forward_remove_tails(removed_count)
+
+# 	for next_bridge_ext in loop_tail_buffer_dict:
+# 		var buffered_walker_exts = loop_tail_buffer_dict[next_bridge_ext]
+
+# 		for walker_ext in buffered_walker_exts:
+# 			walker_ext.walker.pos_history[-1] -= next_bridge_ext.length
+# 			walker_ext.move_to(next_bridge_ext, step)
+# 			# next_bridge_ext.forward_arrange_walker_exts_from_end()
+
+
+# func _iterate_backward_bridges(step: int):
+# 	var loop_tail_buffer_dict: Dictionary
+
+# 	for bridge_ext in _backward_ordered_bridge_exts:
+# 		if _should_exit.call():
+# 			return
+
+# 		if bridge_ext.agent_exts.is_empty():
+# 			continue
+
+# 		var next_crowd_head = INF
+# 		if bridge_ext.backward_is_closed:
+# 			next_crowd_head = bridge_ext.length
+
+# 		var crowd_count = 0
+
+# 		var walker_count = len(bridge_ext.agent_exts)
+# 		var removed_count = 0
+
+# 		for index in range(walker_count - 1, -1, -1):
+# 			var walker_ext = bridge_ext.agent_exts[index] as SimulatorWalkerExtension
+# 			var walker = walker_ext.walker
+
+# 			var pos = walker.pos_history[-1]
+
+# 			var crowd_head = next_crowd_head
+
+# 			var tails = bridge_ext.tails_array[index]
+# 			if len(tails) < bridge_ext.width_limit:
+# 				crowd_count = 0
+
+# 			else:
+# 				crowd_count += 1
+
+# 				if crowd_count >= bridge_ext.width_limit:
+# 					next_crowd_head = pos
+
+# 			if walker_ext.forward:
+# 				continue
+
+# 			var preferred_displacement = walker.speed * _parameter.step_delta
+
+# 			var last_displacement = pos - walker_ext.over_last_pos
+# 			var preferred_distance = (walker.public_distance - walker.personal_distance) * last_displacement / preferred_displacement + walker.personal_distance
+# 			var affected_pos = crowd_head - preferred_distance
+# 			var affected_displacement = maxf(0.0, affected_pos - pos)
+
+# 			var next_displacement = min(preferred_displacement, affected_displacement)
+# 			var next_pos = pos + next_displacement
+
+# 			walker_ext.over_last_pos = pos
+# 			walker.pos_history.append(next_pos)
+
+# 			bridge_ext.backward_arrange_walker_exts_from(index)
+
+# 			if next_pos > bridge_ext.length:
+# 				removed_count += 1
+
+# 		for _i in range(removed_count):
+# 			var walker_ext = bridge_ext.agent_exts.pop_back() as SimulatorWalkerExtension
+
+# 			if bridge_ext.choose_prev_bridge_ext == null:
+# 				walker_ext.die(step)
+# 				continue
+
+# 			var prev_bridge_ext = bridge_ext.choose_prev_bridge_ext.call() as SimulatorBridgeExtension
+
+# 			if bridge_ext.loop_prev_bridge_ext_set.has(prev_bridge_ext):
+# 				var buffered_walker_exts = loop_tail_buffer_dict.get_or_add(prev_bridge_ext, []) as Array
+# 				buffered_walker_exts.append(walker_ext)
+
+# 				var walker = walker_ext.walker
+# 				walker.pos_history[-1] += prev_bridge_ext.length
+
+# 			else:
+# 				walker_ext.move_to(prev_bridge_ext, step)
+# 				# prev_bridge_ext.backward_arrange_walker_exts_from_start()
+
+# 		# bridge_ext.backward_remove_tails(removed_count)
+
+# 	for prev_bridge_ext in loop_tail_buffer_dict:
+# 		var buffered_walker_exts = loop_tail_buffer_dict[prev_bridge_ext]
+
+# 		for walker_ext in buffered_walker_exts:
+# 			walker_ext.walker.pos_history[-1] -= prev_bridge_ext.length
+# 			walker_ext.move_to(prev_bridge_ext, step)
+# 			# prev_bridge_ext.backward_arrange_walker_exts_from_start()
+
+
+func _iterate_bridges(step: int):
+	var moved_walker_ext_set = Set.new()
+
+	for bridge_ext in _ext_db.bridges:
 		if _should_exit.call():
 			return
 
@@ -150,6 +330,11 @@ func _iterate_forward_bridges(step: int):
 			if not walker_ext.forward:
 				continue
 
+			if moved_walker_ext_set.has(walker_ext):
+				continue
+
+			moved_walker_ext_set.add(walker_ext)
+
 			var preferred_displacement = walker.speed * _parameter.step_delta
 
 			var last_displacement = walker_ext.over_last_pos - pos
@@ -176,47 +361,16 @@ func _iterate_forward_bridges(step: int):
 				continue
 
 			var next_bridge_ext = bridge_ext.choose_next_bridge_ext.call() as SimulatorBridgeExtension
-
-			if bridge_ext.loop_next_bridge_ext_set.has(next_bridge_ext):
-				var buffered_walker_exts = loop_tail_buffer_dict.get_or_add(next_bridge_ext, []) as Array
-				buffered_walker_exts.append(walker_ext)
-
-				var walker = walker_ext.walker
-				walker.pos_history[-1] += next_bridge_ext.length
-
-			else:
-				walker_ext.move_to(next_bridge_ext, step)
-				# next_bridge_ext.forward_arrange_walker_exts_from_end()
-
-		# bridge_ext.forward_remove_tails(removed_count)
-
-	for next_bridge_ext in loop_tail_buffer_dict:
-		var buffered_walker_exts = loop_tail_buffer_dict[next_bridge_ext]
-
-		for walker_ext in buffered_walker_exts:
-			walker_ext.walker.pos_history[-1] -= next_bridge_ext.length
 			walker_ext.move_to(next_bridge_ext, step)
-			# next_bridge_ext.forward_arrange_walker_exts_from_end()
-
-
-func _iterate_backward_bridges(step: int):
-	var loop_tail_buffer_dict: Dictionary
-
-	for bridge_ext in _backward_ordered_bridge_exts:
-		if _should_exit.call():
-			return
-
-		if bridge_ext.agent_exts.is_empty():
-			continue
 
 		var next_crowd_head = INF
 		if bridge_ext.backward_is_closed:
 			next_crowd_head = bridge_ext.length
 
-		var crowd_count = 0
+		crowd_count = 0
 
-		var walker_count = len(bridge_ext.agent_exts)
-		var removed_count = 0
+		walker_count = len(bridge_ext.agent_exts)
+		removed_count = 0
 
 		for index in range(walker_count - 1, -1, -1):
 			var walker_ext = bridge_ext.agent_exts[index] as SimulatorWalkerExtension
@@ -238,6 +392,11 @@ func _iterate_backward_bridges(step: int):
 
 			if walker_ext.forward:
 				continue
+
+			if moved_walker_ext_set.has(walker_ext):
+				continue
+
+			moved_walker_ext_set.add(walker_ext)
 
 			var preferred_displacement = walker.speed * _parameter.step_delta
 
@@ -265,27 +424,7 @@ func _iterate_backward_bridges(step: int):
 				continue
 
 			var prev_bridge_ext = bridge_ext.choose_prev_bridge_ext.call() as SimulatorBridgeExtension
-
-			if bridge_ext.loop_prev_bridge_ext_set.has(prev_bridge_ext):
-				var buffered_walker_exts = loop_tail_buffer_dict.get_or_add(prev_bridge_ext, []) as Array
-				buffered_walker_exts.append(walker_ext)
-
-				var walker = walker_ext.walker
-				walker.pos_history[-1] += prev_bridge_ext.length
-
-			else:
-				walker_ext.move_to(prev_bridge_ext, step)
-				# prev_bridge_ext.backward_arrange_walker_exts_from_start()
-
-		# bridge_ext.backward_remove_tails(removed_count)
-
-	for prev_bridge_ext in loop_tail_buffer_dict:
-		var buffered_walker_exts = loop_tail_buffer_dict[prev_bridge_ext]
-
-		for walker_ext in buffered_walker_exts:
-			walker_ext.walker.pos_history[-1] -= prev_bridge_ext.length
 			walker_ext.move_to(prev_bridge_ext, step)
-			# prev_bridge_ext.backward_arrange_walker_exts_from_start()
 
 
 func _iterate_lanes(step: int):

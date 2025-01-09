@@ -8,8 +8,8 @@ var _ext_db: SimulatorExtensionDB
 
 var _rng = RandomNumberGenerator.new()
 
-var _forward_ordered_bridge_exts: Array[SimulatorBridgeExtension]
-var _backward_ordered_bridge_exts: Array[SimulatorBridgeExtension]
+# var _forward_ordered_bridge_exts: Array[SimulatorBridgeExtension]
+# var _backward_ordered_bridge_exts: Array[SimulatorBridgeExtension]
 var _ordered_lane_exts: Array[SimulatorLaneExtension]
 
 var _walker_creator: SimulatorWalkerCreator
@@ -39,8 +39,8 @@ func _init(should_exit: Callable, parameter: ParameterData, network: NetworkData
 	_init_rng_seed()
 
 	_init_bridge_exts()
-	_init_forward_ordered_bridge_exts()
-	_init_backward_ordered_bridge_exts()
+	# _init_forward_ordered_bridge_exts()
+	# _init_backward_ordered_bridge_exts()
 
 	_init_lane_exts()
 	_init_ordered_lane_exts()
@@ -102,92 +102,92 @@ func _init_bridge_exts():
 			bridge_ext.choose_next_bridge_ext = next_bridge_ext_chooser.next
 
 
-func _init_forward_ordered_bridge_exts():
-	var bridge_exts = _ext_db.bridges
-	var visited_bridge_ext_set = Set.new()
+# func _init_forward_ordered_bridge_exts():
+# 	var bridge_exts = _ext_db.bridges
+# 	var visited_bridge_ext_set = Set.new()
 
-	var visited = visited_bridge_ext_set.has
-	var unvisited = func(bridge_ext): return not visited_bridge_ext_set.has(bridge_ext)
+# 	var visited = visited_bridge_ext_set.has
+# 	var unvisited = func(bridge_ext): return not visited_bridge_ext_set.has(bridge_ext)
 
-	while not bridge_exts.is_empty() and not _should_exit.call():
-		var bridge_ext_stack: Array[SimulatorBridgeExtension]
-		var rest_bridge_exts: Array[SimulatorBridgeExtension]
+# 	while not bridge_exts.is_empty() and not _should_exit.call():
+# 		var bridge_ext_stack: Array[SimulatorBridgeExtension]
+# 		var rest_bridge_exts: Array[SimulatorBridgeExtension]
 
-		for bridge_ext in bridge_exts:
-			if bridge_ext.next_bridge_exts.all(visited):
-				bridge_ext_stack.append(bridge_ext)
-			else:
-				rest_bridge_exts.append(bridge_ext)
+# 		for bridge_ext in bridge_exts:
+# 			if bridge_ext.next_bridge_exts.all(visited):
+# 				bridge_ext_stack.append(bridge_ext)
+# 			else:
+# 				rest_bridge_exts.append(bridge_ext)
 
-		if bridge_ext_stack.is_empty():
-			var bridge_ext = rest_bridge_exts.pop_back() as SimulatorBridgeExtension
-			bridge_ext_stack.append(bridge_ext)
+# 		if bridge_ext_stack.is_empty():
+# 			var bridge_ext = rest_bridge_exts.pop_back() as SimulatorBridgeExtension
+# 			bridge_ext_stack.append(bridge_ext)
 
-			var loop_next_bridges = bridge_ext.next_bridge_exts.filter(unvisited)
-			bridge_ext.loop_next_bridge_ext_set.add_all(loop_next_bridges)
+# 			var loop_next_bridges = bridge_ext.next_bridge_exts.filter(unvisited)
+# 			bridge_ext.loop_next_bridge_ext_set.add_all(loop_next_bridges)
 
-		while not bridge_ext_stack.is_empty() and not _should_exit.call():
-			var bridge_ext = bridge_ext_stack.pop_back() as SimulatorBridgeExtension
+# 		while not bridge_ext_stack.is_empty() and not _should_exit.call():
+# 			var bridge_ext = bridge_ext_stack.pop_back() as SimulatorBridgeExtension
 
-			_forward_ordered_bridge_exts.append(bridge_ext)
-			visited_bridge_ext_set.add(bridge_ext)
+# 			_forward_ordered_bridge_exts.append(bridge_ext)
+# 			visited_bridge_ext_set.add(bridge_ext)
 
-			for prev_bridge_ext in bridge_ext.prev_bridge_exts.filter(unvisited):
-				if prev_bridge_ext.next_bridge_exts.all(visited):
-					bridge_ext_stack.append(prev_bridge_ext)
-				else:
-					rest_bridge_exts.append(prev_bridge_ext)
+# 			for prev_bridge_ext in bridge_ext.prev_bridge_exts.filter(unvisited):
+# 				if prev_bridge_ext.next_bridge_exts.all(visited):
+# 					bridge_ext_stack.append(prev_bridge_ext)
+# 				else:
+# 					rest_bridge_exts.append(prev_bridge_ext)
 
-		bridge_exts = rest_bridge_exts.filter(unvisited)
+# 		bridge_exts = rest_bridge_exts.filter(unvisited)
 
-	_forward_ordered_bridge_exts.make_read_only()
+# 	_forward_ordered_bridge_exts.make_read_only()
 
-	assert(len(_ext_db.bridges) == len(_forward_ordered_bridge_exts))
-	assert(len(_forward_ordered_bridge_exts) == Set.from_array(_forward_ordered_bridge_exts).size())
+# 	assert(len(_ext_db.bridges) == len(_forward_ordered_bridge_exts))
+# 	assert(len(_forward_ordered_bridge_exts) == Set.from_array(_forward_ordered_bridge_exts).size())
 
 
-func _init_backward_ordered_bridge_exts():
-	var bridge_exts = _ext_db.bridges
-	var visited_bridge_ext_set = Set.new()
+# func _init_backward_ordered_bridge_exts():
+# 	var bridge_exts = _ext_db.bridges
+# 	var visited_bridge_ext_set = Set.new()
 
-	var visited = visited_bridge_ext_set.has
-	var unvisited = func(bridge_ext): return not visited_bridge_ext_set.has(bridge_ext)
+# 	var visited = visited_bridge_ext_set.has
+# 	var unvisited = func(bridge_ext): return not visited_bridge_ext_set.has(bridge_ext)
 
-	while not bridge_exts.is_empty() and not _should_exit.call():
-		var bridge_ext_stack: Array[SimulatorBridgeExtension]
-		var rest_bridge_exts: Array[SimulatorBridgeExtension]
+# 	while not bridge_exts.is_empty() and not _should_exit.call():
+# 		var bridge_ext_stack: Array[SimulatorBridgeExtension]
+# 		var rest_bridge_exts: Array[SimulatorBridgeExtension]
 
-		for bridge_ext in bridge_exts:
-			if bridge_ext.prev_bridge_exts.all(visited):
-				bridge_ext_stack.append(bridge_ext)
-			else:
-				rest_bridge_exts.append(bridge_ext)
+# 		for bridge_ext in bridge_exts:
+# 			if bridge_ext.prev_bridge_exts.all(visited):
+# 				bridge_ext_stack.append(bridge_ext)
+# 			else:
+# 				rest_bridge_exts.append(bridge_ext)
 
-		if bridge_ext_stack.is_empty():
-			var bridge_ext = rest_bridge_exts.pop_back() as SimulatorBridgeExtension
-			bridge_ext_stack.append(bridge_ext)
+# 		if bridge_ext_stack.is_empty():
+# 			var bridge_ext = rest_bridge_exts.pop_back() as SimulatorBridgeExtension
+# 			bridge_ext_stack.append(bridge_ext)
 
-			var loop_prev_bridges = bridge_ext.prev_bridge_exts.filter(unvisited)
-			bridge_ext.loop_prev_bridge_ext_set.add_all(loop_prev_bridges)
+# 			var loop_prev_bridges = bridge_ext.prev_bridge_exts.filter(unvisited)
+# 			bridge_ext.loop_prev_bridge_ext_set.add_all(loop_prev_bridges)
 
-		while not bridge_ext_stack.is_empty() and not _should_exit.call():
-			var bridge_ext = bridge_ext_stack.pop_back() as SimulatorBridgeExtension
+# 		while not bridge_ext_stack.is_empty() and not _should_exit.call():
+# 			var bridge_ext = bridge_ext_stack.pop_back() as SimulatorBridgeExtension
 
-			_backward_ordered_bridge_exts.append(bridge_ext)
-			visited_bridge_ext_set.add(bridge_ext)
+# 			_backward_ordered_bridge_exts.append(bridge_ext)
+# 			visited_bridge_ext_set.add(bridge_ext)
 
-			for next_bridge_ext in bridge_ext.next_bridge_exts.filter(unvisited):
-				if next_bridge_ext.prev_bridge_exts.all(visited):
-					bridge_ext_stack.append(next_bridge_ext)
-				else:
-					rest_bridge_exts.append(next_bridge_ext)
+# 			for next_bridge_ext in bridge_ext.next_bridge_exts.filter(unvisited):
+# 				if next_bridge_ext.prev_bridge_exts.all(visited):
+# 					bridge_ext_stack.append(next_bridge_ext)
+# 				else:
+# 					rest_bridge_exts.append(next_bridge_ext)
 
-		bridge_exts = rest_bridge_exts.filter(unvisited)
+# 		bridge_exts = rest_bridge_exts.filter(unvisited)
 
-	_backward_ordered_bridge_exts.make_read_only()
+# 	_backward_ordered_bridge_exts.make_read_only()
 
-	assert(len(_ext_db.bridges) == len(_backward_ordered_bridge_exts))
-	assert(len(_backward_ordered_bridge_exts) == Set.from_array(_backward_ordered_bridge_exts).size())
+# 	assert(len(_ext_db.bridges) == len(_backward_ordered_bridge_exts))
+# 	assert(len(_backward_ordered_bridge_exts) == Set.from_array(_backward_ordered_bridge_exts).size())
 
 
 func _init_lane_exts():
