@@ -287,24 +287,36 @@ func _commit():
 	for bridge in _prev_bridges:
 		var option = BridgeData.OptionData.new_default()
 
-		var prev = bridge.next_option_dict
+		var dict_name: StringName
+		if bridge.vertex_ids.front() == vertex_ids.front():
+			dict_name = &"prev_option_dict"
+		else:
+			dict_name = &"next_option_dict"
+
+		var prev = bridge[dict_name]
 		var next = prev.duplicate()
 		next[new_bridge.id] = option
 
 		var source = _editor_global.source_db.get_or_add(bridge)
-		_editor_global.undo_redo.add_do_property(source, &"next_option_dict", next)
-		_editor_global.undo_redo.add_undo_property(source, &"next_option_dict", prev)
+		_editor_global.undo_redo.add_do_property(source, dict_name, next)
+		_editor_global.undo_redo.add_undo_property(source, dict_name, prev)
 
 	for bridge in _next_bridges:
 		var option = BridgeData.OptionData.new_default()
 
-		var prev = bridge.prev_option_dict
+		var dict_name: StringName
+		if bridge.vertex_ids.front() == vertex_ids.back():
+			dict_name = &"prev_option_dict"
+		else:
+			dict_name = &"next_option_dict"
+
+		var prev = bridge[dict_name]
 		var next = prev.duplicate()
 		next[new_bridge.id] = option
 
 		var source = _editor_global.source_db.get_or_add(bridge)
-		_editor_global.undo_redo.add_do_property(source, &"prev_option_dict", next)
-		_editor_global.undo_redo.add_undo_property(source, &"prev_option_dict", prev)
+		_editor_global.undo_redo.add_do_property(source, dict_name, next)
+		_editor_global.undo_redo.add_undo_property(source, dict_name, prev)
 
 	_editor_global.undo_redo.commit_action()
 
