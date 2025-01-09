@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://do35ab20g2g1"]
+[gd_scene load_steps=8 format=3 uid="uid://do35ab20g2g1"]
 
 [ext_resource type="Texture2D" uid="uid://bwi4jubes4ypq" path="res://assets/play.svg" id="1_hw2lp"]
 [ext_resource type="Script" path="res://src/player/player_ui.gd" id="1_jkg8e"]
 [ext_resource type="Texture2D" uid="uid://qs8il8ds20cw" path="res://assets/pause.svg" id="2_306rd"]
 [ext_resource type="Script" path="res://src/common/common_ui/scale_bar.gd" id="2_ukpge"]
+[ext_resource type="PackedScene" uid="uid://cmoet6wj7yijy" path="res://src/player/player_menu.tscn" id="5_kgdqc"]
 
 [sub_resource type="InputEventAction" id="InputEventAction_1ck36"]
 action = &"ui_accept"
@@ -68,5 +69,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 horizontal_alignment = 2
+
+[node name="PlayerMenu" parent="VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource("5_kgdqc")]
+layout_mode = 2
 
 [connection signal="toggled" from="VBoxContainer/MarginContainer/HBoxContainer/PlayPauseButton" to="." method="_on_play_pause_button_toggled"]

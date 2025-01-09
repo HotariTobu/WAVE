@@ -10,6 +10,7 @@
 script = ExtResource("1_y8iws")
 
 [node name="SimulatorWindow" type="Window" parent="."]
+gui_embed_subwindows = true
 title = "Simulator"
 initial_position = 3
 size = Vector2i(1000, 600)
@@ -37,6 +38,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="PlayerWindow" type="Window" parent="."]
+gui_embed_subwindows = true
 title = "Player"
 initial_position = 3
 size = Vector2i(1000, 600)

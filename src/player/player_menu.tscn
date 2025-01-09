@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://cmoet6wj7yijy"]
+
+[ext_resource type="Texture2D" uid="uid://c1wy4e80ljmp3" path="res://assets/dots.svg" id="1_ptk03"]
+[ext_resource type="Script" path="res://src/player/player_menu.gd" id="2_q0qpx"]
+[ext_resource type="Script" path="res://src/common/common_ui/error_dialog.gd" id="3_gerth"]
+
+[node name="PlayerMenu" type="MenuButton"]
+icon = ExtResource("1_ptk03")
+script = ExtResource("2_q0qpx")
+
+[node name="DumpDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+title = "Dump the simulation result"
+size = Vector2i(352, 190)
+mode_overrides_title = false
+file_mode = 2
+access = 2
+use_native_dialog = true
+
+[node name="ErrorDialog" type="AcceptDialog" parent="."]
+script = ExtResource("3_gerth")
+
+[connection signal="dir_selected" from="DumpDialog" to="." method="_on_dump_dialog_dir_selected"]
