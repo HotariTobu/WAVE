@@ -11,12 +11,12 @@ func _constrain():
 
 	died.connect(segments_set.clear)
 
-	segments_set.value_added.connect(_on_lane_set_changed.unbind(1))
-	segments_set.value_removed.connect(_on_lane_set_changed.unbind(1))
+	segments_set.value_added.connect(_on_segments_set_changed.unbind(1))
+	segments_set.value_removed.connect(_on_segments_set_changed.unbind(1))
 
 	_include_set_on_copy(&"segments_set", true)
 	_include_self_on_move()
 
 
-func _on_lane_set_changed():
+func _on_segments_set_changed():
 	dead = segments_set.size() == 0
