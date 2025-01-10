@@ -11,6 +11,7 @@ var undo_redo = UndoRedo.new()
 
 var source = EditorBindingSource.new(self, &"notified")
 
+var opacity: float = 1.0
 var network_file_path: String
 
 var tools: Array[EditorTool] = []

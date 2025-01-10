@@ -1,9 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://df814axcs2ji1"]
+[gd_scene load_steps=4 format=3 uid="uid://df814axcs2ji1"]
 
+[ext_resource type="Script" path="res://src/editor/editor_background.gd" id="1_i4ku3"]
 [ext_resource type="PackedScene" uid="uid://d2m22hrl2t0gd" path="res://src/editor/editor_network_container.tscn" id="2_hy0qe"]
 [ext_resource type="PackedScene" uid="uid://rtx3pb63rwgf" path="res://src/editor/editor_ui/editor_ui.tscn" id="3_prck3"]
 
 [node name="EditorRoot" type="Node"]
+
+[node name="BackgroundLayer" type="CanvasLayer" parent="."]
+layer = -128
+
+[node name="Background" type="ColorRect" parent="BackgroundLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_i4ku3")
 
 [node name="NetworkContainer" parent="." instance=ExtResource("2_hy0qe")]
 

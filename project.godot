@@ -26,7 +26,9 @@ player_global="*res://src/player/player_global.gd"
 
 window/size/viewport_width=1200
 window/size/viewport_height=800
+window/size/transparent=true
 window/dpi/allow_hidpi=false
+window/per_pixel_transparency/allowed=true
 
 [editor_plugins]
 
