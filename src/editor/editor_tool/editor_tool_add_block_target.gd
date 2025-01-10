@@ -146,7 +146,7 @@ func _toggle_target():
 	if item == null:
 		return
 
-	if item is not EditorLaneSegments:
+	if item is not EditorBlockTargetable:
 		return
 
 	var content = item.data
