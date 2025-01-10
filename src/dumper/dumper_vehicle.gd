@@ -61,14 +61,16 @@ static func _dump_pos(path: String, vehicle: VehicleData, data_of: Callable) -> 
 	if file == null:
 		return FileAccess.get_open_error()
 
-	file.store_csv_line(["x", "y"])
+	file.store_csv_line(["x", "y", "lane_id"])
 
 	var pos_count = len(vehicle.pos_history)
 	var curve: Curve2D
 
 	for index in range(pos_count):
+		var lane_id = ""
+
 		if vehicle.space_history.has(index):
-			var lane_id = vehicle.space_history[index]
+			lane_id = vehicle.space_history[index]
 			var lane = data_of.call(lane_id) as LaneData
 
 			curve = Curve2D.new()
@@ -80,7 +82,7 @@ static func _dump_pos(path: String, vehicle: VehicleData, data_of: Callable) -> 
 		var pos = vehicle.pos_history[index]
 		var vec = curve.sample_baked(pos)
 
-		file.store_csv_line([vec.x, vec.y].map(str))
+		file.store_csv_line([vec.x, vec.y, lane_id].map(str))
 
 	file.close()
 
