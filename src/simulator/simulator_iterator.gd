@@ -428,6 +428,8 @@ func _iterate_bridges(step: int):
 
 		assert(bridge_ext.validate_walker_order())
 
+	assert(moved_walker_ext_set.size() == len(simulation.walkers))
+
 
 func _iterate_lanes(step: int):
 	var loop_tail_buffer_dict: Dictionary
