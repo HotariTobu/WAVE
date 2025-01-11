@@ -304,6 +304,7 @@ func _iterate_bridges(step: int):
 			next_crowd_tail = 0.0
 
 		var crowd_count = 0
+		var coming_crowd_count = 0
 
 		var walker_count = len(bridge_ext.agent_exts)
 		var removed_count = 0
@@ -320,11 +321,15 @@ func _iterate_bridges(step: int):
 			var tails = bridge_ext.tails_array[index]
 			if len(tails) < bridge_ext.width_limit:
 				crowd_count = 0
+				coming_crowd_count = 0
 
 			else:
 				crowd_count += 1
 
-				if crowd_count >= bridge_ext.width_limit:
+				if not walker_ext.forward:
+					coming_crowd_count += 1
+
+				if crowd_count >= bridge_ext.width_limit and crowd_count > coming_crowd_count:
 					next_crowd_tail = tail
 
 			if not walker_ext.forward:
@@ -374,6 +379,7 @@ func _iterate_bridges(step: int):
 			next_crowd_head = bridge_ext.length
 
 		crowd_count = 0
+		coming_crowd_count = 0
 
 		walker_count = len(bridge_ext.agent_exts)
 		removed_count = 0
@@ -389,11 +395,15 @@ func _iterate_bridges(step: int):
 			var tails = bridge_ext.tails_array[index]
 			if len(tails) < bridge_ext.width_limit:
 				crowd_count = 0
+				coming_crowd_count = 0
 
 			else:
 				crowd_count += 1
 
-				if crowd_count >= bridge_ext.width_limit:
+				if walker_ext.forward:
+					coming_crowd_count += 1
+
+				if crowd_count >= bridge_ext.width_limit and crowd_count > coming_crowd_count:
 					next_crowd_head = pos
 
 			if walker_ext.forward:
