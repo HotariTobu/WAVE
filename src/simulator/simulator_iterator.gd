@@ -154,7 +154,7 @@ func _iterate_block_targets(step: int):
 # 			var preferred_displacement = walker.speed * _parameter.step_delta
 
 # 			var last_displacement = walker_ext.over_last_pos - pos
-# 			var preferred_distance = (walker.public_distance - walker.personal_distance) * last_displacement / preferred_displacement + walker.personal_distance
+# 			var preferred_distance = walker_ext.distance_slope * last_displacement / preferred_displacement + walker.personal_distance
 # 			var affected_pos = crowd_tail + preferred_distance
 # 			var affected_displacement = maxf(0.0, pos - affected_pos)
 
@@ -243,7 +243,7 @@ func _iterate_block_targets(step: int):
 # 			var preferred_displacement = walker.speed * _parameter.step_delta
 
 # 			var last_displacement = pos - walker_ext.over_last_pos
-# 			var preferred_distance = (walker.public_distance - walker.personal_distance) * last_displacement / preferred_displacement + walker.personal_distance
+# 			var preferred_distance = walker_ext.distance_slope * last_displacement / preferred_displacement + walker.personal_distance
 # 			var affected_pos = crowd_head - preferred_distance
 # 			var affected_displacement = maxf(0.0, affected_pos - pos)
 
@@ -343,7 +343,7 @@ func _iterate_bridges(step: int):
 			var preferred_displacement = walker.speed * _parameter.step_delta
 
 			var last_displacement = walker_ext.over_last_pos - pos
-			var preferred_distance = (walker.public_distance - walker.personal_distance) * last_displacement / preferred_displacement + walker.personal_distance
+			var preferred_distance = walker_ext.distance_slope * last_displacement / preferred_displacement + walker.personal_distance
 			var affected_pos = crowd_tail + preferred_distance
 			var affected_displacement = maxf(0.0, pos - affected_pos)
 
@@ -417,7 +417,7 @@ func _iterate_bridges(step: int):
 			var preferred_displacement = walker.speed * _parameter.step_delta
 
 			var last_displacement = pos - walker_ext.over_last_pos
-			var preferred_distance = (walker.public_distance - walker.personal_distance) * last_displacement / preferred_displacement + walker.personal_distance
+			var preferred_distance = walker_ext.distance_slope * last_displacement / preferred_displacement + walker.personal_distance
 			var affected_pos = crowd_head - preferred_distance
 			var affected_displacement = maxf(0.0, affected_pos - pos)
 

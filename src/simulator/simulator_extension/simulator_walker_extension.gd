@@ -5,6 +5,7 @@ var current_bridge_ext: SimulatorBridgeExtension
 var forward: bool
 
 var diameter: float
+var distance_slope: float
 
 var walker: WalkerData:
 	get:
@@ -15,6 +16,7 @@ func _init(data: WalkerData):
 	super(data)
 
 	diameter = data.radius * 2
+	distance_slope = _data.public_distance - _data.personal_distance
 
 
 func spawn_at(space_ext: SimulatorSpaceExtension, pos: float, step: int):
