@@ -426,6 +426,8 @@ func _iterate_bridges(step: int):
 			var prev_bridge_ext = bridge_ext.choose_prev_bridge_ext.call() as SimulatorBridgeExtension
 			walker_ext.move_to(prev_bridge_ext, step)
 
+		assert(bridge_ext.validate_walker_order())
+
 
 func _iterate_lanes(step: int):
 	var loop_tail_buffer_dict: Dictionary

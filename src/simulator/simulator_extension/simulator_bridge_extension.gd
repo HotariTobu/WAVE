@@ -203,3 +203,16 @@ func backward_arrange_walker_exts_from(index: int):
 # 			tails_array[index].append(forward_tail)
 
 # 		tails_array[index].reverse()
+
+func validate_walker_order() -> bool:
+	var last_pos = -INF
+
+	for walker_ext in agent_exts:
+		var walker = walker_ext.walker
+		var pos = walker.pos_history[-1]
+		if last_pos > pos:
+			return false
+
+		last_pos = pos
+
+	return true
