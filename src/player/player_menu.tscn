@@ -1,10 +1,28 @@
-[gd_scene load_steps=4 format=3 uid="uid://cmoet6wj7yijy"]
+[gd_scene load_steps=10 format=3 uid="uid://cmoet6wj7yijy"]
 
 [ext_resource type="Texture2D" uid="uid://c1wy4e80ljmp3" path="res://assets/dots.svg" id="1_ptk03"]
 [ext_resource type="Script" path="res://src/player/player_menu.gd" id="2_q0qpx"]
 [ext_resource type="Script" path="res://src/common/common_ui/error_dialog.gd" id="3_gerth"]
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8ep3s"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7geib"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0smmd"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_48ues"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3nmun"]
+
+[sub_resource type="Theme" id="Theme_b7kfb"]
+Button/styles/disabled = SubResource("StyleBoxTexture_8ep3s")
+Button/styles/focus = SubResource("StyleBoxTexture_7geib")
+Button/styles/hover = SubResource("StyleBoxTexture_0smmd")
+Button/styles/normal = SubResource("StyleBoxTexture_48ues")
+Button/styles/pressed = SubResource("StyleBoxTexture_3nmun")
+
 [node name="PlayerMenu" type="MenuButton"]
+theme = SubResource("Theme_b7kfb")
 icon = ExtResource("1_ptk03")
 script = ExtResource("2_q0qpx")
 
