@@ -21,10 +21,15 @@ func _init(data: WalkerData):
 
 func spawn_at(space_ext: SimulatorSpaceExtension, pos: float, step: int):
 	super(space_ext, pos, step)
+
+	var bridge_ext = space_ext as SimulatorBridgeExtension
+
 	if pos < 0:
-		space_ext.agent_exts.push_front(self)
+		bridge_ext.agent_exts.push_front(self)
+		bridge_ext.backward_arrange_walker_exts_from_start()
 	else:
-		space_ext.agent_exts.push_back(self)
+		bridge_ext.agent_exts.push_back(self)
+		bridge_ext.forward_arrange_walker_exts_from_end()
 
 
 func move_to(bridge_ext: SimulatorBridgeExtension, step: int):
@@ -51,12 +56,11 @@ func move_to(bridge_ext: SimulatorBridgeExtension, step: int):
 	_enter(bridge_ext, step)
 
 	if forward:
-		var index = len(bridge_ext.agent_exts)
 		bridge_ext.agent_exts.push_back(self)
-		bridge_ext.forward_arrange_walker_exts_from(index)
+		bridge_ext.forward_arrange_walker_exts_from_end()
 	else:
 		bridge_ext.agent_exts.push_front(self)
-		bridge_ext.backward_arrange_walker_exts_from(0)
+		bridge_ext.backward_arrange_walker_exts_from_start()
 
 
 func _enter(space_ext: SimulatorSpaceExtension, step: int):

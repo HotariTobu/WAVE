@@ -46,12 +46,6 @@ func _iterate_walker_entry_point(step: int):
 		walker_ext.spawn_at(bridge_ext, pos, step)
 		simulation.walkers.append(walker_ext.walker)
 
-		# if walker_ext.forward:
-		# 	bridge_ext.forward_arrange_walker_exts_from_end()
-		# else:
-		# 	bridge_ext.backward_arrange_walker_exts_from_start()
-
-		# bridge_ext.update_overflowing()
 		entry_point.next_entry_step = step + entry_point.interval
 
 
@@ -374,6 +368,8 @@ func _iterate_bridges(step: int):
 			var next_bridge_ext = bridge_ext.choose_next_bridge_ext.call() as SimulatorBridgeExtension
 			walker_ext.move_to(next_bridge_ext, step)
 
+		bridge_ext.update_tails_array()
+
 		var next_crowd_head = INF
 		if bridge_ext.backward_is_closed:
 			next_crowd_head = bridge_ext.length
@@ -447,6 +443,8 @@ func _iterate_bridges(step: int):
 
 			var prev_bridge_ext = bridge_ext.choose_prev_bridge_ext.call() as SimulatorBridgeExtension
 			walker_ext.move_to(prev_bridge_ext, step)
+
+		bridge_ext.update_tails_array()
 
 		assert(bridge_ext.validate_walker_order())
 
