@@ -9,8 +9,6 @@ func _init(walker: WalkerData):
 	_mutator = Mutator.new()
 	_helper = Helper.new(walker.radius * 2)
 
-	_transformer._forward = _pos_history[0] > _pos_history[1]
-
 
 class Transformer:
 	extends PlayerAgent.Transformer
@@ -20,6 +18,11 @@ class Transformer:
 
 	func get_transform() -> Transform2D:
 		var transform = super()
+
+		if prev_pos < next_pos:
+			_forward = false
+		elif prev_pos > next_pos:
+			_forward = true
 
 		if _forward:
 			return transform
@@ -62,11 +65,6 @@ class Mutator:
 		super(transformer)
 		transformer.base_pos += _base_offset
 		transformer.next_pos = _next_pos_func.call(transformer.next_pos)
-
-		if transformer.prev_pos < transformer.next_pos:
-			transformer._forward = false
-		elif transformer.prev_pos > transformer.next_pos:
-			transformer._forward = true
 
 
 class Helper:
