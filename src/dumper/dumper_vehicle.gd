@@ -1,5 +1,8 @@
 class_name DumperVehicle
 
+const HEAD_LANE_OVER_WEIGHT = 100
+
+
 static func dump(dir: String, vehicles: Array[VehicleData], data_of: Callable) -> Error:
 	var result: Error = OK
 
@@ -65,6 +68,7 @@ static func _dump_pos(path: String, vehicle: VehicleData, data_of: Callable) -> 
 
 	var pos_count = len(vehicle.pos_history)
 	var curve: Curve2D
+	var base_pos: float
 
 	for index in range(pos_count):
 		var lane_id = ""
@@ -79,8 +83,17 @@ static func _dump_pos(path: String, vehicle: VehicleData, data_of: Callable) -> 
 				var vertex = data_of.call(vertex_id) as VertexData
 				curve.add_point(vertex.pos)
 
+			if lane.next_option_dict.is_empty():
+				var pos0 = curve.get_point_position(curve.point_count - 2)
+				var pos1 = curve.get_point_position(curve.point_count - 1)
+				var pos2 = pos0.lerp(pos1, HEAD_LANE_OVER_WEIGHT)
+				curve.add_point(pos2)
+				base_pos = HEAD_LANE_OVER_WEIGHT
+			else:
+				base_pos = 0
+
 		var pos = vehicle.pos_history[index]
-		var vec = curve.sample_baked(pos)
+		var vec = curve.sample_baked(base_pos + pos)
 
 		file.store_csv_line([vec.x, vec.y, lane_id].map(str))
 

@@ -34,12 +34,18 @@ for input_file_path in input_file_paths:
         last_x, last_y, space_id = parse(next(r))
 
         for row in r:
+            if not row[0] or not row[1]:
+                break
+
             x, y, id = parse(row)
 
             dis = math.hypot(last_x - x, last_y - y)
 
             sum_dis, count = sum_dict[space_id]
             sum_dict[space_id] = (sum_dis + dis, count + 1)
+
+            last_x = x
+            last_y = y
 
             if id:
                 space_id = id
