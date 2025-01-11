@@ -14,30 +14,20 @@ func get_target_content_type() -> GDScript:
 	return VertexData
 
 
-func _bind_cells(next_sources: Array[EditorBindingSource]):
-	var first_source = next_sources.front() as EditorBindingSource
-
-	var x_of = func(pos: Vector2): return pos.x
-	var y_of = func(pos: Vector2): return pos.y
-
-	var unity_converter_x = UnifyConverter.new(func(): return first_source.pos.x)
-	var unity_converter_y = UnifyConverter.new(func(): return first_source.pos.y)
-
-	for source in next_sources:
-		source.bind(&"pos").using(x_of).using(unity_converter_x).to(_x_box, &"value")
-		source.bind(&"pos").using(y_of).using(unity_converter_y).to(_y_box, &"value")
+func _bind_cells(next_proxy: BindingSourceProxy):
+	next_proxy.bind(&"pos").using(_x_of).to(_x_box, &"value")
+	next_proxy.bind(&"pos").using(_y_of).to(_y_box, &"value")
 
 
-func _unbind_cells(prev_sources: Array[EditorBindingSource]):
-	for source in prev_sources:
-		source.unbind(&"pos").from(_x_box, &"value")
-		source.unbind(&"pos").from(_y_box, &"value")
+func _unbind_cells(prev_proxy: BindingSourceProxy):
+	prev_proxy.unbind(&"pos").from(_x_box, &"value")
+	prev_proxy.unbind(&"pos").from(_y_box, &"value")
 
 
 func _on_x_box_value_changed(new_value):
 	_editor_global.undo_redo.create_action("Change lane vertex pos x")
 
-	for source in sources:
+	for source in source_proxy.sources:
 		var prev = source.pos as Vector2
 		var next = Vector2(new_value, prev.y)
 
@@ -50,7 +40,7 @@ func _on_x_box_value_changed(new_value):
 func _on_y_box_value_changed(new_value):
 	_editor_global.undo_redo.create_action("Change lane vertex pos y")
 
-	for source in sources:
+	for source in source_proxy.sources:
 		var prev = source.pos as Vector2
 		var next = Vector2(prev.x, new_value)
 
@@ -58,3 +48,11 @@ func _on_y_box_value_changed(new_value):
 		_editor_global.undo_redo.add_undo_property(source, &"pos", prev)
 
 	_editor_global.undo_redo.commit_action()
+
+
+static func _x_of(pos: Vector2) -> float:
+	return pos.x
+
+
+static func _y_of(pos: Vector2) -> float:
+	return pos.y

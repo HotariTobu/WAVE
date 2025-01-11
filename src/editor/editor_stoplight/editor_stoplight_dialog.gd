@@ -6,7 +6,8 @@ var stoplight: StoplightData:
 	set(value):
 		stoplight = value
 		var source = _editor_global.source_db.get_or_add(value)
-		_property_panel_content.sources = [source] as Array[EditorBindingSource]
+		var proxy = BindingSourceProxy.new([source] as Array[BindingSource])
+		_property_panel_content.source_proxy = proxy
 
 var _editor_global = editor_global
 

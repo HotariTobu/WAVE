@@ -24,25 +24,22 @@ func get_target_content_type() -> GDScript:
 	return StoplightData
 
 
-func _bind_cells(next_sources: Array[EditorBindingSource]):
-	var first_source = next_sources.front() as EditorBindingSource
-	var unity_converter = UnifyConverter.from_property(first_source, &"offset")
+func _bind_cells(next_proxy: BindingSourceProxy):
+	next_proxy.bind(&"offset").to(_offset_box, &"value")
 
-	for source in next_sources:
-		source.bind(&"offset").using(unity_converter).to(_offset_box, &"value")
-
+	var next_sources = next_proxy.sources
 	if len(next_sources) == 1:
+		var first_source = next_sources.front() as EditorBindingSource
 		var split_cell_creator = SplitCellCreator.new(first_source)
 		first_source.bind(&"split_ids").using(split_cell_creator).to(self, &"_split_cells")
 
 
-func _unbind_cells(prev_sources: Array[EditorBindingSource]):
-	var first_source = prev_sources.front() as EditorBindingSource
+func _unbind_cells(prev_proxy: BindingSourceProxy):
+	prev_proxy.bind(&"offset").to(_offset_box, &"value")
 
-	for source in prev_sources:
-		source.unbind(&"offset").from(_offset_box, &"value")
-
+	var prev_sources = prev_proxy.sources
 	if len(prev_sources) == 1:
+		var first_source = prev_sources.front() as EditorBindingSource
 		first_source.unbind(&"split_ids").from(self, &"_split_cells")
 		_split_cells = []
 
@@ -50,7 +47,7 @@ func _unbind_cells(prev_sources: Array[EditorBindingSource]):
 func _on_offset_box_value_changed(new_value: float):
 	_editor_global.undo_redo.create_action("Change stoplight offset")
 
-	for source in sources:
+	for source in source_proxy.sources:
 		_editor_global.undo_redo.add_do_property(source, &"offset", new_value)
 		_editor_global.undo_redo.add_undo_property(source, &"offset", source.offset)
 

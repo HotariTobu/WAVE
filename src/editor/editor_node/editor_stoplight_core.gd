@@ -4,6 +4,7 @@ extends EditorScalable
 var opened: bool
 
 var _self_source: BindingSource
+var _sector_proxy: BindingSourceProxy
 
 var _sectors: Array[EditorStoplightSector]:
 	get:
@@ -61,13 +62,13 @@ func _get_sectors_of(split_ids: Array) -> Array[EditorStoplightSector]:
 
 
 func _bind_sectors(next_sectors: Array[EditorStoplightSector]):
-	var unify_converter = UnifyConverter.from_property(self, &"selected", true)
+	var sector_sources: Array[BindingSource]
+	sector_sources.assign(next_sectors.map(_editor_global.source_db.get_or_add.bind(&"notified")))
+	_sector_proxy = BindingSourceProxy.new(sector_sources)
+	_sector_proxy.bind(&"selected").to(_self_source, &"opened", true)
 
 	for sector in next_sectors:
 		_source.bind(&"pos").to(sector, &"position")
-
-		var sector_source = _editor_global.source_db.get_or_add(sector, &"notified")
-		sector_source.bind(&"selected").using(unify_converter).to(_self_source, &"opened")
 		_self_source.bind(&"opened").to(sector, &"visible")
 
 		var split = sector.data as SplitData
@@ -76,11 +77,12 @@ func _bind_sectors(next_sectors: Array[EditorStoplightSector]):
 
 
 func _unbind_sectors(prev_sectors: Array[EditorStoplightSector]):
+	if _sector_proxy != null:
+		_sector_proxy.unbind(&"selected").from(_self_source, &"opened")
+		_sector_proxy = null
+
 	for sector in prev_sectors:
 		_source.unbind(&"pos").from(sector, &"position")
-
-		var sector_source = _editor_global.source_db.get_or_add(sector, &"notified")
-		sector_source.unbind(&"selected").from(_self_source, &"opened")
 		_self_source.unbind(&"opened").from(sector, &"visible")
 
 		var split = sector.data as SplitData

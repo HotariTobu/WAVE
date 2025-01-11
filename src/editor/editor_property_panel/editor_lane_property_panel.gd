@@ -24,29 +24,24 @@ func get_target_content_type() -> GDScript:
 	return LaneData
 
 
-func _bind_cells(next_sources: Array[EditorBindingSource]):
-	var first_source = next_sources.front() as EditorBindingSource
+func _bind_cells(next_proxy: BindingSourceProxy):
+	next_proxy.bind(&"traffic").to(_traffic_box, &"value")
+	next_proxy.bind(&"speed_limit").to(_speed_limit_box, &"value")
 
-	var traffic_converter = UnifyConverter.from_property(first_source, &"traffic")
-	var speed_limit_converter = UnifyConverter.from_property(first_source, &"speed_limit")
-
-	for source in next_sources:
-		source.bind(&"traffic").using(traffic_converter).to(_traffic_box, &"value")
-		source.bind(&"speed_limit").using(speed_limit_converter).to(_speed_limit_box, &"value")
-
+	var next_sources = next_proxy.sources
 	if len(next_sources) == 1:
+		var first_source = next_sources.front() as EditorBindingSource
 		var option_cell_creator = OptionCellCreator.new()
 		first_source.bind(&"next_option_dict").using(option_cell_creator).to(self, &"_option_cells")
 
 
-func _unbind_cells(prev_sources: Array[EditorBindingSource]):
-	var first_source = prev_sources.front() as EditorBindingSource
+func _unbind_cells(prev_proxy: BindingSourceProxy):
+	prev_proxy.unbind(&"traffic").from(_traffic_box, &"value")
+	prev_proxy.unbind(&"speed_limit").from(_speed_limit_box, &"value")
 
-	for source in prev_sources:
-		source.unbind(&"traffic").from(_traffic_box, &"value")
-		source.unbind(&"speed_limit").from(_speed_limit_box, &"value")
-
+	var prev_sources = prev_proxy.sources
 	if len(prev_sources) == 1:
+		var first_source = prev_sources.front() as EditorBindingSource
 		first_source.unbind(&"next_option_dict").from(self, &"_option_cells")
 		_option_cells = []
 
@@ -54,7 +49,7 @@ func _unbind_cells(prev_sources: Array[EditorBindingSource]):
 func _on_traffic_box_value_changed(new_value):
 	_editor_global.undo_redo.create_action("Change lane traffic")
 
-	for source in sources:
+	for source in source_proxy.sources:
 		_editor_global.undo_redo.add_do_property(source, &"traffic", new_value)
 		_editor_global.undo_redo.add_undo_property(source, &"traffic", source.traffic)
 
@@ -64,7 +59,7 @@ func _on_traffic_box_value_changed(new_value):
 func _on_speed_limit_box_value_changed(new_value: float):
 	_editor_global.undo_redo.create_action("Change lane speed limit")
 
-	for source in sources:
+	for source in source_proxy.sources:
 		_editor_global.undo_redo.add_do_property(source, &"speed_limit", new_value)
 		_editor_global.undo_redo.add_undo_property(source, &"speed_limit", source.speed_limit)
 
