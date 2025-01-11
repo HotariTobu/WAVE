@@ -12,6 +12,7 @@ script = ExtResource("2_q0qpx")
 unique_name_in_owner = true
 title = "Dump the simulation result"
 size = Vector2i(352, 190)
+ok_button_text = "Select Current Folder"
 mode_overrides_title = false
 file_mode = 2
 access = 2
