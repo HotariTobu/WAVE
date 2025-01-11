@@ -353,8 +353,14 @@ func _iterate_bridges(step: int):
 			if next_pos < 0:
 				removed_count += 1
 
-		for _i in range(removed_count):
-			var walker_ext = bridge_ext.agent_exts.pop_front() as SimulatorWalkerExtension
+		var removed_index = -1
+		while removed_count > 0:
+			removed_index += 1
+			if not bridge_ext.agent_exts[removed_index].forward:
+				continue
+
+			var walker_ext = bridge_ext.agent_exts.pop_at(removed_index) as SimulatorWalkerExtension
+			removed_count -= 1
 
 			if bridge_ext.choose_next_bridge_ext == null:
 				walker_ext.die(step)
@@ -416,8 +422,14 @@ func _iterate_bridges(step: int):
 			if next_pos > bridge_ext.length:
 				removed_count += 1
 
-		for _i in range(removed_count):
-			var walker_ext = bridge_ext.agent_exts.pop_back() as SimulatorWalkerExtension
+		removed_index = walker_count
+		while removed_count > 0:
+			removed_index -= 1
+			if bridge_ext.agent_exts[removed_index].forward:
+				continue
+
+			var walker_ext = bridge_ext.agent_exts.pop_at(removed_index) as SimulatorWalkerExtension
+			removed_count -= 1
 
 			if bridge_ext.choose_prev_bridge_ext == null:
 				walker_ext.die(step)
@@ -428,7 +440,7 @@ func _iterate_bridges(step: int):
 
 		assert(bridge_ext.validate_walker_order())
 
-	assert(moved_walker_ext_set.size() == len(simulation.walkers))
+	assert(moved_walker_ext_set.size() == len(simulation.walkers.filter(func(w): return w.die_step < 0 or step < w.die_step)))
 
 
 func _iterate_lanes(step: int):

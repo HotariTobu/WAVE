@@ -17,6 +17,14 @@ func _init(data: WalkerData):
 	diameter = data.radius * 2
 
 
+func spawn_at(space_ext: SimulatorSpaceExtension, pos: float, step: int):
+	super(space_ext, pos, step)
+	if pos < 0:
+		space_ext.agent_exts.push_front(self)
+	else:
+		space_ext.agent_exts.push_back(self)
+
+
 func move_to(bridge_ext: SimulatorBridgeExtension, step: int):
 	if current_bridge_ext.start_vertex_id == bridge_ext.start_vertex_id:
 		over_last_pos = bridge_ext.length + current_bridge_ext.length - over_last_pos
@@ -39,6 +47,14 @@ func move_to(bridge_ext: SimulatorBridgeExtension, step: int):
 		forward = false
 
 	_enter(bridge_ext, step)
+
+	if forward:
+		var index = len(bridge_ext.agent_exts)
+		bridge_ext.agent_exts.push_back(self)
+		bridge_ext.forward_arrange_walker_exts_from(index)
+	else:
+		bridge_ext.agent_exts.push_front(self)
+		bridge_ext.backward_arrange_walker_exts_from(0)
 
 
 func _enter(space_ext: SimulatorSpaceExtension, step: int):
