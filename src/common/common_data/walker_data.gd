@@ -11,7 +11,7 @@ var public_distance: float
 
 
 static func to_dict(data: AgentData) -> Dictionary:
-	assert(data is VehicleData)
+	assert(data is WalkerData)
 	var dict = super(data)
 	dict[&"radius"] = data.radius
 	dict[&"speed"] = data.speed
@@ -21,9 +21,9 @@ static func to_dict(data: AgentData) -> Dictionary:
 	return dict
 
 
-static func from_dict(dict: Dictionary, script: GDScript = VehicleData) -> AgentData:
+static func from_dict(dict: Dictionary, script: GDScript = WalkerData) -> AgentData:
 	var data = super(dict, script)
-	assert(data is VehicleData)
+	assert(data is WalkerData)
 	data.radius = dict.get(&"radius", NAN)
 	data.speed = dict.get(&"speed", NAN)
 	data.overtake_speed = dict.get(&"overtake_speed", NAN)
