@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://d2m22hrl2t0gd"]
+[gd_scene load_steps=15 format=3 uid="uid://d2m22hrl2t0gd"]
 
 [ext_resource type="Script" path="res://src/editor/editor_network_container.gd" id="1_6l2nm"]
 [ext_resource type="Script" path="res://src/common/common_node/pan_zoom_camera.gd" id="2_3of67"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_add_block_target.gd" id="8_3e1ww"]
 [ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_move.gd" id="9_8n64k"]
 [ext_resource type="Shortcut" uid="uid://b0e31fc1q00xj" path="res://src/editor/editor_tool/move_tool_shortcut.tres" id="10_1hp1y"]
+[ext_resource type="Script" path="res://src/editor/editor_tool/editor_tool_measure.gd" id="14_v63bl"]
 
 [node name="EditorNetworkContainer" type="Node2D"]
 script = ExtResource("1_6l2nm")
@@ -56,4 +57,8 @@ shortcut = ExtResource("6_satsf")
 [node name="MoveTool" type="Node2D" parent="ToolContainer" node_paths=PackedStringArray("_content_container")]
 script = ExtResource("9_8n64k")
 _content_container = NodePath("../../ContentContainer")
+shortcut = ExtResource("10_1hp1y")
+
+[node name="MeasureTool" type="Node2D" parent="ToolContainer"]
+script = ExtResource("14_v63bl")
 shortcut = ExtResource("10_1hp1y")
