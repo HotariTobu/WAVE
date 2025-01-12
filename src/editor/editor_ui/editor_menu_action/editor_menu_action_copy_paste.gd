@@ -23,6 +23,9 @@ func copy_selection():
 		var constraint = _editor_global.constraint_db.of(content.id)
 		constraint.merge_copy_dependency_id_set_to(copy_dependency_id_set)
 
+	if selected_ids.is_empty():
+		return
+
 	for content_id in copy_dependency_id_set.to_array():
 		var group = _editor_global.content_db.group_of(content_id)
 		var content_dicts = sub_network_dict.get_or_add(group.name, []) as Array
