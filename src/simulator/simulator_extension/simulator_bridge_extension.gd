@@ -27,6 +27,8 @@ var tails_array: Array[PackedFloat32Array]
 # var tails_array: Array[PackedFloat32Array]:
 # 	get:
 # 		var agent_count = len(agent_exts)
+# 		if agent_count == 0:
+# 			return []
 
 # 		var result: Array[PackedFloat32Array]
 # 		result.resize(agent_count)
@@ -42,7 +44,7 @@ var tails_array: Array[PackedFloat32Array]
 # 			var tail = pos + walker_ext.diameter
 # 			result[index].append(tail)
 
-# 			var forward_tails = result[index - 1]
+# 			var forward_tails = result[index - 1].duplicate()
 # 			for offset in range(-1, -len(forward_tails) - 1, -1):
 # 				var forward_tail = forward_tails[offset]
 # 				if forward_tail < pos:
@@ -113,7 +115,7 @@ func forward_arrange_walker_exts_from(index: int):
 
 		forward_index -= 1
 
-	_update_tails_array(forward_index + 1, index)
+	_update_tails_array(forward_index + 1, index + len(tails_array[index]) - 1)
 
 
 func forward_arrange_walker_exts_from_end():
@@ -168,7 +170,7 @@ func _update_tails_array(start_index: int, end_index: int):
 		tails_array[index].clear()
 		tails_array[index].append(tail)
 
-		var forward_tails = tails_array[index - 1]
+		var forward_tails = tails_array[index - 1].duplicate()
 		for offset in range(-1, -len(forward_tails) - 1, -1):
 			var forward_tail = forward_tails[offset]
 			if forward_tail < pos:
