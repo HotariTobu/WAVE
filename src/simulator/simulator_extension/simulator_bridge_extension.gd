@@ -26,19 +26,19 @@ var tails_array: Array[PackedFloat32Array]
 
 # var tails_array: Array[PackedFloat32Array]:
 # 	get:
-# 		var agent_count = len(agent_exts)
-# 		if agent_count == 0:
+# 		var walker_count = len(agent_exts)
+# 		if walker_count == 0:
 # 			return []
 
 # 		var result: Array[PackedFloat32Array]
-# 		result.resize(agent_count)
+# 		result.resize(walker_count)
 
 # 		var first_walker_ext = agent_exts[0] as SimulatorWalkerExtension
 # 		var first_pos = first_walker_ext.walker.pos_history[-1]
 # 		var first_tail = first_pos + first_walker_ext.diameter
 # 		result[0].append(first_tail)
 
-# 		for index in range(1, agent_count):
+# 		for index in range(1, walker_count):
 # 			var walker_ext = agent_exts[index] as SimulatorWalkerExtension
 # 			var pos = walker_ext.walker.pos_history[-1]
 # 			var tail = pos + walker_ext.diameter
@@ -89,14 +89,18 @@ func update_is_blocking(_time: float):
 	is_blocking = not agent_exts.is_empty()
 
 
-func update_tails_array():
+func update_tails_array_all():
 	var walker_count = len(agent_exts)
 	tails_array.resize(walker_count)
-
-	if walker_count == 0:
-		return
-
 	_update_tails_array(0, walker_count)
+
+
+func update_tails_array_from(index: int):
+	_update_tails_array(index, len(agent_exts))
+
+
+func update_tails_array_to(index: int):
+	_update_tails_array(0, index)
 
 
 func forward_arrange_walker_exts_from(index: int):
@@ -151,8 +155,12 @@ func backward_arrange_walker_exts_from_start():
 
 
 func _update_tails_array(start_index: int, end_index: int):
-	var start = start_index
+	var walker_count = len(agent_exts)
+	if walker_count == 0:
+		tails_array.clear()
+		return
 
+	var start = start_index
 	while start > 0 and len(tails_array[start]) > 1:
 		start -= 1
 
@@ -165,10 +173,8 @@ func _update_tails_array(start_index: int, end_index: int):
 		tails_array[0].clear()
 		tails_array[0].append(tail)
 
-	var agent_count = len(agent_exts)
-	var end = mini(agent_count, end_index + 1)
-
-	while end < agent_count and len(tails_array[end]) > 1:
+	var end = mini(walker_count, end_index + 1)
+	while end < walker_count and len(tails_array[end]) > 1:
 		end += 1
 
 	for index in range(start, end):

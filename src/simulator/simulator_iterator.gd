@@ -363,6 +363,7 @@ func _iterate_bridges(step: int):
 				continue
 
 			var walker_ext = bridge_ext.agent_exts.pop_at(removed_index) as SimulatorWalkerExtension
+			bridge_ext.tails_array.pop_at(removed_index)
 			removed_count -= 1
 
 			if bridge_ext.choose_next_bridge_ext == null:
@@ -372,7 +373,7 @@ func _iterate_bridges(step: int):
 			var next_bridge_ext = bridge_ext.choose_next_bridge_ext.call() as SimulatorBridgeExtension
 			walker_ext.move_to(next_bridge_ext, step)
 
-		bridge_ext.update_tails_array()
+		bridge_ext.update_tails_array_to(removed_index)
 
 		var next_crowd_head = INF
 		if bridge_ext.backward_is_closed:
@@ -443,6 +444,7 @@ func _iterate_bridges(step: int):
 				continue
 
 			var walker_ext = bridge_ext.agent_exts.pop_at(removed_index) as SimulatorWalkerExtension
+			bridge_ext.tails_array.pop_at(removed_index)
 			removed_count -= 1
 
 			if bridge_ext.choose_prev_bridge_ext == null:
@@ -452,7 +454,7 @@ func _iterate_bridges(step: int):
 			var prev_bridge_ext = bridge_ext.choose_prev_bridge_ext.call() as SimulatorBridgeExtension
 			walker_ext.move_to(prev_bridge_ext, step)
 
-		bridge_ext.update_tails_array()
+		bridge_ext.update_tails_array_from(len(bridge_ext.agent_exts) + removed_index)
 
 	assert(moved_walker_ext_set.size() == len(simulation.walkers.filter(func(w): return w.die_step < 0 or step < w.die_step)))
 

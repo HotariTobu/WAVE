@@ -313,7 +313,7 @@ func _init_initial_walkers():
 				next_pos = pos + walker_ext.diameter
 
 		bridge_ext.agent_exts.sort_custom(_comp_agent_exts)
-		bridge_ext.update_tails_array()
+		bridge_ext.update_tails_array_all()
 
 
 func _init_walker_entry_points():
