@@ -141,7 +141,7 @@ func backward_arrange_walker_exts_from(index: int):
 
 		backward_index += 1
 
-	_update_tails_array(index, backward_index - 1)
+	_update_tails_array(index - len(tails_array[index]) + 1, backward_index - 1)
 
 
 func backward_arrange_walker_exts_from_start():
