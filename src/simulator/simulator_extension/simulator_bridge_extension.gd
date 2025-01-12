@@ -115,8 +115,7 @@ func forward_arrange_walker_exts_from(index: int):
 
 		forward_index -= 1
 
-	var tails_margin = len(tails_array[index])
-	_update_tails_array(forward_index - tails_margin + 2, index + tails_margin - 1)
+	_update_tails_array(forward_index + 1, index)
 
 
 func forward_arrange_walker_exts_from_end():
@@ -142,8 +141,7 @@ func backward_arrange_walker_exts_from(index: int):
 
 		backward_index += 1
 
-	var tails_margin = len(tails_array[index])
-	_update_tails_array(index - tails_margin + 1, backward_index + tails_margin - 2)
+	_update_tails_array(index, backward_index - 1)
 
 
 func backward_arrange_walker_exts_from_start():
@@ -154,7 +152,11 @@ func backward_arrange_walker_exts_from_start():
 
 func _update_tails_array(start_index: int, end_index: int):
 	var start = start_index
-	if start_index < 1:
+
+	while start > 0 and len(tails_array[start]) > 1:
+		start -= 1
+
+	if start < 1:
 		start = 1
 
 		var walker_ext = agent_exts[0] as SimulatorWalkerExtension
@@ -163,7 +165,11 @@ func _update_tails_array(start_index: int, end_index: int):
 		tails_array[0].clear()
 		tails_array[0].append(tail)
 
-	var end = mini(len(agent_exts), end_index + 1)
+	var agent_count = len(agent_exts)
+	var end = mini(agent_count, end_index + 1)
+
+	while end < agent_count and len(tails_array[end]) > 1:
+		end += 1
 
 	for index in range(start, end):
 		var walker_ext = agent_exts[index] as SimulatorWalkerExtension
