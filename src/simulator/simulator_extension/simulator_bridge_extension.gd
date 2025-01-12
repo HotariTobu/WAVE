@@ -180,6 +180,8 @@ func _update_tails_array(start_index: int, end_index: int):
 
 		tails_array[index].reverse()
 
+	assert(tails_array.all(func(tails): return len(tails) <= len(agent_exts)))
+
 
 func validate_walker_order() -> bool:
 	var last_pos = -INF
