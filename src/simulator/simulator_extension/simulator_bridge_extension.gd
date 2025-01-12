@@ -115,7 +115,8 @@ func forward_arrange_walker_exts_from(index: int):
 
 		forward_index -= 1
 
-	_update_tails_array(forward_index + 1, index + len(tails_array[index]) - 1)
+	var tails_margin = len(tails_array[index])
+	_update_tails_array(forward_index - tails_margin + 2, index + tails_margin - 1)
 
 
 func forward_arrange_walker_exts_from_end():
@@ -141,7 +142,8 @@ func backward_arrange_walker_exts_from(index: int):
 
 		backward_index += 1
 
-	_update_tails_array(index - len(tails_array[index]) + 1, backward_index - 1)
+	var tails_margin = len(tails_array[index])
+	_update_tails_array(index - tails_margin + 1, backward_index + tails_margin - 2)
 
 
 func backward_arrange_walker_exts_from_start():
