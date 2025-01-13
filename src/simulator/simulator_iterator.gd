@@ -465,10 +465,12 @@ func _iterate_lanes(step: int):
 		if _should_exit.call():
 			return
 
+		lane_ext.update_overflowed()
+
 		if lane_ext.agent_exts.is_empty():
+			lane_ext.update_overflowing()
 			continue
 
-		lane_ext.update_overflowed()
 		var rear_pos = lane_ext.overflowed
 		if lane_ext.is_closed and rear_pos < 0:
 			rear_pos = 0
@@ -527,21 +529,38 @@ func _iterate_lanes(step: int):
 
 		for _i in range(removed_count):
 			var vehicle_ext = lane_ext.agent_exts.pop_front() as SimulatorVehicleExtension
+			var vehicle = vehicle_ext.vehicle
 
-			if lane_ext.choose_next_lane_ext == null:
-				vehicle_ext.die(step)
+			var focused_lane_ext = lane_ext
+			var next_lane_ext: SimulatorLaneExtension
+			var looped = false
+
+			while true:
+				if focused_lane_ext.choose_next_lane_ext == null:
+					vehicle_ext.die(step)
+					next_lane_ext = null
+					break
+
+				next_lane_ext = focused_lane_ext.choose_next_lane_ext.call()
+
+				vehicle_ext.over_last_pos += next_lane_ext.length
+				vehicle.pos_history[-1] += next_lane_ext.length
+
+				if focused_lane_ext.loop_next_lane_ext_set.has(next_lane_ext):
+					looped = true
+
+				if vehicle.pos_history[-1] > 0:
+					break
+
+				focused_lane_ext = next_lane_ext
+
+			if next_lane_ext == null:
 				continue
 
-			var next_lane_ext = lane_ext.choose_next_lane_ext.call() as SimulatorLaneExtension
-
-			if lane_ext.loop_next_lane_ext_set.has(next_lane_ext):
+			if looped:
 				var buffered_vehicle_exts = loop_tail_buffer_dict.get_or_add(next_lane_ext, []) as Array
 				buffered_vehicle_exts.append(vehicle_ext)
-
-				var vehicle = vehicle_ext.vehicle
-				vehicle.pos_history[-1] += next_lane_ext.length
 				next_lane_ext.update_overflowing_by(vehicle)
-
 			else:
 				vehicle_ext.move_to(next_lane_ext, step)
 				next_lane_ext.update_overflowing()
@@ -552,7 +571,6 @@ func _iterate_lanes(step: int):
 		var buffered_vehicle_exts = loop_tail_buffer_dict[next_lane_ext]
 
 		for vehicle_ext in buffered_vehicle_exts:
-			vehicle_ext.vehicle.pos_history[-1] -= next_lane_ext.length
 			vehicle_ext.move_to(next_lane_ext, step)
 
 

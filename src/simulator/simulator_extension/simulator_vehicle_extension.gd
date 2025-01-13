@@ -31,8 +31,6 @@ func _init(data: VehicleData):
 
 
 func move_to(lane_ext: SimulatorLaneExtension, step: int):
-	over_last_pos += lane_ext.length
-	_data.pos_history[-1] += lane_ext.length
 	_enter(lane_ext, step)
 
 
