@@ -1,44 +1,35 @@
 class_name PlayerVehicle
 extends PlayerAgent
 
+var _length: float
+
 
 func _init(vehicle: VehicleData):
 	super(vehicle)
+
 	_collision_points = [Vector2.ZERO, Vector2.LEFT * vehicle.length]
-	_transformer = Transformer.new()
-	_mutator = Mutator.new()
-	_helper = Helper.new(vehicle.length)
+	_inactive_color = setting.vehicle_color
+	_length = vehicle.length
+
+	var trail_length = 0.0
+
+	for index in range(len(vehicle.pos_history)):
+		if vehicle.space_history.has(index):
+			var lane_ids = vehicle.space_history[index]
+
+			for lane_id in lane_ids:
+				var lane = player_global.content_db.player_data_of(lane_id) as PlayerLaneData
+
+				for point in lane.points:
+					_trail.add_point(point)
+
+				trail_length += lane.length
+
+		var pos = vehicle.pos_history[index]
+		_offsets[index] = trail_length - pos
+
+	_after_init()
 
 
-class Mutator:
-	extends PlayerAgent.Mutator
-
-	var _next_space_length: float
-
-	func update(space: PlayerSpaceData, next_space: PlayerSpaceData) -> void:
-		super(space, next_space)
-		_duplicated_curve.add_point(next_space.points[1])
-		_next_space_length = next_space.length
-
-
-	func mutate(transformer: Transformer) -> void:
-		super(transformer)
-		transformer.next_pos -= _next_space_length
-
-
-class Helper:
-	extends PlayerAgent.Helper
-
-	var _length: float
-
-
-	func _init(length: float):
-		_length = length
-
-
-	func get_inactive_color() -> Color:
-		return setting.vehicle_color
-
-
-	func draw_to(canvas: CanvasItem, color: Color) -> void:
-		AgentHelper.draw_to(canvas, setting.vehicle_width, setting.vehicle_head_length, _length, color)
+func _draw():
+	AgentHelper.draw_to(self, setting.vehicle_width, setting.vehicle_head_length, _length, _get_color())

@@ -1,85 +1,63 @@
 class_name PlayerWalker
 extends PlayerAgent
 
+var _diameter: float
+
 
 func _init(walker: WalkerData):
 	super(walker)
+
 	_collision_points = [Vector2.ZERO]
-	_transformer = Transformer.new()
-	_mutator = Mutator.new()
-	_helper = Helper.new(walker.radius * 2)
+	_inactive_color = setting.walker_color
+	_diameter = walker.radius * 2
 
+	var forward = walker.pos_history[0] > walker.pos_history[1]
+	var last_start_vertex_id: StringName
+	var last_end_vertex_id: StringName
 
-class Transformer:
-	extends PlayerAgent.Transformer
+	var trail_length = 0.0
+	var last_trail_length: float
 
-	var _forward: bool
+	for index in range(len(walker.pos_history)):
+		if walker.space_history.has(index):
+			var bridge_ids = walker.space_history[index]
+			last_trail_length = trail_length
 
+			for bridge_id in bridge_ids:
+				var bridge = player_global.content_db.player_data_of(bridge_id) as PlayerBridgeData
 
-	func get_transform() -> Transform2D:
-		var transform = super()
+				if last_start_vertex_id == bridge.start_vertex_id:
+					forward = true
 
-		if prev_pos < next_pos:
-			_forward = false
-		elif prev_pos > next_pos:
-			_forward = true
+				elif last_end_vertex_id == bridge.start_vertex_id:
+					forward = true
 
-		if _forward:
-			return transform
+				elif last_start_vertex_id == bridge.end_vertex_id:
+					forward = false
+
+				elif last_end_vertex_id == bridge.end_vertex_id:
+					forward = false
+
+				if forward:
+					for point in bridge.points:
+						_trail.add_point(point)
+				else:
+					for point in bridge.reversed_points:
+						_trail.add_point(point)
+
+				last_start_vertex_id = bridge.start_vertex_id
+				last_end_vertex_id = bridge.end_vertex_id
+				trail_length += bridge.length
+
+		var pos = walker.pos_history[index]
+
+		if forward:
+			_offsets[index] = trail_length - pos
 		else:
-			return transform.rotated_local(PI)
+			_offsets[index] = last_trail_length + pos + _diameter
+
+	_after_init()
 
 
-class Mutator:
-	extends PlayerAgent.Mutator
-
-	var _base_offset: float
-	var _next_pos_func: Callable
-
-
-	func update(space: PlayerSpaceData, next_space: PlayerSpaceData) -> void:
-		super(space, next_space)
-
-		if space.start_vertex_id == next_space.start_vertex_id:
-			_duplicated_curve.add_point(next_space.points[1], Vector2.ZERO, Vector2.ZERO, 0)
-			_base_offset = next_space.points[0].distance_to(next_space.points[1])
-			_next_pos_func = func(pos: float): return next_space.length - pos + space.length
-
-		elif space.end_vertex_id == next_space.start_vertex_id:
-			_duplicated_curve.add_point(next_space.points[1])
-			_base_offset = 0
-			_next_pos_func = func(pos: float): return pos - next_space.length
-
-		elif space.start_vertex_id == next_space.end_vertex_id:
-			_duplicated_curve.add_point(next_space.points[-2], Vector2.ZERO, Vector2.ZERO, 0)
-			_base_offset = next_space.points[-1].distance_to(next_space.points[-2])
-			_next_pos_func = func(pos: float): return pos + space.length
-
-		elif space.end_vertex_id == next_space.end_vertex_id:
-			_duplicated_curve.add_point(next_space.points[-2])
-			_base_offset = 0
-			_next_pos_func = func(pos: float): return -pos
-
-
-	func mutate(transformer: Transformer) -> void:
-		super(transformer)
-		transformer.base_pos += _base_offset
-		transformer.next_pos = _next_pos_func.call(transformer.next_pos)
-
-
-class Helper:
-	extends PlayerAgent.Helper
-
-	var _size: float
-
-
-	func _init(size: float):
-		_size = size
-
-
-	func get_inactive_color() -> Color:
-		return setting.walker_color
-
-
-	func draw_to(canvas: CanvasItem, color: Color) -> void:
-		AgentHelper.draw_to(canvas, _size, setting.walker_head_length, _size, color)
+func _draw():
+	AgentHelper.draw_to(self, _diameter, setting.walker_head_length, _diameter, _get_color())

@@ -459,7 +459,7 @@ func _iterate_bridges(step: int):
 
 
 func _iterate_lanes(step: int):
-	var loop_tail_buffer_dict: Dictionary
+	var loop_tail_buffer: Array[Dictionary]
 
 	for lane_ext in _ordered_lane_exts:
 		if _should_exit.call():
@@ -532,46 +532,48 @@ func _iterate_lanes(step: int):
 			var vehicle = vehicle_ext.vehicle
 
 			var focused_lane_ext = lane_ext
-			var next_lane_ext: SimulatorLaneExtension
+			var way_lane_exts: Array[SimulatorLaneExtension]
 			var looped = false
 
 			while true:
 				if focused_lane_ext.choose_next_lane_ext == null:
 					vehicle_ext.die(step)
-					next_lane_ext = null
 					break
 
-				next_lane_ext = focused_lane_ext.choose_next_lane_ext.call()
+				var way_lane_ext = focused_lane_ext.choose_next_lane_ext.call()
+				way_lane_exts.append(way_lane_ext)
 
-				vehicle_ext.over_last_pos += next_lane_ext.length
-				vehicle.pos_history[-1] += next_lane_ext.length
+				vehicle_ext.over_last_pos += way_lane_ext.length
+				vehicle.pos_history[-1] += way_lane_ext.length
 
-				if focused_lane_ext.loop_next_lane_ext_set.has(next_lane_ext):
+				if focused_lane_ext.loop_next_lane_ext_set.has(way_lane_ext):
 					looped = true
 
 				if vehicle.pos_history[-1] > 0:
 					break
 
-				focused_lane_ext = next_lane_ext
+				focused_lane_ext = way_lane_ext
 
-			if next_lane_ext == null:
+			if way_lane_exts.is_empty():
 				continue
 
+			var next_lane_ext = way_lane_exts.back() as SimulatorLaneExtension
+
 			if looped:
-				var buffered_vehicle_exts = loop_tail_buffer_dict.get_or_add(next_lane_ext, []) as Array
-				buffered_vehicle_exts.append(vehicle_ext)
+				var buffer_item = {
+					&"vehicle_ext": vehicle_ext,
+					&"way_lane_exts": way_lane_exts,
+				}
+				loop_tail_buffer.append(buffer_item)
 				next_lane_ext.update_overflowing_by(vehicle)
 			else:
-				vehicle_ext.move_to(next_lane_ext, step)
+				vehicle_ext.move_to(way_lane_exts, step)
 				next_lane_ext.update_overflowing()
 
 		lane_ext.update_overflowing()
 
-	for next_lane_ext in loop_tail_buffer_dict:
-		var buffered_vehicle_exts = loop_tail_buffer_dict[next_lane_ext]
-
-		for vehicle_ext in buffered_vehicle_exts:
-			vehicle_ext.move_to(next_lane_ext, step)
+	for buffer_item in loop_tail_buffer:
+		buffer_item[&"vehicle_ext"].move_to(buffer_item[&"way_lane_exts"], step)
 
 
 static func _is_blocking(content_ext: SimulatorContentExtension) -> bool:

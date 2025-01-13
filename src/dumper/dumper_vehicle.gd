@@ -74,7 +74,8 @@ static func _dump_pos(path: String, vehicle: VehicleData, data_of: Callable) -> 
 		var lane_id = ""
 
 		if vehicle.space_history.has(index):
-			lane_id = vehicle.space_history[index]
+			var lane_ids = vehicle.space_history[index]
+			lane_id = lane_ids.back()
 			var lane = data_of.call(lane_id) as LaneData
 
 			curve = Curve2D.new()

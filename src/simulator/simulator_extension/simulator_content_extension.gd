@@ -30,3 +30,7 @@ func _assign_ext_dict(self_property: StringName, data_property: StringName, ext_
 		var value = src_dict[content_id]
 		dst_dict[key] = value
 	dst_dict.make_read_only()
+
+
+static func id_of(ext: SimulatorContentExtension) -> StringName:
+	return ext._data.id

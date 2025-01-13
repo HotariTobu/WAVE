@@ -10,5 +10,5 @@ func _init(segments: SegmentsData, data_of: Callable):
 	for vertex in vertices:
 		points.append(vertex.pos)
 		curve.add_point(vertex.pos)
-	
+
 	length = curve.get_baked_length()

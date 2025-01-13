@@ -53,7 +53,7 @@ func move_to(bridge_ext: SimulatorBridgeExtension, step: int):
 		_data.pos_history[-1] = -_data.pos_history[-1]
 		forward = false
 
-	_enter(bridge_ext, step)
+	_enter([bridge_ext], step)
 
 	if forward:
 		bridge_ext.agent_exts.push_back(self)
@@ -63,6 +63,6 @@ func move_to(bridge_ext: SimulatorBridgeExtension, step: int):
 		bridge_ext.backward_arrange_walker_exts_from_start()
 
 
-func _enter(space_ext: SimulatorSpaceExtension, step: int):
-	super(space_ext, step)
-	current_bridge_ext = space_ext
+func _enter(space_exts: Array[SimulatorSpaceExtension], step: int):
+	super(space_exts, step)
+	current_bridge_ext = space_exts.back()

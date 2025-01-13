@@ -30,8 +30,10 @@ func _init(data: VehicleData):
 	_acceleration_slope = data.high_speed_acceleration / BASE_HIGH_SPEED
 
 
-func move_to(lane_ext: SimulatorLaneExtension, step: int):
-	_enter(lane_ext, step)
+func move_to(lane_exts: Array[SimulatorLaneExtension], step: int):
+	var space_exts: Array[SimulatorSpaceExtension]
+	space_exts.assign(lane_exts)
+	_enter(space_exts, step)
 
 
 func get_preferred_distance(speed: float) -> float:
@@ -46,6 +48,7 @@ func get_acceleration(preferred_speed: float) -> float:
 	return preferred_speed * _acceleration_slope
 
 
-func _enter(space_ext: SimulatorSpaceExtension, step: int):
-	super(space_ext, step)
-	space_ext.agent_exts.append(self)
+func _enter(space_exts: Array[SimulatorSpaceExtension], step: int):
+	super(space_exts, step)
+	var lane_ext = space_exts.back() as SimulatorLaneExtension
+	lane_ext.agent_exts.append(self)
