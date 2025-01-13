@@ -361,6 +361,7 @@ func _init_initial_vehicles():
 
 		var trial_number = roundi(lane_ext.length * lane_ext.traffic)
 
+		lane_ext.update_overflowed()
 		var next_pos = maxf(lane_ext.overflowed, 0.0)
 
 		var secured_pos = next_pos

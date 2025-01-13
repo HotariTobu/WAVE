@@ -62,16 +62,12 @@ func update_overflowed():
 		if overflowed < next_lane_ext.overflowing:
 			overflowed = next_lane_ext.overflowing
 
-
 func update_overflowing():
 	if agent_exts.is_empty():
 		overflowing = overflowed - length
 	else:
 		var vehicle_ext = agent_exts.back() as SimulatorVehicleExtension
 		update_overflowing_by(vehicle_ext.vehicle)
-
-	for prev_lane_ext in prev_lane_exts:
-		prev_lane_ext.update_overflowed()
 
 
 func update_overflowing_by(last_vehicle: VehicleData):

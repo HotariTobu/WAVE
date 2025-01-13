@@ -193,7 +193,6 @@ func _iterate_block_targets(step: int):
 # 			walker_ext.move_to(next_bridge_ext, step)
 # 			# next_bridge_ext.forward_arrange_walker_exts_from_end()
 
-
 # func _iterate_backward_bridges(step: int):
 # 	var loop_tail_buffer_dict: Dictionary
 
@@ -469,6 +468,7 @@ func _iterate_lanes(step: int):
 		if lane_ext.agent_exts.is_empty():
 			continue
 
+		lane_ext.update_overflowed()
 		var rear_pos = lane_ext.overflowed
 		if lane_ext.is_closed and rear_pos < 0:
 			rear_pos = 0
