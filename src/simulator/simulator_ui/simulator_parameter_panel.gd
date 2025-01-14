@@ -32,10 +32,6 @@ func _ready():
 	_source.bind(&"max_step").to(%MaxStepBox, &"value", &"value_changed")
 	_source.bind(&"random_seed").to(%RandomSeed, &"value", &"value_changed")
 
-	_source.bind(&"vehicle_spawn_before_start").to_check_button(%VehicleSpawnBeforeStartSwitch)
-	_source.bind(&"vehicle_spawn_after_start").to_check_button(%VehicleSpawnAfterStartSwitch)
-	_source.bind(&"vehicle_spawn_rate").to(%VehicleSpawnRate, &"value", &"value_changed")
-
 	var vehicle_length_option_cell_creator = RandomOptionCellCreator.new()
 	vehicle_length_option_cell_creator.suffix = " m"
 	vehicle_length_option_cell_creator.min_value = 1.0

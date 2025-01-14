@@ -4,17 +4,16 @@ extends DoNotNew
 var step_delta: float
 var max_step: int
 var max_entry_step_offset: int
+var max_entry_step_gap: int
 var random_seed: int
 
-var walker_spawn_before_start: bool
-var walker_spawn_after_start: bool
-var walker_spawn_rate: float
+var walker_spawn_rate_before_start: float
+var walker_spawn_rate_after_start: float
 
 var walker_spawn_parameters: Array[WalkerData.SpawnParameterData]
 
-var vehicle_spawn_before_start: bool
-var vehicle_spawn_after_start: bool
-var vehicle_spawn_rate: float
+var vehicle_spawn_rate_before_start: float
+var vehicle_spawn_rate_after_start: float
 
 var vehicle_length_options: Array[RandomOption]
 
@@ -39,14 +38,13 @@ static func to_dict(data: ParameterData) -> Dictionary:
 		&"step_delta": data.step_delta,
 		&"max_step": data.max_step,
 		&"max_entry_step_offset": data.max_entry_step_offset,
+		&"max_entry_step_gap": data.max_entry_step_gap,
 		&"random_seed": data.random_seed,
-		&"walker_spawn_before_start": data.walker_spawn_before_start,
-		&"walker_spawn_after_start": data.walker_spawn_after_start,
-		&"walker_spawn_rate": data.walker_spawn_rate,
+		&"walker_spawn_rate_before_start": data.walker_spawn_rate_before_start,
+		&"walker_spawn_rate_after_start": data.walker_spawn_rate_after_start,
 		&"walker_spawn_parameters": data.walker_spawn_parameters.map(WalkerData.SpawnParameterData.to_dict),
-		&"vehicle_spawn_before_start": data.vehicle_spawn_before_start,
-		&"vehicle_spawn_after_start": data.vehicle_spawn_after_start,
-		&"vehicle_spawn_rate": data.vehicle_spawn_rate,
+		&"vehicle_spawn_rate_before_start": data.vehicle_spawn_rate_before_start,
+		&"vehicle_spawn_rate_after_start": data.vehicle_spawn_rate_after_start,
 		&"vehicle_length_options": data.vehicle_length_options.map(RandomOption.to_dict),
 		&"vehicle_high_speed_acceleration_range": IntRange.to_dict(data.vehicle_high_speed_acceleration_range),
 		&"vehicle_high_speed_acceleration_mean": data.vehicle_high_speed_acceleration_mean,
@@ -68,14 +66,13 @@ static func from_dict(dict: Dictionary) -> ParameterData:
 	data.step_delta = dict.get(&"step_delta", setting.default_step_delta)
 	data.max_step = dict.get(&"max_step", setting.default_max_step)
 	data.max_entry_step_offset = dict.get(&"max_entry_step_offset", setting.default_max_entry_step_offset)
+	data.max_entry_step_gap = dict.get(&"max_entry_step_gap", setting.default_max_entry_step_gap)
 	data.random_seed = dict.get(&"random_seed", setting.default_random_seed)
-	data.walker_spawn_before_start = dict.get(&"walker_spawn_before_start", setting.default_walker_spawn_before_start)
-	data.walker_spawn_after_start = dict.get(&"walker_spawn_after_start", setting.default_walker_spawn_after_start)
-	data.walker_spawn_rate = dict.get(&"walker_spawn_rate", setting.default_walker_spawn_rate)
+	data.walker_spawn_rate_before_start = dict.get(&"walker_spawn_rate_before_start", setting.default_walker_spawn_rate_before_start)
+	data.walker_spawn_rate_after_start = dict.get(&"walker_spawn_rate_after_start", setting.default_walker_spawn_rate_after_start)
 	data.walker_spawn_parameters.assign(dict.get(&"walker_spawn_parameters", setting.default_walker_spawn_parameters).map(WalkerData.SpawnParameterData.from_dict))
-	data.vehicle_spawn_before_start = dict.get(&"vehicle_spawn_before_start", setting.default_vehicle_spawn_before_start)
-	data.vehicle_spawn_after_start = dict.get(&"vehicle_spawn_after_start", setting.default_vehicle_spawn_after_start)
-	data.vehicle_spawn_rate = dict.get(&"vehicle_spawn_rate", setting.default_vehicle_spawn_rate)
+	data.vehicle_spawn_rate_before_start = dict.get(&"vehicle_spawn_rate_before_start", setting.default_vehicle_spawn_rate_before_start)
+	data.vehicle_spawn_rate_after_start = dict.get(&"vehicle_spawn_rate_after_start", setting.default_vehicle_spawn_rate_after_start)
 	data.vehicle_length_options.assign(dict.get(&"vehicle_length_options", setting.default_vehicle_length_options).map(RandomOption.from_dict))
 	data.vehicle_high_speed_acceleration_range = IntRange.from_dict(dict.get(&"vehicle_high_speed_acceleration_range", setting.default_vehicle_high_speed_acceleration_range))
 	data.vehicle_high_speed_acceleration_mean = dict.get(&"vehicle_high_speed_acceleration_mean", setting.default_vehicle_high_speed_acceleration_mean)

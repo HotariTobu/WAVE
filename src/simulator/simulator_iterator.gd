@@ -37,7 +37,9 @@ func _iterate_walker_entry_point(step: int):
 		# if 0 <= bridge_ext.overflowing:
 		# 	continue
 
-		if _rng.randf() >= _parameter.walker_spawn_rate:
+		entry_point.next_entry_step = step + entry_point.interval + _rng.randi_range(0, _parameter.max_entry_step_gap)
+
+		if _rng.randf() >= _parameter.walker_spawn_rate_after_start:
 			continue
 
 		var walker_ext = _walker_creator.create()
@@ -45,8 +47,6 @@ func _iterate_walker_entry_point(step: int):
 		var pos = bridge_ext.length if walker_ext.forward else -walker_ext.diameter
 		walker_ext.spawn_at(bridge_ext, pos, step)
 		simulation.walkers.append(walker_ext.walker)
-
-		entry_point.next_entry_step = step + entry_point.interval
 
 
 func _iterate_vehicle_entry_point(step: int):
@@ -62,7 +62,9 @@ func _iterate_vehicle_entry_point(step: int):
 		if 0 <= lane_ext.overflowing:
 			continue
 
-		if _rng.randf() >= _parameter.vehicle_spawn_rate:
+		entry_point.next_entry_step = step + entry_point.interval + _rng.randi_range(0, _parameter.max_entry_step_gap)
+
+		if _rng.randf() >= _parameter.vehicle_spawn_rate_after_start:
 			continue
 
 		var vehicle_ext = _vehicle_creator.create()
@@ -71,7 +73,6 @@ func _iterate_vehicle_entry_point(step: int):
 		simulation.vehicles.append(vehicle_ext.vehicle)
 
 		lane_ext.update_overflowing()
-		entry_point.next_entry_step = step + entry_point.interval
 
 
 func _iterate_block_sources(step: int):

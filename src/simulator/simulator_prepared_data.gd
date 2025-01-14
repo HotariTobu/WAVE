@@ -261,7 +261,7 @@ func _init_ordered_lane_exts():
 
 
 func _init_initial_walkers():
-	if not _parameter.walker_spawn_before_start:
+	if _parameter.walker_spawn_rate_before_start == 0:
 		return
 
 	var max_walker_diameter = 0.0
@@ -288,7 +288,7 @@ func _init_initial_walkers():
 				if bridge_ext.length < secured_pos + max_walker_diameter:
 					break
 
-				if _rng.randf() >= _parameter.walker_spawn_rate:
+				if _rng.randf() >= _parameter.walker_spawn_rate_before_start:
 					continue
 
 				var walker_ext = _walker_creator.create()
@@ -317,7 +317,7 @@ func _init_initial_walkers():
 
 
 func _init_walker_entry_points():
-	if not _parameter.walker_spawn_after_start:
+	if _parameter.walker_spawn_rate_after_start == 0:
 		return
 
 	var sum_walker_weighted_speed_mean = 0.0
@@ -352,7 +352,7 @@ func _init_walker_entry_points():
 
 
 func _init_initial_vehicles():
-	if not _parameter.vehicle_spawn_before_start:
+	if _parameter.vehicle_spawn_rate_before_start == 0:
 		return
 
 	for lane_ext in _ordered_lane_exts:
@@ -371,7 +371,7 @@ func _init_initial_vehicles():
 			if lane_ext.length < secured_pos:
 				break
 
-			if _rng.randf() >= _parameter.vehicle_spawn_rate:
+			if _rng.randf() >= _parameter.vehicle_spawn_rate_before_start:
 				continue
 
 			var vehicle_ext = _vehicle_creator.create()
@@ -398,7 +398,7 @@ func _init_initial_vehicles():
 
 
 func _init_vehicle_entry_points():
-	if not _parameter.vehicle_spawn_after_start:
+	if _parameter.vehicle_spawn_rate_after_start == 0:
 		return
 
 	for lane_ext in _ext_db.lanes:
