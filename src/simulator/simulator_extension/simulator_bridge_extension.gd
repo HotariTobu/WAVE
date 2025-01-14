@@ -86,7 +86,26 @@ func extend(ext_of: Callable) -> void:
 
 
 func update_is_blocking(_time: float):
-	is_blocking = not agent_exts.is_empty()
+	if agent_exts.is_empty():
+		is_blocking = false
+		return
+
+	is_blocking = true
+
+	if not forward_is_closed and not backward_is_closed:
+		return
+
+	if forward_is_closed and backward_is_closed:
+		is_blocking = false
+		return
+
+	if forward_is_closed and agent_exts.any(SimulatorWalkerExtension.is_backward):
+		return
+
+	if backward_is_closed and agent_exts.any(SimulatorWalkerExtension.is_forward):
+		return
+
+	is_blocking = false
 
 
 func update_tails_array_all():

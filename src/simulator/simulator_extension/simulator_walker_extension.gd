@@ -66,3 +66,11 @@ func move_to(bridge_ext: SimulatorBridgeExtension, step: int):
 func _enter(space_exts: Array[SimulatorSpaceExtension], step: int):
 	super(space_exts, step)
 	current_bridge_ext = space_exts.back()
+
+
+static func is_forward(walker_ext: SimulatorWalkerExtension):
+	return walker_ext.forward
+
+
+static func is_backward(walker_ext: SimulatorWalkerExtension):
+	return not walker_ext.forward
