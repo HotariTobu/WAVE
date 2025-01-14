@@ -15,22 +15,7 @@ var walker_spawn_parameters: Array[WalkerData.SpawnParameterData]
 var vehicle_spawn_rate_before_start: float
 var vehicle_spawn_rate_after_start: float
 
-var vehicle_length_options: Array[RandomOption]
-
-var vehicle_high_speed_acceleration_range: IntRange
-var vehicle_high_speed_acceleration_mean: int
-
-var vehicle_high_speed_range: IntRange
-var vehicle_high_speed_mean: int
-var vehicle_max_speed_range: IntRange
-var vehicle_max_speed_mean: int
-
-var vehicle_zero_speed_distance_range: IntRange
-var vehicle_zero_speed_distance_mean: int
-var vehicle_half_speed_distance_range: IntRange
-var vehicle_half_speed_distance_mean: int
-var vehicle_high_speed_distance_range: IntRange
-var vehicle_high_speed_distance_mean: int
+var vehicle_spawn_parameters: Array[VehicleData.SpawnParameterData]
 
 
 static func to_dict(data: ParameterData) -> Dictionary:
@@ -45,19 +30,7 @@ static func to_dict(data: ParameterData) -> Dictionary:
 		&"walker_spawn_parameters": data.walker_spawn_parameters.map(WalkerData.SpawnParameterData.to_dict),
 		&"vehicle_spawn_rate_before_start": data.vehicle_spawn_rate_before_start,
 		&"vehicle_spawn_rate_after_start": data.vehicle_spawn_rate_after_start,
-		&"vehicle_length_options": data.vehicle_length_options.map(RandomOption.to_dict),
-		&"vehicle_high_speed_acceleration_range": IntRange.to_dict(data.vehicle_high_speed_acceleration_range),
-		&"vehicle_high_speed_acceleration_mean": data.vehicle_high_speed_acceleration_mean,
-		&"vehicle_high_speed_range": IntRange.to_dict(data.vehicle_high_speed_range),
-		&"vehicle_high_speed_mean": data.vehicle_high_speed_mean,
-		&"vehicle_max_speed_range": IntRange.to_dict(data.vehicle_max_speed_range),
-		&"vehicle_max_speed_mean": data.vehicle_max_speed_mean,
-		&"vehicle_zero_speed_distance_range": IntRange.to_dict(data.vehicle_zero_speed_distance_range),
-		&"vehicle_zero_speed_distance_mean": data.vehicle_zero_speed_distance_mean,
-		&"vehicle_half_speed_distance_range": IntRange.to_dict(data.vehicle_half_speed_distance_range),
-		&"vehicle_half_speed_distance_mean": data.vehicle_half_speed_distance_mean,
-		&"vehicle_high_speed_distance_range": IntRange.to_dict(data.vehicle_high_speed_distance_range),
-		&"vehicle_high_speed_distance_mean": data.vehicle_high_speed_distance_mean,
+		&"vehicle_spawn_parameters": data.vehicle_spawn_parameters.map(VehicleData.SpawnParameterData.to_dict),
 	}
 
 
@@ -73,54 +46,9 @@ static func from_dict(dict: Dictionary) -> ParameterData:
 	data.walker_spawn_parameters.assign(dict.get(&"walker_spawn_parameters", setting.default_walker_spawn_parameters).map(WalkerData.SpawnParameterData.from_dict))
 	data.vehicle_spawn_rate_before_start = dict.get(&"vehicle_spawn_rate_before_start", setting.default_vehicle_spawn_rate_before_start)
 	data.vehicle_spawn_rate_after_start = dict.get(&"vehicle_spawn_rate_after_start", setting.default_vehicle_spawn_rate_after_start)
-	data.vehicle_length_options.assign(dict.get(&"vehicle_length_options", setting.default_vehicle_length_options).map(RandomOption.from_dict))
-	data.vehicle_high_speed_acceleration_range = IntRange.from_dict(dict.get(&"vehicle_high_speed_acceleration_range", setting.default_vehicle_high_speed_acceleration_range))
-	data.vehicle_high_speed_acceleration_mean = dict.get(&"vehicle_high_speed_acceleration_mean", setting.default_vehicle_high_speed_acceleration_mean)
-	data.vehicle_high_speed_range = IntRange.from_dict(dict.get(&"vehicle_high_speed_range", setting.default_vehicle_high_speed_range))
-	data.vehicle_high_speed_mean = dict.get(&"vehicle_high_speed_mean", setting.default_vehicle_high_speed_mean)
-	data.vehicle_max_speed_range = IntRange.from_dict(dict.get(&"vehicle_max_speed_range", setting.default_vehicle_max_speed_range))
-	data.vehicle_max_speed_mean = dict.get(&"vehicle_max_speed_mean", setting.default_vehicle_max_speed_mean)
-	data.vehicle_zero_speed_distance_range = IntRange.from_dict(dict.get(&"vehicle_zero_speed_distance_range", setting.default_vehicle_zero_speed_distance_range))
-	data.vehicle_zero_speed_distance_mean = dict.get(&"vehicle_zero_speed_distance_mean", setting.default_vehicle_zero_speed_distance_mean)
-	data.vehicle_half_speed_distance_range = IntRange.from_dict(dict.get(&"vehicle_half_speed_distance_range", setting.default_vehicle_half_speed_distance_range))
-	data.vehicle_half_speed_distance_mean = dict.get(&"vehicle_half_speed_distance_mean", setting.default_vehicle_half_speed_distance_mean)
-	data.vehicle_high_speed_distance_range = IntRange.from_dict(dict.get(&"vehicle_high_speed_distance_range", setting.default_vehicle_high_speed_distance_range))
-	data.vehicle_high_speed_distance_mean = dict.get(&"vehicle_high_speed_distance_mean", setting.default_vehicle_high_speed_distance_mean)
+	data.vehicle_spawn_parameters.assign(dict.get(&"vehicle_spawn_parameters", setting.default_vehicle_spawn_parameters).map(VehicleData.SpawnParameterData.from_dict))
 	return data
 
 
 static func new_default() -> ParameterData:
 	return from_dict({})
-
-
-
-
-
-
-
-##
-##
-##
-
-class RandomOption:
-	var value: Variant
-	var weight: float
-
-	func _init(_value: Variant, _weight: float):
-		value = _value
-		weight = _weight
-
-	static func value_of(data: RandomOption) -> Variant:
-		return data.value
-
-	static func weight_of(data: RandomOption) -> float:
-		return data.weight
-
-	static func to_dict(data: RandomOption) -> Dictionary:
-		return {
-			&"value": data.value,
-			&"weight": data.weight,
-		}
-
-	static func from_dict(dict: Dictionary) -> RandomOption:
-		return RandomOption.new(dict.get(&"value", NAN), dict.get(&"weight", NAN))

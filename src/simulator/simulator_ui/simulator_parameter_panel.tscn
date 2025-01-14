@@ -289,4 +289,3 @@ icon = ExtResource("4_njuww")
 flat = true
 
 [connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer/VehicleLengthOptionAddButton" to="." method="_on_vehicle_length_option_add_button_pressed"]

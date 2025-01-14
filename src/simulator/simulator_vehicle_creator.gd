@@ -2,53 +2,43 @@ class_name SimulatorVehicleCreator
 
 const SPEED_FACTOR = 1000.0 / 3600.0
 
-var _length_rng: SimulatorRandomWeightedArray
-
-var _high_speed_acceleration_rng: SimulatorRandomNormalDistributionRange
-
-var _high_speed_rng: SimulatorRandomNormalDistributionRange
-var _max_speed_rng: SimulatorRandomNormalDistributionRange
-
-var _zero_speed_distance_rng: SimulatorRandomNormalDistributionRange
-var _half_speed_distance_rng: SimulatorRandomNormalDistributionRange
-var _high_speed_distance_rng: SimulatorRandomNormalDistributionRange
+var _option_chooser: SimulatorRandomWeightedArray
 
 
-func _init(rng: RandomNumberGenerator, parameter: ParameterData):
-	_length_rng = SimulatorRandomWeightedArray.new(rng)
-	for o in parameter.vehicle_length_options:
-		_length_rng.add_option(o.weight, o.value)
+func _init(rng: RandomNumberGenerator, parameters: Array[VehicleData.SpawnParameterData]):
+	_option_chooser = SimulatorRandomWeightedArray.new(rng)
 
-	_high_speed_acceleration_rng = R.new(rng, parameter.vehicle_high_speed_acceleration_range, parameter.vehicle_high_speed_acceleration_mean)
+	for parameter in parameters:
+		var option = RandomOption.new()
+		_option_chooser.add_option(parameter.weight, option)
 
-	_high_speed_rng = R.new(rng, parameter.vehicle_high_speed_range, parameter.vehicle_high_speed_mean)
-	_max_speed_rng = R.new(rng, parameter.vehicle_max_speed_range, parameter.vehicle_max_speed_mean)
+		option.length = parameter.length
 
-	_zero_speed_distance_rng = R.new(
-		rng, parameter.vehicle_zero_speed_distance_range, parameter.vehicle_zero_speed_distance_mean
-	)
-	_half_speed_distance_rng = R.new(
-		rng, parameter.vehicle_half_speed_distance_range, parameter.vehicle_half_speed_distance_mean
-	)
-	_high_speed_distance_rng = R.new(
-		rng, parameter.vehicle_high_speed_distance_range, parameter.vehicle_high_speed_distance_mean
-	)
+		option.high_speed_acceleration_rng = SimulatorRandomNormalDistributionRange.new(rng, parameter.high_speed_acceleration_range, parameter.high_speed_acceleration_mean)
+
+		option.high_speed_rng = SimulatorRandomNormalDistributionRange.new(rng, parameter.high_speed_range, parameter.high_speed_mean)
+		option.max_speed_rng = SimulatorRandomNormalDistributionRange.new(rng, parameter.max_speed_range, parameter.max_speed_mean)
+
+		option.zero_speed_distance_rng = SimulatorRandomNormalDistributionRange.new(rng, parameter.zero_speed_distance_range, parameter.zero_speed_distance_mean)
+		option.half_speed_distance_rng = SimulatorRandomNormalDistributionRange.new(rng, parameter.half_speed_distance_range, parameter.half_speed_distance_mean)
+		option.high_speed_distance_rng = SimulatorRandomNormalDistributionRange.new(rng, parameter.high_speed_distance_range, parameter.high_speed_distance_mean)
 
 
 func create() -> SimulatorVehicleExtension:
 	var vehicle = VehicleData.new()
+	var option = _option_chooser.next() as RandomOption
 
-	vehicle.length = _length_rng.next()
+	vehicle.length = option.length
 
-	vehicle.high_speed_acceleration = _high_speed_acceleration_rng.next()
+	vehicle.high_speed_acceleration = option.high_speed_acceleration_rng.next()
 
-	vehicle.high_speed = _high_speed_rng.next() * SPEED_FACTOR
-	vehicle.max_speed = _max_speed_rng.next() * SPEED_FACTOR
+	vehicle.high_speed = option.high_speed_rng.next() * SPEED_FACTOR
+	vehicle.max_speed = option.max_speed_rng.next() * SPEED_FACTOR
 
 	var distances = [
-		_zero_speed_distance_rng.next(),
-		_half_speed_distance_rng.next(),
-		_high_speed_distance_rng.next(),
+		option.zero_speed_distance_rng.next(),
+		option.half_speed_distance_rng.next(),
+		option.high_speed_distance_rng.next(),
 	]
 	distances.sort()
 
@@ -60,11 +50,14 @@ func create() -> SimulatorVehicleExtension:
 	return vehicle_ext
 
 
-class R:
-	extends SimulatorRandomNormalDistributionRange
+class RandomOption:
+	var length: float
 
-	func _init(rng: RandomNumberGenerator, range_value: IntRange, mean: int):
-		var r = FloatRange.new()
-		r.begin = range_value.begin
-		r.end = range_value.end
-		super(rng, r, mean)
+	var high_speed_acceleration_rng: SimulatorRandomNormalDistributionRange
+
+	var high_speed_rng: SimulatorRandomNormalDistributionRange
+	var max_speed_rng: SimulatorRandomNormalDistributionRange
+
+	var zero_speed_distance_rng: SimulatorRandomNormalDistributionRange
+	var half_speed_distance_rng: SimulatorRandomNormalDistributionRange
+	var high_speed_distance_rng: SimulatorRandomNormalDistributionRange

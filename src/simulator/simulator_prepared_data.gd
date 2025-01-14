@@ -49,7 +49,7 @@ func _init(should_exit: Callable, parameter: ParameterData, network: NetworkData
 	_init_initial_walkers()
 	_init_walker_entry_points()
 
-	_vehicle_creator = SimulatorVehicleCreator.new(_rng, parameter)
+	_vehicle_creator = SimulatorVehicleCreator.new(_rng, parameter.vehicle_spawn_parameters)
 	_init_initial_vehicles()
 	_init_vehicle_entry_points()
 
