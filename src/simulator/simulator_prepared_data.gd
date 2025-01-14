@@ -265,16 +265,25 @@ func _init_initial_walkers():
 		return
 
 	var max_walker_diameter = 0.0
+	var sum_walker_weighted_speed_mean = 0.0
+	var sum_walker_weight = 0.0
+
 	for walker_spawn_parameter in _parameter.walker_spawn_parameters:
 		var diameter =  walker_spawn_parameter.radius * 2
 		if max_walker_diameter < diameter:
 			max_walker_diameter = diameter
 
+		sum_walker_weighted_speed_mean += walker_spawn_parameter.speed_mean * walker_spawn_parameter.weight
+		sum_walker_weight += walker_spawn_parameter.weight
+
+	var average_walker_speed = sum_walker_weighted_speed_mean / sum_walker_weight * SimulatorWalkerCreator.SPEED_FACTOR
+
 	for bridge_ext in _ext_db.bridges:
 		if _should_exit.call():
 			return
 
-		var trial_number = roundi(bridge_ext.length * bridge_ext.traffic)
+		# [/s] / [m/s] * [m]
+		var trial_number = roundi(bridge_ext.traffic / average_walker_speed * bridge_ext.length)
 
 		for _i in range(bridge_ext.width_limit):
 			var next_pos = 0.0
@@ -320,14 +329,6 @@ func _init_walker_entry_points():
 	if _parameter.walker_spawn_rate_after_start == 0:
 		return
 
-	var sum_walker_weighted_speed_mean = 0.0
-	var sum_walker_weight = 0.0
-	for walker_spawn_parameter in _parameter.walker_spawn_parameters:
-		sum_walker_weighted_speed_mean += walker_spawn_parameter.speed_mean * walker_spawn_parameter.weight
-		sum_walker_weight += walker_spawn_parameter.weight
-	var average_walker_speed = sum_walker_weighted_speed_mean / sum_walker_weight
-	average_walker_speed *= SimulatorWalkerCreator.SPEED_FACTOR
-
 	for bridge_ext in _ext_db.bridges:
 		if _should_exit.call():
 			return
@@ -335,7 +336,8 @@ func _init_walker_entry_points():
 		if not bridge_ext.prev_bridge_exts.is_empty() and not bridge_ext.next_bridge_exts.is_empty():
 			continue
 
-		var one_per_step = bridge_ext.traffic * average_walker_speed * _parameter.step_delta
+		# [/s] * [s/step]
+		var one_per_step = bridge_ext.traffic * _parameter.step_delta
 		if one_per_step == 0:
 			continue
 
@@ -359,7 +361,8 @@ func _init_initial_vehicles():
 		if _should_exit.call():
 			return
 
-		var trial_number = roundi(lane_ext.length * lane_ext.traffic)
+		# [/s] / [m/s] * [m]
+		var trial_number = roundi(lane_ext.traffic / lane_ext.speed_limit * lane_ext.length)
 
 		lane_ext.update_overflowed()
 		var next_pos = maxf(lane_ext.overflowed, 0.0)
@@ -408,7 +411,8 @@ func _init_vehicle_entry_points():
 		if not lane_ext.prev_lane_exts.is_empty():
 			continue
 
-		var one_per_step = lane_ext.traffic * lane_ext.speed_limit * _parameter.step_delta
+		# [/s] * [s/step]
+		var one_per_step = lane_ext.traffic * _parameter.step_delta
 		if one_per_step == 0:
 			continue
 

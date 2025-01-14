@@ -22,7 +22,7 @@ text = "Traffic"
 layout_mode = 2
 select_all_on_focus = true
 script = ExtResource("2_4rs1l")
-suffix = " /100m"
+suffix = " /h"
 min_value = 0.0
 max_value = 200.0
 

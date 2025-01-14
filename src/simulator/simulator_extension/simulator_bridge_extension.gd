@@ -1,7 +1,7 @@
 class_name SimulatorBridgeExtension
 extends SimulatorSpaceExtension
 
-const TRAFFIC_FACTOR = 1.0 / 100.0
+const TRAFFIC_FACTOR = 1.0 / 3600.0
 
 var traffic: float
 var width_limit: int

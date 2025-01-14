@@ -31,7 +31,7 @@ var force_default_bridge_traffic = true
 var force_default_bridge_forward_rate = true
 var force_default_bridge_width_limit = false
 
-var default_bridge_traffic = 10.0
+var default_bridge_traffic = 100.0
 var default_bridge_forward_rate = 0.5
 var default_bridge_width_limit = 6
 var default_bridge_option_weight = 1.0
@@ -39,7 +39,7 @@ var default_bridge_option_weight = 1.0
 var force_default_lane_traffic = true
 var force_default_lane_speed_limit = false
 
-var default_lane_traffic = 1.0
+var default_lane_traffic = 50.0
 var default_lane_speed_limit = 60
 var default_lane_option_weight = 1.0
 

@@ -1,7 +1,7 @@
 class_name SimulatorLaneExtension
 extends SimulatorSpaceExtension
 
-const TRAFFIC_FACTOR = 1.0 / 100.0
+const TRAFFIC_FACTOR = 1.0 / 3600.0
 const SPEED_FACTOR = 1000.0 / 3600.0
 
 var traffic: float
