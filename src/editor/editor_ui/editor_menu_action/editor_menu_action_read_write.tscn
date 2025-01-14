@@ -7,10 +7,9 @@
 script = ExtResource("1_473hu")
 
 [node name="NetworkOpenFileDialog" type="FileDialog" parent="."]
-auto_translate_mode = 1
-title = "Open a File"
-size = Vector2i(324, 190)
+title = "Open a Network File"
 ok_button_text = "Open"
+mode_overrides_title = false
 file_mode = 0
 access = 2
 filters = PackedStringArray("*.wavenetwork")
@@ -18,6 +17,7 @@ use_native_dialog = true
 
 [node name="NetworkSaveFileDialog" type="FileDialog" parent="."]
 title = "Save a Network File"
+mode_overrides_title = false
 access = 2
 filters = PackedStringArray("*.wavenetwork")
 use_native_dialog = true

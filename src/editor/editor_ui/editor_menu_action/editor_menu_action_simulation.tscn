@@ -57,8 +57,9 @@ ok_button_text = "Play now!"
 cancel_button_text = "Not now..."
 
 [node name="SimulationOpenFileDialog" type="FileDialog" parent="."]
-title = "Open a File"
+title = "Open a Simulation File"
 ok_button_text = "Open"
+mode_overrides_title = false
 file_mode = 0
 access = 2
 filters = PackedStringArray("*.wavesimulation")
