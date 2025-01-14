@@ -1,6 +1,8 @@
 class_name PlayerStoplight
 extends PlayerAnimatable
 
+const SECTOR_RADIUS_FACTOR = 3
+
 var _stoplight_helper: StoplightHelper
 var _sector_helpers: Array[SectorHelper]
 var _width: float
@@ -18,9 +20,9 @@ func _init(stoplight: StoplightData):
 	var player_stoplight = player_global.content_db.player_data_of(stoplight.id) as PlayerStoplightData
 	_stoplight_helper = StoplightHelper.new(stoplight.offset, player_stoplight.splits)
 	_sector_helpers = SectorHelper.get_sector_helpers(stoplight.offset, _stoplight_helper.durations)
-	_width = setting.selection_radius
+	_width = setting.stoplight_sector_width
 
-	var radius = setting.selection_radius * 2
+	var radius = setting.stoplight_sector_width * SECTOR_RADIUS_FACTOR
 
 	for sector_helper in _sector_helpers:
 		sector_helper.radius = radius

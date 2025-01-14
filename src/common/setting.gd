@@ -56,6 +56,7 @@ var stoplight_sector_delta_angle_inv = 90 / TAU
 
 var stoplight_sector_inactive_color = Color("#bdbdbd", 0.5)
 var stoplight_sector_saturation = 0.5
+var stoplight_sector_width = 2.0
 
 var default_step_delta = 1
 var default_max_step = 3600
