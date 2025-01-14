@@ -4,6 +4,7 @@ extends PlayerAnimatable
 var _block_step_set: Set
 var _is_blocked: bool
 
+var _width_limit: int
 
 func _init(bridge: BridgeData):
 	super(BridgeData.to_dict(bridge))
@@ -13,6 +14,8 @@ func _init(bridge: BridgeData):
 
 	var block_steps = player_global.simulation.block_history.get_or_add(bridge.id, [])
 	_block_step_set = Set.from_array(block_steps)
+
+	_width_limit = bridge.width_limit
 
 
 func _ready():
@@ -39,4 +42,5 @@ func _draw():
 	else:
 		color = setting.bridge_color
 
-	draw_polyline(_collision_points, color, setting.bridge_width)
+	var width = setting.bridge_width * _width_limit
+	draw_polyline(_collision_points, color, width)
