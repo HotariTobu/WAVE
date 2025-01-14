@@ -24,7 +24,7 @@ select_all_on_focus = true
 script = ExtResource("2_2rnie")
 suffix = " /h"
 min_value = 0.0
-max_value = 30.0
+max_value = 1000.0
 
 [node name="Label3" type="Label" parent="."]
 layout_mode = 2
