@@ -45,7 +45,7 @@ var default_lane_option_weight = 1.0
 
 var default_stoplight_offset = 0.0
 var default_split_count = 2
-var default_split_duration = 60.0
+var default_split_duration = 30.0
 
 var start_point_selecting_color = Color("#2aa846", 0.5)
 var end_point_selecting_color = Color("#cc2944", 0.5)
