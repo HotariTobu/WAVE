@@ -52,7 +52,7 @@ for input_file_path in input_file_paths:
 
 output_file_path = input_dir_path / FILENAME
 
-with open(output_file_path, 'w') as f:
+with open(output_file_path, 'w', newline='') as f:
     w = csv.writer(f)
     w.writerow(['space_id', 'sum_dis', 'count'])
 
