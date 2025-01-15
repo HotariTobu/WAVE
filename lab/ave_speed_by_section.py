@@ -63,5 +63,8 @@ for tri_file_path in tri_file_paths:
         sum_speed, count = sum_dict[section_code]
         sum_dict[section_code] = (sum_speed + speed, count + 1)
 
-for space_id, (sum_speed, count) in sum_dict.items():
+sum_list = list(sum_dict.items())
+sum_list.sort()
+
+for space_id, (sum_speed, count) in sum_list:
     print(space_id, sum_speed / count)
