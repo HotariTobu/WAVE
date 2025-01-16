@@ -21,6 +21,7 @@ else:
 data = json.loads(raw_data)
 
 lane_ids = [lane["id"] for lane in data["lanes"]]
+lane_ids.sort()
 
 with open(output_path, "w") as f:
     f.write("\n".join(lane_ids))
