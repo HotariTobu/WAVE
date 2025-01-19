@@ -5,13 +5,15 @@ from pathlib import Path
 
 import common
 
-TRI_FILENAME_PATTERN = 'tri_*.csv'
-OUTPUT_FILENAME = 'ave_speed_by_section.csv'
+TRI_FILENAME_PATTERN = "tri_*.csv"
+OUTPUT_FILENAME = "ave_speed_by_section.csv"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("space_attrs", type=Path, help="Path to input space attrs.csv")
-parser.add_argument('tri_dir', type=Path, help='Path to input dir which has trip time csv files')
-parser.add_argument('--step-delta', dest='step_delta', type=float, default=1)
+parser.add_argument(
+    "tri_dir", type=Path, help="Path to input dir which has trip time csv files"
+)
+parser.add_argument("--step-delta", dest="step_delta", type=float, default=1)
 
 args = parser.parse_args()
 space_attrs_path: Path = args.space_attrs
@@ -35,7 +37,7 @@ for tri_file_path in tri_file_paths:
     trail_space_id_set: set[str] = set()
     step_count_dict: dict[str, int] = {}
 
-    with open(tri_file_path, 'r') as f:
+    with open(tri_file_path, "r") as f:
         r = csv.reader(f)
         if not common.has_cols(r, common.TRI_COLS):
             continue
