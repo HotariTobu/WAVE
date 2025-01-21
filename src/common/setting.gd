@@ -60,7 +60,6 @@ var stoplight_sector_width = 2.0
 
 var default_step_delta = 1
 var default_max_step = 3600
-var default_max_entry_step_offset = 10
 var default_max_entry_step_gap = 10
 var default_random_seed = 5
 
