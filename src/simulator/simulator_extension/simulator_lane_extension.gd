@@ -15,7 +15,7 @@ var prev_lane_exts: Array[SimulatorLaneExtension]
 var choose_next_lane_ext = null
 var loop_next_lane_ext_set = Set.new()
 
-var is_closed: bool
+#var is_closed: bool
 var overflowed: float
 var overflowing: float
 
@@ -62,12 +62,16 @@ func update_overflowed():
 		if overflowed < next_lane_ext.overflowing:
 			overflowed = next_lane_ext.overflowing
 
+
 func update_overflowing():
 	if agent_exts.is_empty():
 		overflowing = overflowed - length
 	else:
 		var vehicle_ext = agent_exts.back() as SimulatorVehicleExtension
 		update_overflowing_by(vehicle_ext.vehicle)
+
+	if is_blocked and overflowing < 0:
+		overflowing = 0
 
 
 func update_overflowing_by(last_vehicle: VehicleData):

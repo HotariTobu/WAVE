@@ -101,8 +101,8 @@ func _iterate_block_targets(step: int):
 		bridge_ext.forward_is_closed = bridge_ext.next_bridge_exts.all(_is_blocked)
 		bridge_ext.backward_is_closed = bridge_ext.prev_bridge_exts.all(_is_blocked)
 
-	for lane_ext in _closable_lane_exts:
-		lane_ext.is_closed = lane_ext.next_lane_exts.all(_is_blocked)
+	#for lane_ext in _closable_lane_exts:
+		#lane_ext.is_closed = lane_ext.next_lane_exts.all(_is_blocked)
 
 
 # func _iterate_forward_bridges(step: int):
@@ -473,8 +473,8 @@ func _iterate_lanes(step: int):
 			continue
 
 		var rear_pos = lane_ext.overflowed
-		if lane_ext.is_closed and rear_pos < 0:
-			rear_pos = 0
+		#if lane_ext.is_closed and rear_pos < 0:
+			#rear_pos = 0
 
 		var removed_count = 0
 
