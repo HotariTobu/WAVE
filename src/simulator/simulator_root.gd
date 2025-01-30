@@ -16,6 +16,10 @@ var _mutex = Mutex.new()
 
 
 func _ready():
+	var tab_bar = $ParameterPanel.get_tab_bar() as TabBar
+	for child in $TabBarControls.get_children():
+		child.reparent(tab_bar)
+
 	_data.bind(&"parameter").to($ParameterPanel, &"parameter")
 
 	var case = CaseBindingConverter
@@ -54,6 +58,10 @@ func _status_to_start_disabled(status: Status) -> bool:
 
 func _status_to_cancel_disabled(status: Status) -> bool:
 	return status not in [Status.PREPARING, Status.RUNNING]
+
+
+func _on_import_button_pressed():
+	$ImportParameterFileDialog.show()
 
 
 func _on_start_button_pressed():
@@ -164,6 +172,11 @@ func _on_dump_button_pressed():
 	_dump(_data.dump_path, simulation)
 
 
+func _on_import_parameter_file_dialog_file_selected(path):
+	var simulation = _read_simulation(path)
+	_data.parameter = simulation.parameter
+
+
 func _on_progress_bar_timer_timeout():
 	if _manager == null:
 		return
@@ -175,10 +188,24 @@ func _on_progress_bar_timer_timeout():
 	_data.progress_value = current_step
 
 
+func _read_simulation(path: String) -> SimulationData:
+	var result = CommonIO.read_data(path, SimulationData)
+	if not result.ok:
+		_show_error.call_deferred("Failed to open simulation file", result.error)
+		return null
+
+	var simulation = result.data as SimulationData
+	if simulation == null:
+		_show_error.call_deferred("Opened invalid simulation file")
+		return null
+
+	return simulation
+
+
 func _read_network(path: String) -> NetworkData:
 	var result = CommonIO.read_data(path, NetworkData)
 	if not result.ok:
-		_show_error.call_deferred("Failed to open file", result.error)
+		_show_error.call_deferred("Failed to open network file", result.error)
 		return null
 
 	var network = result.data as NetworkData
@@ -192,7 +219,7 @@ func _read_network(path: String) -> NetworkData:
 func _write_simulation(path: String, simulation: SimulationData):
 	var result = CommonIO.write_data(path, SimulationData, simulation)
 	if not result.ok:
-		_show_error.call_deferred("Failed to write the simulation result", result.error)
+		_show_error.call_deferred("Failed to write simulation file", result.error)
 
 
 func _dump(path: String, simulation: SimulationData):
