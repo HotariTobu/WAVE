@@ -47,6 +47,10 @@ func prepare(parameter: ParameterData, network: NetworkData) -> void:
 	if _should_exit():
 		return
 
+	if _iterator.error_message:
+		_status = Status.ERROR
+		return
+
 	_status = Status.PREPARED
 
 

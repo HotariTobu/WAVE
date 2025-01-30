@@ -1,5 +1,6 @@
 class_name SimulatorPreparedData
 
+var error_message: String
 var simulation = SimulationData.new()
 
 var _should_exit: Callable
@@ -45,9 +46,17 @@ func _init(should_exit: Callable, parameter: ParameterData, network: NetworkData
 	_init_lane_exts()
 	_init_ordered_lane_exts()
 
+	if parameter.walker_spawn_parameters.is_empty():
+		error_message = "One or more walker spawn parameters are needed!"
+		return
+
 	_walker_creator = SimulatorWalkerCreator.new(_rng, parameter.walker_spawn_parameters)
 	_init_initial_walkers()
 	_init_walker_entry_points()
+
+	if parameter.vehicle_spawn_parameters.is_empty():
+		error_message = "One or more vehicle spawn parameters are needed!"
+		return
 
 	_vehicle_creator = SimulatorVehicleCreator.new(_rng, parameter.vehicle_spawn_parameters)
 	_init_initial_vehicles()
@@ -144,7 +153,6 @@ func _init_bridge_exts():
 
 # 	assert(len(_ext_db.bridges) == len(_forward_ordered_bridge_exts))
 # 	assert(len(_forward_ordered_bridge_exts) == Set.from_array(_forward_ordered_bridge_exts).size())
-
 
 # func _init_backward_ordered_bridge_exts():
 # 	var bridge_exts = _ext_db.bridges
@@ -269,7 +277,7 @@ func _init_initial_walkers():
 	var sum_walker_weight = 0.0
 
 	for walker_spawn_parameter in _parameter.walker_spawn_parameters:
-		var diameter =  walker_spawn_parameter.radius * 2
+		var diameter = walker_spawn_parameter.radius * 2
 		if max_walker_diameter < diameter:
 			max_walker_diameter = diameter
 
