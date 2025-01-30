@@ -16,9 +16,6 @@ var _mutex = Mutex.new()
 
 
 func _ready():
-	completed.connect($SimulationSaveFileDialog.show.unbind(1))
-
-	_data.parameter = ParameterData.new_default()
 	_data.bind(&"parameter").to($ParameterPanel, &"parameter")
 
 	var case = CaseBindingConverter
@@ -38,7 +35,13 @@ func _ready():
 	_data.bind(&"max_progress_value").using(BindingUtils.to_float).to(%ProgressBar, &"max_value")
 	_data.bind(&"progress_value").using(BindingUtils.to_float).to_progress_bar(%ProgressBar)
 
+	_data.bind(&"auto_save").to_check_box(%AutoSaveBox)
 	_data.bind(&"simulation").using(case.new(Data.NULL_SIMULATION)).to(%SaveButton, &"disabled")
+	_data.bind(&"save_path").to(%SavePathPanel, &"path", &"path_changed")
+
+	_data.bind(&"auto_dump").to_check_box(%AutoDumpBox)
+	_data.bind(&"simulation").using(case.new(Data.NULL_SIMULATION)).to(%DumpButton, &"disabled")
+	_data.bind(&"dump_path").to(%DumpPathPanel, &"path", &"path_changed")
 
 
 func _exit_tree():
@@ -51,6 +54,27 @@ func _status_to_start_disabled(status: Status) -> bool:
 
 func _status_to_cancel_disabled(status: Status) -> bool:
 	return status not in [Status.PREPARING, Status.RUNNING]
+
+
+func _on_start_button_pressed():
+	if _thread.is_started():
+		return
+
+	_thread.start(_run_simulation)
+
+
+func _on_cancel_button_pressed():
+	if _manager == null:
+		return
+
+	if not _thread.is_started():
+		return
+
+	_mutex.lock()
+	_manager.stop()
+	_mutex.unlock()
+
+	_thread.wait_to_finish()
 
 
 func _run_simulation() -> SimulationData:
@@ -97,34 +121,6 @@ func _run_simulation() -> SimulationData:
 	return simulation
 
 
-func _on_start_button_pressed():
-	if _thread.is_started():
-		return
-
-	_thread.start(_run_simulation)
-
-
-func _on_cancel_button_pressed():
-	if _manager == null:
-		return
-
-	if not _thread.is_started():
-		return
-
-	_mutex.lock()
-	_manager.stop()
-	_mutex.unlock()
-
-	_thread.wait_to_finish()
-
-
-func _on_save_button_pressed():
-	if _data.simulation == Data.NULL_SIMULATION:
-		return
-
-	$SimulationSaveFileDialog.show()
-
-
 func _on_simulator_status_changed(new_status):
 	_data.status = new_status
 
@@ -133,14 +129,39 @@ func _on_simulator_status_changed(new_status):
 
 	elif new_status == Status.COMPLETED:
 		var simulation = _thread.wait_to_finish()
-
-		_data.progress_value = _data.max_progress_value
-		_data.simulation = simulation
-
-		completed.emit(simulation)
+		_on_completed(simulation)
 
 	elif new_status == Status.ERROR:
 		_thread.wait_to_finish()
+
+
+func _on_completed(simulation: SimulationData):
+	_data.progress_value = _data.max_progress_value
+	_data.simulation = simulation
+
+	completed.emit(simulation)
+
+	if _data.auto_save:
+		_write_simulation(_data.save_path, simulation)
+
+	if _data.auto_dump:
+		_dump(_data.dump_path, simulation)
+
+
+func _on_save_button_pressed():
+	var simulation = _data.simulation
+	if simulation == Data.NULL_SIMULATION:
+		return
+
+	_write_simulation(_data.save_path, simulation)
+
+
+func _on_dump_button_pressed():
+	var simulation = _data.simulation
+	if simulation == Data.NULL_SIMULATION:
+		return
+
+	_dump(_data.dump_path, simulation)
 
 
 func _on_progress_bar_timer_timeout():
@@ -152,14 +173,6 @@ func _on_progress_bar_timer_timeout():
 	_mutex.unlock()
 
 	_data.progress_value = current_step
-
-
-func _on_simulation_save_file_dialog_file_selected(path):
-	var simulation = _data.simulation
-	if simulation == Data.NULL_SIMULATION:
-		return
-
-	_write_simulation(path, simulation)
 
 
 func _read_network(path: String) -> NetworkData:
@@ -179,7 +192,19 @@ func _read_network(path: String) -> NetworkData:
 func _write_simulation(path: String, simulation: SimulationData):
 	var result = CommonIO.write_data(path, SimulationData, simulation)
 	if not result.ok:
-		_show_error.call_deferred("Failed to open file", result.error)
+		_show_error.call_deferred("Failed to write the simulation result", result.error)
+
+
+func _dump(path: String, simulation: SimulationData):
+	if not DirAccess.dir_exists_absolute(path):
+		_show_error.call_deferred("Not found dump dir", ERR_DOES_NOT_EXIST)
+		return
+
+	DirAccess.remove_absolute(path)
+
+	var result = Dumper.dump(path, simulation)
+	if result != OK:
+		_show_error.call_deferred("Failed to dump", result)
 
 
 static func _get_status_label(status: Status) -> String:
@@ -207,7 +232,7 @@ class Data:
 
 	static var NULL_SIMULATION = SimulationData.new()
 
-	var parameter: ParameterData
+	var parameter: ParameterData = ParameterData.new_default()
 
 	var network_source: NetworkSource
 	var network_file_path: String
@@ -231,3 +256,9 @@ class Data:
 	var progress_value: int
 
 	var simulation: SimulationData = NULL_SIMULATION
+
+	var auto_save: bool
+	var save_path: String
+
+	var auto_dump: bool
+	var dump_path: String

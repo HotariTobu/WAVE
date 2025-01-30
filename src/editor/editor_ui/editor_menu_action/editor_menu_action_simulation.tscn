@@ -26,15 +26,15 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
 
-[node name="CenterContainer" type="CenterContainer" parent="SimulatorWindow/ScrollContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="SimulatorWindow/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 20
 
-[node name="MarginContainer" type="MarginContainer" parent="SimulatorWindow/ScrollContainer/CenterContainer"]
-layout_mode = 2
-
-[node name="SimulatorRoot" parent="SimulatorWindow/ScrollContainer/CenterContainer/MarginContainer" instance=ExtResource("2_1xbsh")]
+[node name="SimulatorRoot" parent="SimulatorWindow/ScrollContainer/MarginContainer" instance=ExtResource("2_1xbsh")]
 layout_mode = 2
 
 [node name="PlayerWindow" type="Window" parent="."]
@@ -73,7 +73,7 @@ script = ExtResource("3_rev5p")
 script = ExtResource("5_kk0fv")
 
 [connection signal="close_requested" from="SimulatorWindow" to="." method="_on_simulator_window_close_requested"]
-[connection signal="completed" from="SimulatorWindow/ScrollContainer/CenterContainer/MarginContainer/SimulatorRoot" to="." method="_on_simulation_completed"]
+[connection signal="completed" from="SimulatorWindow/ScrollContainer/MarginContainer/SimulatorRoot" to="." method="_on_simulation_completed"]
 [connection signal="close_requested" from="PlayerWindow" to="." method="_on_player_window_close_requested"]
 [connection signal="confirmed" from="PlayConfirmationDialog" to="." method="_on_play_confirmation_dialog_confirmed"]
 [connection signal="file_selected" from="SimulationOpenFileDialog" to="." method="_on_simulation_open_file_dialog_file_selected"]
