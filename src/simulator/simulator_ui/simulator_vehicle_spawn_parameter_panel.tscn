@@ -1,0 +1,194 @@
+[gd_scene load_steps=4 format=3 uid="uid://dhsqx1gi7pko8"]
+
+[ext_resource type="Script" path="res://src/simulator/simulator_ui/simulator_vehicle_spawn_parameter_panel.gd" id="1_cfpdr"]
+[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="2_gjosg"]
+[ext_resource type="PackedScene" uid="uid://b1jkmwu2ltfjy" path="res://src/simulator/simulator_ui/simulator_range_panel.tscn" id="3_kxpqt"]
+
+[node name="SimulatorWalkerSpawnParameterPanel" type="GridContainer"]
+columns = 2
+script = ExtResource("1_cfpdr")
+
+[node name="Label15" type="Label" parent="."]
+layout_mode = 2
+text = "Weight"
+
+[node name="WeightBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_gjosg")
+min_value = 0.0
+
+[node name="Label20" type="Label" parent="."]
+layout_mode = 2
+text = "Length"
+
+[node name="LengthBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_gjosg")
+suffix = " m"
+min_value = 1.0
+max_value = 20.0
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="Label7" type="Label" parent="."]
+layout_mode = 2
+text = "High speed acceleration range"
+
+[node name="HighSpeedAccelerationRangePanel" parent="." instance=ExtResource("3_kxpqt")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " m/s^2"
+min_value = 1.0
+max_value = 10.0
+
+[node name="Label17" type="Label" parent="."]
+layout_mode = 2
+text = "High speed acceleration mean"
+
+[node name="HighSpeedAccelerationMeanBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_gjosg")
+suffix = " m/s^2"
+min_value = 1.0
+max_value = 10.0
+
+[node name="HSeparator3" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="HSeparator4" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="Label16" type="Label" parent="."]
+layout_mode = 2
+text = "High speed range"
+
+[node name="HighSpeedRangePanel" parent="." instance=ExtResource("3_kxpqt")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " km/h"
+min_value = 10.0
+max_value = 200.0
+
+[node name="Label8" type="Label" parent="."]
+layout_mode = 2
+text = "High speed mean"
+
+[node name="HighSpeedMeanBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_gjosg")
+suffix = " km/h"
+min_value = 10.0
+max_value = 200.0
+
+[node name="Label9" type="Label" parent="."]
+layout_mode = 2
+text = "Max speed range"
+
+[node name="MaxSpeedRangePanel" parent="." instance=ExtResource("3_kxpqt")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " km/h"
+min_value = 10.0
+max_value = 200.0
+
+[node name="Label10" type="Label" parent="."]
+layout_mode = 2
+text = "Max speed mean"
+
+[node name="MaxSpeedMeanBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_gjosg")
+suffix = " km/h"
+min_value = 10.0
+max_value = 200.0
+
+[node name="HSeparator5" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="HSeparator6" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="Label11" type="Label" parent="."]
+layout_mode = 2
+text = "Zero speed distance range"
+
+[node name="ZeroSpeedDistanceRangePanel" parent="." instance=ExtResource("3_kxpqt")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="Label12" type="Label" parent="."]
+layout_mode = 2
+text = "Zero speed distance mean"
+
+[node name="ZeroSpeedDistanceMeanBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_gjosg")
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="Label13" type="Label" parent="."]
+layout_mode = 2
+text = "Half speed distance range"
+
+[node name="HalfSpeedDistanceRangePanel" parent="." instance=ExtResource("3_kxpqt")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="Label14" type="Label" parent="."]
+layout_mode = 2
+text = "Half speed distance mean"
+
+[node name="HalfSpeedDistanceMeanBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_gjosg")
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="Label18" type="Label" parent="."]
+layout_mode = 2
+text = "High speed distance range"
+
+[node name="HighSpeedDistanceRangePanel" parent="." instance=ExtResource("3_kxpqt")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="Label19" type="Label" parent="."]
+layout_mode = 2
+text = "High speed distance mean"
+
+[node name="HighSpeedDistanceMeanBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_gjosg")
+suffix = " m"
+min_value = 1.0
+max_value = 100.0
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="."]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2

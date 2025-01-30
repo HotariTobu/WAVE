@@ -1,0 +1,111 @@
+[gd_scene load_steps=8 format=3 uid="uid://buca3nas7uqls"]
+
+[ext_resource type="Script" path="res://src/simulator/simulator_ui/simulator_walker_parameter_tab.gd" id="1_88ude"]
+[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="1_qqmqu"]
+[ext_resource type="Texture2D" uid="uid://c40q6s0mrsqre" path="res://assets/up.svg" id="2_f302d"]
+[ext_resource type="Texture2D" uid="uid://q21h4fm426vm" path="res://assets/plus.svg" id="3_cfl3b"]
+[ext_resource type="Texture2D" uid="uid://cbbu4f60f1itt" path="res://assets/cross.svg" id="3_vhrul"]
+[ext_resource type="PackedScene" uid="uid://br4uyg511npm4" path="res://src/simulator/simulator_ui/simulator_walker_spawn_parameter_panel.tscn" id="4_7qjmm"]
+[ext_resource type="Texture2D" uid="uid://bveu22wvqkc16" path="res://assets/down.svg" id="5_jd0sy"]
+
+[node name="SimulatorWalkerParameterTab" type="HBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_88ude")
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 2
+
+[node name="Label" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Spawn rate before start"
+
+[node name="SpawnRateBeforeStartBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_qqmqu")
+min_value = 0.0
+max_value = 1.0
+
+[node name="Label2" type="Label" parent="GridContainer"]
+layout_mode = 2
+text = "Spawn rate after start"
+
+[node name="SpawnRateAfterStartBox" type="LineEdit" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_qqmqu")
+min_value = 0.0
+max_value = 1.0
+
+[node name="Control" type="Control" parent="GridContainer"]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="GridContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="PrevButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("2_f302d")
+flat = true
+
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ClassIndexBox" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+expand_to_text_length = true
+script = ExtResource("1_qqmqu")
+prefix = "Class "
+min_value = 1.0
+
+[node name="Control2" type="Control" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RemoveButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("3_vhrul")
+flat = true
+
+[node name="SpawnParameterPanel" parent="VBoxContainer" instance=ExtResource("4_7qjmm")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="NextButton" type="Button" parent="VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("5_jd0sy")
+flat = true
+
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AddButton" type="Button" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+icon = ExtResource("3_cfl3b")
+flat = true
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/PrevButton" to="." method="_on_spawn_parameter_prev_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/RemoveButton" to="." method="_on_spawn_parameter_remove_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer2/NextButton" to="." method="_on_spawn_parameter_next_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer2/AddButton" to="." method="_on_spawn_parameter_add_button_pressed"]

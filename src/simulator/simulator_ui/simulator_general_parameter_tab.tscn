@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://bifp788x7j4yu"]
+
+[ext_resource type="Script" path="res://src/simulator/simulator_ui/simulator_general_parameter_tab.gd" id="1_o1vbe"]
+[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="1_vof8b"]
+
+[node name="SimulatorGeneralParameterTab" type="GridContainer"]
+columns = 2
+script = ExtResource("1_o1vbe")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Step delta"
+
+[node name="StepDeltaBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_vof8b")
+suffix = " s"
+min_value = 0.01
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 2
+text = "Max step"
+
+[node name="MaxStepBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_vof8b")
+suffix = " step(s)"
+min_value = 0.0
+
+[node name="Label20" type="Label" parent="."]
+layout_mode = 2
+text = "Max entry step gap"
+
+[node name="MaxEntryStepGapBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_vof8b")
+suffix = " step(s)"
+min_value = 0.0
+
+[node name="Label6" type="Label" parent="."]
+layout_mode = 2
+text = "Random seed"
+
+[node name="RandomSeed" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_vof8b")
+min_value = 0.0
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="."]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2

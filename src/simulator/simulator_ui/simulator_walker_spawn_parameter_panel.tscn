@@ -1,0 +1,142 @@
+[gd_scene load_steps=4 format=3 uid="uid://br4uyg511npm4"]
+
+[ext_resource type="Script" path="res://src/simulator/simulator_ui/simulator_walker_spawn_parameter_panel.gd" id="1_ddcsu"]
+[ext_resource type="Script" path="res://src/common/common_ui/numeric_box.gd" id="1_wn76v"]
+[ext_resource type="PackedScene" uid="uid://b1jkmwu2ltfjy" path="res://src/simulator/simulator_ui/simulator_range_panel.tscn" id="2_gofmt"]
+
+[node name="SimulatorWalkerSpawnParameterPanel" type="GridContainer"]
+columns = 2
+script = ExtResource("1_ddcsu")
+
+[node name="Label15" type="Label" parent="."]
+layout_mode = 2
+text = "Weight"
+
+[node name="WeightBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_wn76v")
+min_value = 0.0
+
+[node name="Label20" type="Label" parent="."]
+layout_mode = 2
+text = "Radius"
+
+[node name="RadiusBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_wn76v")
+suffix = " m"
+min_value = 0.1
+max_value = 2.0
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="Label7" type="Label" parent="."]
+layout_mode = 2
+text = "Speed range"
+
+[node name="SpeedRangePanel" parent="." instance=ExtResource("2_gofmt")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " km/h"
+min_value = 0.1
+max_value = 10.0
+
+[node name="Label17" type="Label" parent="."]
+layout_mode = 2
+text = "Speed mean"
+
+[node name="SpeedMeanBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_wn76v")
+suffix = " km/h"
+min_value = 0.1
+max_value = 10.0
+
+[node name="Label16" type="Label" parent="."]
+layout_mode = 2
+text = "Overtake speed range"
+
+[node name="OvertakeSpeedRangePanel" parent="." instance=ExtResource("2_gofmt")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " km/h"
+min_value = 0.1
+max_value = 10.0
+
+[node name="Label8" type="Label" parent="."]
+layout_mode = 2
+text = "Overtake speed mean"
+
+[node name="OvertakeSpeedMeanBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_wn76v")
+suffix = " km/h"
+min_value = 0.1
+max_value = 10.0
+
+[node name="HSeparator3" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="HSeparator4" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="Label9" type="Label" parent="."]
+layout_mode = 2
+text = "Personal distance range"
+
+[node name="PersonalDistanceRangePanel" parent="." instance=ExtResource("2_gofmt")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " m"
+min_value = 0.1
+max_value = 10.0
+
+[node name="Label10" type="Label" parent="."]
+layout_mode = 2
+text = "Personal distance mean"
+
+[node name="PersonalDistanceMeanBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_wn76v")
+suffix = " m"
+min_value = 0.1
+max_value = 10.0
+
+[node name="Label11" type="Label" parent="."]
+layout_mode = 2
+text = "Public distance range"
+
+[node name="PublicDistanceRangePanel" parent="." instance=ExtResource("2_gofmt")]
+unique_name_in_owner = true
+layout_mode = 2
+suffix = " m"
+min_value = 0.1
+max_value = 10.0
+
+[node name="Label12" type="Label" parent="."]
+layout_mode = 2
+text = "Public distance mean"
+
+[node name="PublicDistanceMeanBox" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("1_wn76v")
+suffix = " m"
+min_value = 0.1
+max_value = 10.0
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="."]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2

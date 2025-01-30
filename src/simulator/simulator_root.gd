@@ -6,8 +6,6 @@ enum NetworkSource { MEMORY, FILE }
 
 const Status = SimulatorManager.Status
 
-var _parameter: ParameterData
-
 var _data = BindingSource.new(Data.new(), &"notified")
 
 var _manager: SimulatorManager = null
@@ -20,7 +18,8 @@ var _mutex = Mutex.new()
 func _ready():
 	completed.connect($SimulationSaveFileDialog.show.unbind(1))
 
-	_parameter = $ParameterPanel.parameter
+	_data.parameter = ParameterData.new_default()
+	_data.bind(&"parameter").to($ParameterPanel, &"parameter")
 
 	var case = CaseBindingConverter
 	_data.bind(&"network_source").using(case.new(NetworkSource.MEMORY)).to_check_box(%NetworkMemoryOption)
@@ -79,7 +78,7 @@ func _run_simulation() -> SimulationData:
 	var manager = SimulatorManager.new()
 
 	_mutex.lock()
-	var parameter_dict = ParameterData.to_dict(_parameter)
+	var parameter_dict = ParameterData.to_dict(_data.parameter)
 	var parameter = ParameterData.from_dict(parameter_dict)
 
 	_data.set_deferred(&"status", manager.status)
@@ -89,7 +88,7 @@ func _run_simulation() -> SimulationData:
 	_manager.status_changed.connect(_on_simulator_status_changed.call_deferred)
 	_mutex.unlock()
 
-	manager.prepare(_parameter, network)
+	manager.prepare(parameter, network)
 	var simulation = manager.start()
 
 	if simulation == null:
@@ -207,6 +206,8 @@ class Data:
 	signal notified(property: StringName)
 
 	static var NULL_SIMULATION = SimulationData.new()
+
+	var parameter: ParameterData
 
 	var network_source: NetworkSource
 	var network_file_path: String
