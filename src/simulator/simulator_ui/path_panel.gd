@@ -5,9 +5,8 @@ signal path_changed(new_path: String)
 
 @export var path: String:
 	get:
-		return path
+		return $PathBox.text
 	set(value):
-		path = value
 		$PathBox.text = value
 
 @export var enable: bool = true:
@@ -34,6 +33,8 @@ signal path_changed(new_path: String)
 @onready var _browse_button = $BrowseButton
 @onready var _file_dialog = $FileDialog
 
+var _last_path: String
+
 
 func get_path_box() -> LineEdit:
 	return _path_box
@@ -47,26 +48,23 @@ func get_file_dialog() -> FileDialog:
 	return _file_dialog
 
 
-func _on_path_box_text_submitted(new_text):
-	if FileAccess.file_exists(new_text):
-		_update_path(new_text)
-
-	elif DirAccess.dir_exists_absolute(new_text):
-		_update_path(new_text)
+func _on_path_box_focus_exited():
+	_update_path(path)
 
 
 func _on_browse_button_pressed():
 	_file_dialog.show()
 
 
-func _on_file_dialog_file_selected(selected_path):
+func _on_file_dialog_selected(selected_path):
 	_update_path(selected_path)
 
 
-func _on_file_dialog_dir_selected(selected_dir):
-	_update_path(selected_dir)
-
-
 func _update_path(new_path: String):
+	if _last_path == new_path:
+		return
+
+	_last_path = new_path
+
 	path = new_path
 	path_changed.emit(new_path)
